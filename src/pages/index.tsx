@@ -9,19 +9,17 @@ import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 import StatsCard from "../components/StatsCard";
 import Collection from "../components/Collection";
+import { ItemType } from "../utils/types";
 
 export async function getStaticProps() {
   const collectionData = await api
     .apiRequest("collection", { username: "stevmachine" })
-    .then(function (results) {
-      console.log(results);
-      return {
-        ...results,
-        item: results.item.filter(
-          (i) => i.status.own === "1" && i.subtype === "boardgame"
-        ),
-      };
-    });
+    .then((results) => ({
+      ...results,
+      item: results.item.filter(
+        (i: ItemType) => i.status.own === "1" && i.subtype === "boardgame"
+      ),
+    }));
   return {
     props: {
       collectionData,

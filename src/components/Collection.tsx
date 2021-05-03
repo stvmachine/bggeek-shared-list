@@ -1,52 +1,20 @@
 import React from "react";
 import {
-  //   Link as ChakraLink,
-  //   Text,
-  //   Code,
   Wrap,
   WrapItem,
-  Center,
   Image,
   Box,
   Container,
   Heading,
-  SimpleGrid,
-  Icon,
   Text,
   Stack,
-  HStack,
-  VStack,
 } from "@chakra-ui/react";
+import { ItemType } from "../utils/types";
 
 type CollectionProps = {
   collectionData: any;
 };
 
-type ItemType = {
-  collid: string;
-  image: string;
-  name: {
-    sortIndex: string;
-    $t: string;
-  };
-  numplays: string;
-  objectid: string;
-  objectype: "thing";
-  status: {
-    fortrade: "0" | "1";
-    lastmodified: string;
-    own: "0" | "1";
-    preordered: "0" | "1";
-    prevowned: "0" | "1";
-    want: "0" | "1";
-    wanttobuy: "0" | "1";
-    wanttoplay: "0" | "1";
-    whishlist: "0" | "1";
-  };
-  subtype: "boardgame";
-  thumbnail: string;
-  yearpublished: string;
-};
 
 const Collection = ({ collectionData }: CollectionProps) => {
   console.log(collectionData);
