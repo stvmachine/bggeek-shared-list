@@ -35,8 +35,8 @@ const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
     <Container height="100vh">
       <Main>
         <CTA />
-        <StatsCard />
         <Collection collectionData={collectionData} />
+        <StatsCard />
       </Main>
 
       <DarkModeSwitch />
