@@ -1,56 +1,48 @@
-import {
-  Link as ChakraLink,
-  Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-} from '@chakra-ui/react'
-import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
+import { NextPage } from "next";
+import React from "react";
+import api from "../utils/api";
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
+import { Container } from "../components/Container";
+import { Main } from "../components/Main";
+import { DarkModeSwitch } from "../components/DarkModeSwitch";
+import CTA from "../components/CTA";
+import Footer from "../components/Footer";
+import StatsCard from "../components/StatsCard";
+import Collection from "../components/Collection";
 
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
-    <Main>
-      <Text>
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{' '}
-        <Code>typescript</Code>.
-      </Text>
+export async function getStaticProps() {
+  const collectionData = await api
+    .apiRequest("collection", { username: "stevmachine" })
+    .then(function (results) {
+      console.log(results);
+      return {
+        ...results,
+        item: results.item.filter((i) => i.status.own === "1"),
+      };
+    });
+  return {
+    props: {
+      collectionData,
+    },
+  };
+}
 
-      <List spacing={3} my={0}>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink
-            isExternal
-            href="https://chakra-ui.com"
-            flexGrow={1}
-            mr={2}
-          >
-            Chakra UI <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink isExternal href="https://nextjs.org" flexGrow={1} mr={2}>
-            Next.js <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-      </List>
-    </Main>
+type IndexPageProps = {
+  collectionData: any[];
+};
+const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
+  return (
+    <Container height="100vh">
+      <Main>
+        <CTA />
+        <StatsCard />
+        <Collection collectionData={collectionData} />
+      </Main>
 
-    <DarkModeSwitch />
-    <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer>
-    <CTA />
-  </Container>
-)
+      <DarkModeSwitch />
+      <Footer />
+    </Container>
+  );
+};
 
-export default Index
+export default Index;
