@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import {
+  Flex,
   Box,
   Container,
   Stack,
@@ -52,12 +53,18 @@ const ListHeader = ({ children }: { children: ReactNode }) => {
 // };
 
 const Footer = () => (
-  <Box
+  <Flex
+    as="footer"
+    marginTop="8rem"
+    width="100%"
+    display="column"
+    alignItems="center"
+    justifyContent="space-between"
     bg={useColorModeValue("gray.50", "gray.900")}
     color={useColorModeValue("gray.700", "gray.200")}
   >
     <Container as={Stack} maxW={"6xl"} py={10}>
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={8}>
         <Stack align={"flex-start"}>
           <ListHeader>Company</ListHeader>
           <Link href={"#"}>About Us</Link>
@@ -111,7 +118,7 @@ const Footer = () => (
           </Stack> */}
       </Container>
     </Box>
-  </Box>
+  </Flex>
 );
 
 export default Footer;

@@ -17,7 +17,9 @@ export async function getStaticProps() {
       console.log(results);
       return {
         ...results,
-        item: results.item.filter((i) => i.status.own === "1"),
+        item: results.item.filter(
+          (i) => i.status.own === "1" && i.subtype === "boardgame"
+        ),
       };
     });
   return {
