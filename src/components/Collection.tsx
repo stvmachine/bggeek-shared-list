@@ -15,7 +15,6 @@ type CollectionProps = {
   collectionData: any;
 };
 
-
 const Collection = ({ collectionData }: CollectionProps) => {
   console.log(collectionData);
   return (
@@ -33,10 +32,10 @@ const Collection = ({ collectionData }: CollectionProps) => {
         <Wrap>
           {collectionData.totalitems > 0 &&
             collectionData.item
-              .slice(0, 30)
+              .slice(0, 24)
               .map(({ thumbnail, objectid }: ItemType) => (
                 <WrapItem key={objectid}>
-                  <Image boxSize="100px" objectFit="contain" src={thumbnail} />
+                  <Image boxSize="150px" objectFit="contain" src={thumbnail} />
                 </WrapItem>
               ))}
         </Wrap>

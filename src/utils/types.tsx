@@ -1,3 +1,6 @@
+import { ThingType } from "bgg-xml-api-client";
+declare type ZeroOrOne = 0 | 1;
+
 export type ItemType = {
   collid: string;
   image: string;
@@ -7,19 +10,19 @@ export type ItemType = {
   };
   numplays: string;
   objectid: string;
-  objectype: "thing";
+  objectype: ThingType;
   status: {
-    fortrade: "0" | "1";
+    fortrade: ZeroOrOne;
     lastmodified: string;
-    own: "0" | "1";
-    preordered: "0" | "1";
-    prevowned: "0" | "1";
-    want: "0" | "1";
-    wanttobuy: "0" | "1";
-    wanttoplay: "0" | "1";
-    whishlist: "0" | "1";
+    own: ZeroOrOne;
+    preordered: ZeroOrOne;
+    prevowned: ZeroOrOne;
+    want: ZeroOrOne;
+    wanttobuy: ZeroOrOne;
+    wanttoplay: ZeroOrOne;
+    whishlist: ZeroOrOne;
   };
-  subtype: "boardgame";
+  subtype: ThingType;
   thumbnail: string;
   yearpublished: string;
 };

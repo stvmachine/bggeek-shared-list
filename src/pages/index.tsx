@@ -1,6 +1,6 @@
-import { NextPage } from "next";
 import React from "react";
-import api from "../utils/api";
+import { NextPage } from "next";
+import { getBggCollection, BggCollectionResponse } from "bgg-xml-api-client";
 
 import { Container } from "../components/Container";
 import Main from "../components/Main";
@@ -9,26 +9,26 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
 import Collection from "../components/Collection";
-import { ItemType } from "../utils/types";
 
 export async function getStaticProps() {
-  const collectionData = await api
-    .apiRequest("collection", { username: "stevmachine" })
-    .then((results) => ({
-      ...results,
-      item: results.item.filter(
-        (i: ItemType) => i.status.own === "1" && i.subtype === "boardgame"
-      ),
-    }));
+  const results: BggCollectionResponse = await getBggCollection({
+    username: "stevmachine",
+    own: 1,
+    minbggrating: 7,
+    subtype: "boardgame",
+    excludesubtype: "boardgameexpansion",
+    stats: 1,
+  });
+
   return {
     props: {
-      collectionData,
+      collectionData: results.data,
     },
   };
 }
 
 type IndexPageProps = {
-  collectionData: any[];
+  collectionData: BggCollectionResponse;
 };
 const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
   return (
