@@ -22,7 +22,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      collectionData: results.data,
+      collectionData: results.data.slice(0, 24),
     },
   };
 }
@@ -30,6 +30,7 @@ export async function getStaticProps() {
 type IndexPageProps = {
   collectionData: BggCollectionResponse;
 };
+
 const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
   return (
     <Container height="100vh">

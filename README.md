@@ -31,3 +31,28 @@ Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&ut
 Chakra has supported Gradients and RTL in `v1.1`. To utilize RTL, [add RTL direction and swap](https://chakra-ui.com/docs/features/rtl-support).
 
 If you don't have multi-direction app, you should make `<Html lang="ar" dir="rtl">` inside `_document.ts`.
+
+
+## This project relies on BGG XML API2 
+More info [here](https://boardgamegeek.com/wiki/page/BGG_XML_API2#toc11)
+
+## ToDo
+
+### Starting
+- Create a shared list with boardgames from multiples users. Each user needs an alias that exists on bggeek
+- Add a view to filter based on number of players, playing time, complexity, categories, mechanics (e.g. https://github.com/EmilStenstrom/mybgg)
+
+### Advanced
+- Add firebase to store groups/users
+- Plan how to store logs, scores and sessions into the DB
+- Store sessions and games played on that session
+- Auth with firebase and some email
+
+### Link with boardgamegeek and update stats
+- Link user with an account on boardgamegeek. If the login is succesfully, then store a cookie on firebase
+- Update stats like game logs and players on bggeek using the cookie.
+  
+
+## Bg Stats
+
+- To understand the rating of games: https://boardgamegeek.com/blog/8479/exploring-bgg-database
