@@ -20,9 +20,14 @@ export async function getStaticProps() {
     stats: 1,
   });
 
+  const collectionData = {
+    ...results.data,
+    item: results.data.item.slice(0, 24),
+  };
+
   return {
     props: {
-      collectionData: results.data.slice(0, 24),
+      collectionData,
     },
   };
 }
