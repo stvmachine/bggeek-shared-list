@@ -39,7 +39,7 @@ export default function CTA() {
             </Text>
           </Heading>
           <Text color={"gray.500"}>
-            Keep track of the all games that owns your group, create events and keep track of which games are actually been played.
+             Follow up all games that your group owns, create events and track the games that your group have been played. More features are coming!
           </Text>
           <Stack
             direction={"column"}

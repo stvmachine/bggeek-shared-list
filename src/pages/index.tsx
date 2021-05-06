@@ -40,7 +40,6 @@ const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
   return (
     <Container height="100vh">
       <Navbar />
-
       <Main>
         <CTA />
         <Collection collectionData={collectionData} />
