@@ -15,8 +15,7 @@ import {
 export default function CTA() {
   const router = useRouter();
 
-  const onClick = (e) => {
-    e.preventDefault();
+  const onClick = () => {
     router.push("/collection");
   };
   return (

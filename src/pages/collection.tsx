@@ -2,7 +2,6 @@ import React from "react";
 import { useFuzzy } from "react-use-fuzzy";
 import { NextPage } from "next";
 import {
-  Stack,
   Wrap,
   WrapItem,
   Image,
