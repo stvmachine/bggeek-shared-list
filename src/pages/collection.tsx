@@ -9,6 +9,8 @@ import {
   Text,
   UnorderedList,
   ListItem,
+  LinkBox,
+  LinkOverlay,
 } from "@chakra-ui/react";
 import { getBggCollection, BggCollectionResponse } from "bgg-xml-api-client";
 
@@ -60,7 +62,7 @@ export async function getStaticProps() {
           (item, index, self) =>
             self.findIndex((i) => i.objectid == item.objectid) == index
         )
-        .sort((item) => item.name.sortIndex);
+        .sort((a, b) => (a.name.text > b.name.text ? 1 : -1));
     },
     []
   );
@@ -87,11 +89,18 @@ const Index: NextPage<CollectionPageProps> = ({
       <Container mt={10} maxWidth="80%">
         {members && (
           <Heading fontSize={"3xl"} mb={10}>
-            Displaying games of the following members:
+            Displaying {collectionGroupData.totalitems} games owned for the following members:
             <UnorderedList>
               {members.map((member, index) => (
                 <ListItem key={`${member}_${index}`}>
-                  <Text color="tomato">{member}</Text>
+                  <LinkBox>
+                    <LinkOverlay
+                      href={`https://boardgamegeek.com/user/${member}`}
+                      isExternal
+                    >
+                      <Text color="tomato">{member}</Text>
+                    </LinkOverlay>
+                  </LinkBox>
                 </ListItem>
               ))}
             </UnorderedList>
@@ -100,9 +109,20 @@ const Index: NextPage<CollectionPageProps> = ({
         <Wrap>
           {collectionGroupData.totalitems > 0 &&
             collectionGroupData.item.map(
-              ({ thumbnail, objectid }: ItemType) => (
-                <WrapItem key={objectid}>
-                  <Image boxSize="180px" objectFit="contain" src={thumbnail} />
+              ({ thumbnail, objectid }: ItemType, index) => (
+                <WrapItem key={`${objectid}_${index}`}>
+                  <LinkBox>
+                    <LinkOverlay
+                      href={`https://boardgamegeek.com/boardgame/${objectid}`}
+                      isExternal
+                    >
+                      <Image
+                        boxSize="180px"
+                        objectFit="contain"
+                        src={thumbnail}
+                      />
+                    </LinkOverlay>
+                  </LinkBox>
                 </WrapItem>
               )
             )}
