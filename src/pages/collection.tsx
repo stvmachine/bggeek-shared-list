@@ -1,4 +1,5 @@
 import React from "react";
+import { useFuzzy } from "react-use-fuzzy";
 import { NextPage } from "next";
 import {
   Stack,
@@ -46,10 +47,7 @@ const fetchGroupCollection = async (usernames: string[]) => {
 };
 
 type CollectionPageProps = {
-  collectionGroupData: {
-    item: ItemType[];
-    totalitems: number;
-  };
+  boardgames: ItemType[];
   members: string[];
 };
 
@@ -61,6 +59,9 @@ export async function getStaticProps() {
     (accum: any[], collection: BggCollectionResponse) => {
       return [...accum, ...collection.item]
         .map((item) => ({
+          yearpublished: item.yearpublished,
+          stats: item.stats,
+          subtype: item.subtype,
           objectid: item.objectid,
           thumbnail: item.thumbnail,
           name: { ...item.name },
@@ -77,25 +78,11 @@ export async function getStaticProps() {
 
   return {
     props: {
-      collectionGroupData: {
-        item: items,
-        totalitems: items.length,
-      },
+      boardgames: items,
       members,
     },
   };
 }
-
-const COLLECTION_STATUS = [
-  "fortrade",
-  "own",
-  "preordered",
-  "prevowned",
-  "want",
-  "wanttobuy",
-  "wanttoplay",
-  "wishlist",
-];
 
 const numberOfPlayersOptions = [
   { value: 1, name: 1 },
@@ -111,18 +98,70 @@ const numberOfPlayersOptions = [
 ];
 
 const playingTimeOptions = [
-  { value: 1, name: "< 30 min" },
-  { value: 2, name: "30min - 1h" },
-  { value: 3, name: "1-2h" },
-  { value: 4, name: "2-3h" },
-  { value: 5, name: "3-4h" },
-  { value: 6, name: ">4h" },
+  { value: 1, name: "<= 30min" },
+  { value: 2, name: "30min-1h" },
+  { value: 3, name: "1h-2h" },
+  { value: 4, name: "2h-3h" },
+  { value: 5, name: "3h-4h" },
+  { value: 6, name: "> 4h" },
 ];
 
-const Index: NextPage<CollectionPageProps> = ({
-  members,
-  collectionGroupData,
-}) => {
+const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
+  const { result, keyword, search } = useFuzzy<ItemType>(boardgames, {
+    keys: ["name.text", "yearpublished"],
+  });
+
+  const [numberOfPlayers, setNumberOfPlayers] = React.useState<number>(6);
+  const [playingTime, setPlayingTime] = React.useState<number>(0);
+
+  const filteredByNumPlayers = numberOfPlayers
+    ? result.filter(
+        (bg: ItemType) =>
+          bg.stats.maxplayers >= numberOfPlayers &&
+          bg.stats.minplayers <= numberOfPlayers
+      )
+    : result;
+
+  const filteredBoardgames = playingTime
+    ? filteredByNumPlayers.filter((bg: ItemType) => {
+        if (playingTime == 1 && bg.stats.maxplaytime <= 30) {
+          return true;
+        }
+        if (
+          playingTime == 2 &&
+          bg.stats.maxplaytime > 30 &&
+          bg.stats.maxplaytime <= 60
+        ) {
+          return true;
+        }
+        if (
+          playingTime == 3 &&
+          bg.stats.maxplaytime > 60 &&
+          bg.stats.maxplaytime <= 60 * 2
+        ) {
+          return true;
+        }
+        if (
+          playingTime == 4 &&
+          bg.stats.maxplaytime > 60 * 2 &&
+          bg.stats.maxplaytime <= 60 * 3
+        ) {
+          return true;
+        }
+        if (
+          playingTime == 5 &&
+          bg.stats.maxplaytime > 60 * 3 &&
+          bg.stats.maxplaytime <= 60 * 4
+        ) {
+          return true;
+        }
+        if (playingTime == 6 && bg.stats.maxplaytime > 60 * 4) {
+          return true;
+        }
+        return false;
+      })
+    : filteredByNumPlayers;
+
   return (
     <Container height="100vh" maxWidth="100%">
       <Navbar />
@@ -132,11 +171,23 @@ const Index: NextPage<CollectionPageProps> = ({
           pointerEvents="none"
           children={<SearchIcon color="gray.300" />}
         />
-        <Input placeholder="Search" />
+        <Input
+          placeholder="Search"
+          value={keyword}
+          onChange={(e) => search(e.target.value)}
+        />
       </InputGroup>
 
       <Wrap>
-        <Select placeholder="Number of players" width="xxs">
+        <Select
+          id="number_of_players_select"
+          placeholder="Number of players"
+          onChange={(e) => {
+            setNumberOfPlayers(Number(e.target.value));
+          }}
+          value={numberOfPlayers}
+          width="xxs"
+        >
           {numberOfPlayersOptions &&
             numberOfPlayersOptions.map((item) => (
               <option
@@ -148,13 +199,17 @@ const Index: NextPage<CollectionPageProps> = ({
             ))}
         </Select>
 
-        <Select placeholder="Playing time" width="xxs">
+        <Select
+          placeholder="Playing time"
+          onChange={(e) => {
+            setPlayingTime(Number(e.target.value));
+          }}
+          value={playingTime}
+          width="xxs"
+        >
           {playingTimeOptions &&
             playingTimeOptions.map((item) => (
-              <option
-                value={item.value}
-                key={`playing_time_${item.value}`}
-              >
+              <option value={item.value} key={`playing_time_${item.value}`}>
                 {item.name}
               </option>
             ))}
@@ -164,8 +219,8 @@ const Index: NextPage<CollectionPageProps> = ({
       <Container mt={10} maxWidth="80%">
         {members && (
           <Heading fontSize={"3xl"} mb={10}>
-            Displaying {collectionGroupData.totalitems} games owned for the
-            following members:
+            Displaying {filteredBoardgames.length} games owned for the following
+            members:
             <UnorderedList>
               {members.map((member, index) => (
                 <ListItem key={`${member}_${index}`}>
@@ -183,8 +238,8 @@ const Index: NextPage<CollectionPageProps> = ({
           </Heading>
         )}
         <Wrap>
-          {collectionGroupData.totalitems > 0 &&
-            collectionGroupData.item.map(
+          {filteredBoardgames.length > 0 &&
+            filteredBoardgames.map(
               ({ thumbnail, objectid }: ItemType, index) => (
                 <WrapItem key={`${objectid}_${index}`}>
                   <LinkBox>

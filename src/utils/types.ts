@@ -25,4 +25,12 @@ export type ItemType = {
   subtype: ThingType;
   thumbnail: string;
   yearpublished: string;
+  stats: {
+    maxplayers: number;
+    maxplaytime: number;
+    minplayers: number;
+    minplaytime: number;
+    numowned: number;
+    playingtime: number;
+  };
 };
