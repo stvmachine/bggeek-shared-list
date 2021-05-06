@@ -215,7 +215,7 @@ const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
         </Select>
       </Wrap>
 
-      <Container mt={10} maxWidth="80%">
+      <Container mt={10} maxWidth={["100%", "80%"]}>
         {members && (
           <Heading fontSize={"3xl"} mb={10}>
             Displaying {filteredBoardgames.length} games owned for the following
@@ -247,7 +247,7 @@ const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
                       isExternal
                     >
                       <Image
-                        boxSize="180px"
+                        boxSize={["90px","180px"]}
                         objectFit="contain"
                         src={thumbnail}
                       />
