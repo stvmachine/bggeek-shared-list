@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import {
   Box,
   Heading,
@@ -12,6 +13,12 @@ import {
 } from "@chakra-ui/react";
 
 export default function CTA() {
+  const router = useRouter();
+
+  const onClick = (e) => {
+    e.preventDefault();
+    router.push("/collection");
+  };
   return (
     <>
       <Head>
@@ -39,7 +46,9 @@ export default function CTA() {
             </Text>
           </Heading>
           <Text color={"gray.500"}>
-             Follow up all games that your group owns, create events and track the games that your group have been played. More features are coming!
+            Follow up all games that your group owns, create events and track
+            the games that your group have been played. More features are
+            coming!
           </Text>
           <Stack
             direction={"column"}
@@ -56,6 +65,7 @@ export default function CTA() {
               _hover={{
                 bg: "green.500",
               }}
+              onClick={onClick}
             >
               Get Started
             </Button>

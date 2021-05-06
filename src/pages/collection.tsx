@@ -111,7 +111,7 @@ const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
     keys: ["name.text", "yearpublished"],
   });
 
-  const [numberOfPlayers, setNumberOfPlayers] = React.useState<number>(6);
+  const [numberOfPlayers, setNumberOfPlayers] = React.useState<number>(0);
   const [playingTime, setPlayingTime] = React.useState<number>(0);
 
   const filteredByNumPlayers = numberOfPlayers
