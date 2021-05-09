@@ -65,13 +65,28 @@ export const filterByPlayingTime = (
       })
     : boardgames;
 
+export const orderByFn = (boardgames: ItemType[], orderBy: string) => {
+  if (orderBy == "rating") {
+    return boardgames.sort((a, b) =>
+      a.stats.rating.bayesaverage.value > b.stats.rating.bayesaverage.value
+        ? -1
+        : 1
+    );
+  } else if (orderBy == "numowned") {
+    return boardgames.sort((a, b) =>
+      a.stats.numowned > b.stats.numowned ? -1 : 1
+    );
+  } else {
+    return boardgames.sort((a, b) => (a.name.text > b.name.text ? 1 : -1));
+  }
+};
 export function useSearch<T>(
   data: T[],
   options: FuseOptions<T>
 ): IFuzzyClient<T> {
   const { watch } = useFormContext();
   const watchAllFields = watch();
-  const { keyword, ...otherFields } = watchAllFields;
+  const { keyword, orderBy, ...otherFields } = watchAllFields;
   const [results, setResults] = useState(data);
 
   const resetSearch = () => setResults([]);
@@ -87,17 +102,13 @@ export function useSearch<T>(
     results = keyword ? (searcher.search(keyword) as T[]) : results;
     results = filterByPlayingTime(results, playingTime);
     results = filterByNumPlayers(results, numberOfPlayers);
+    results = orderByFn(results, orderBy);
     setResults(results);
-    console.log(otherFields);
 
     return () => {
       resetSearch();
     };
-  }, [
-    keyword,
-    otherFields.playingTime,
-    otherFields.numberOfPlayers,
-  ]);
+  }, [keyword, orderBy, otherFields.playingTime, otherFields.numberOfPlayers]);
 
   return {
     resetSearch,

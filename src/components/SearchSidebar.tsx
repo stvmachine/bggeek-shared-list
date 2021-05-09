@@ -40,7 +40,7 @@ const SearchSidebar = ({ members }: SearchSidebarProps) => {
         <Accordion defaultIndex={[0,1]} allowMultiple>
           <AccordionItem width="xs">
             <h2>
-              <AccordionButton>
+              <AccordionButton id="basic-filters-accordion-button">
                 <Box flex="1" textAlign="left">
                   Basic filters
                 </Box>
@@ -83,7 +83,7 @@ const SearchSidebar = ({ members }: SearchSidebarProps) => {
 
           <AccordionItem width="xs">
             <h2>
-              <AccordionButton>
+              <AccordionButton id="members-accordion-button">
                 <Box flex="1" textAlign="left">
                   Members
                 </Box>

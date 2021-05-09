@@ -9,6 +9,7 @@ import Navbar from "../components/Navbar";
 import { ItemType } from "../utils/types";
 import SearchSidebar from "../components/SearchSidebar";
 import Results from "../components/Results";
+import SortBar from "../components/SortBar";
 
 const fetchGroupCollection = async (usernames: string[]) => {
   const collectionGroup = await Promise.all(
@@ -70,6 +71,7 @@ export async function getStaticProps() {
 const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
   const defaultValues = useMemo(
     () => ({
+      orderBy: "name",
       members: members.reduce(
         (accum, member) => ({ ...accum, [member]: true }),
         {}
@@ -84,6 +86,7 @@ const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
       <Navbar />
       <Box mt={12}>
         <FormProvider {...methods}>
+          <SortBar />
           <Stack direction={["column", "row"]} alignItems="flex-start">
             <SearchSidebar members={members} />
             <Results members={members} boardgames={boardgames} />

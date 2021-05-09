@@ -5,8 +5,8 @@ export type ItemType = {
   collid: string;
   image: string;
   name: {
+    text: string;
     sortIndex: string;
-    $t: string;
   };
   numplays: string;
   objectid: string;
