@@ -1,4 +1,13 @@
+import Fuse, { FuseOptions } from "fuse.js";
+import { useMemo, useState, useEffect } from "react";
+import { useFormContext } from "react-hook-form";
+
 import { ItemType } from "../utils/types";
+
+export interface IFuzzyClient<T> {
+  results: T[];
+  resetSearch: () => void;
+}
 
 export const filterByNumPlayers = (
   boardgames: ItemType[],
@@ -55,3 +64,38 @@ export const filterByPlayingTime = (
         return false;
       })
     : boardgames;
+
+export function useSearch<T>(
+  data: T[],
+  options: FuseOptions<T>
+): IFuzzyClient<T> {
+  const { watch } = useFormContext();
+  const watchAllFields = watch();
+  const { keyword, ...otherFields } = watchAllFields;
+  const [results, setResults] = useState(data);
+
+  const resetSearch = () => setResults([]);
+
+  const searcher = useMemo(() => {
+    const defaultOptions = { tokenize: true, threshold: 0.2 };
+    return new Fuse(data, { ...defaultOptions, ...options });
+  }, [data, options]);
+
+  useEffect(() => {
+    let results: any = data;
+    const { playingTime, numberOfPlayers } = otherFields;
+    results = keyword ? (searcher.search(keyword) as T[]) : results;
+    results = filterByPlayingTime(results, playingTime);
+    results = filterByNumPlayers(results, numberOfPlayers);
+    setResults(results);
+
+    return () => {
+      resetSearch();
+    };
+  }, [keyword, otherFields.playingTime, otherFields.numberOfPlayers]);
+
+  return {
+    resetSearch,
+    results,
+  };
+}

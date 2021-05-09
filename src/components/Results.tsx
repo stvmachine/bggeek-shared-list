@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Wrap,
   WrapItem,
@@ -11,11 +11,8 @@ import {
   LinkBox,
   LinkOverlay,
 } from "@chakra-ui/react";
-import { useFuzzy } from "react-use-fuzzy";
-import { useFormContext } from "react-hook-form";
 import { ItemType } from "../utils/types";
-import useDebounce from "../hooks/useDebounce";
-import { filterByNumPlayers, filterByPlayingTime } from "../hooks/useFilters";
+import { useSearch } from "../hooks/useSearch";
 
 type ResultsProps = {
   members: string[];
@@ -23,15 +20,15 @@ type ResultsProps = {
 };
 
 const Results = ({ members, boardgames }: ResultsProps) => {
-  const { watch } = useFormContext();
-  const watchAllFields = watch();
-  console.log(watchAllFields)
+  const { results } = useSearch<ItemType>(boardgames, {
+    keys: ["name.text"],
+  });
 
   return (
     <Container mt={10} maxWidth={["100%", "80%"]}>
       {members && (
         <Heading fontSize={"3xl"} mb={10}>
-          Displaying {boardgames.length} games owned for the following members:
+          Displaying {results.length} games owned for the following members:
           <UnorderedList>
             {members.map((member, index) => (
               <ListItem key={`${member}_${index}`}>
@@ -49,8 +46,8 @@ const Results = ({ members, boardgames }: ResultsProps) => {
         </Heading>
       )}
       <Wrap>
-        {boardgames.length > 0 &&
-          boardgames.map(({ thumbnail, objectid }: ItemType, index) => (
+        {results.length > 0 &&
+          results.map(({ thumbnail, objectid }: ItemType, index) => (
             <WrapItem key={`${objectid}_${index}`}>
               <LinkBox>
                 <LinkOverlay
