@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { NextPage } from "next";
-import { Container } from "@chakra-ui/react";
+import { Container, HStack } from "@chakra-ui/react";
 import { getBggCollection, BggCollectionResponse } from "bgg-xml-api-client";
 
 import Footer from "../components/Footer";
@@ -74,8 +74,10 @@ const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
     <Container height="100vh" maxWidth="100%">
       <Navbar />
       <FormProvider {...methods}>
-        <SearchSidebar />
-        <Results members={members} boardgames={boardgames}/>
+        <HStack alignItems="flex-start">
+          <SearchSidebar />
+          <Results members={members} boardgames={boardgames} />
+        </HStack>
       </FormProvider>
       <Footer />
     </Container>

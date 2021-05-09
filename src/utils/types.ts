@@ -32,5 +32,22 @@ export type ItemType = {
     minplaytime: number;
     numowned: number;
     playingtime: number;
+    rating: {
+      average: { value: number };
+      bayesaverage: { value: number };
+      median: { value: number };
+      ranks: {
+        rank: {
+          bayesaverage: number;
+          friendlyname: string;
+          id: number;
+          name: string;
+          type: ThingType;
+          value: number;
+        }[];
+      };
+      stddev: { value: number };
+      usersrated: { value: number };
+    };
   };
 };

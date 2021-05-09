@@ -1,10 +1,16 @@
 import React from "react";
 import {
+  Box,
   InputLeftElement,
   InputGroup,
   Input,
   Select,
-  Wrap,
+  VStack,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
 } from "@chakra-ui/react";
 import { useFormContext } from "react-hook-form";
 import { SearchIcon } from "@chakra-ui/icons";
@@ -16,7 +22,42 @@ const SearchSidebar = () => {
 
   return (
     <form>
-      <Wrap>
+      <VStack width="xs">
+        <Accordion defaultIndex={[0]} allowMultiple>
+          <AccordionItem width="xs">
+            <h2>
+              <AccordionButton>
+                <Box flex="1" textAlign="left">
+                  Section 1 title
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </AccordionPanel>
+          </AccordionItem>
+
+          <AccordionItem width="xs">
+            <h2>
+              <AccordionButton>
+                <Box flex="1" textAlign="left">
+                  Section 2 title
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
         <InputGroup width="xs">
           <InputLeftElement
             pointerEvents="none"
@@ -52,7 +93,7 @@ const SearchSidebar = () => {
               </option>
             ))}
         </Select>
-      </Wrap>
+      </VStack>
     </form>
   );
 };
