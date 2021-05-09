@@ -88,11 +88,16 @@ export function useSearch<T>(
     results = filterByPlayingTime(results, playingTime);
     results = filterByNumPlayers(results, numberOfPlayers);
     setResults(results);
+    console.log(otherFields);
 
     return () => {
       resetSearch();
     };
-  }, [keyword, otherFields.playingTime, otherFields.numberOfPlayers]);
+  }, [
+    keyword,
+    otherFields.playingTime,
+    otherFields.numberOfPlayers,
+  ]);
 
   return {
     resetSearch,

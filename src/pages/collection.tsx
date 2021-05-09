@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { NextPage } from "next";
-import { Container, HStack } from "@chakra-ui/react";
+import { Box, Container, Stack } from "@chakra-ui/react";
 import { getBggCollection, BggCollectionResponse } from "bgg-xml-api-client";
 
 import Footer from "../components/Footer";
@@ -68,17 +68,28 @@ export async function getStaticProps() {
 }
 
 const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
-  const methods = useForm();
+  const defaultValues = useMemo(
+    () => ({
+      members: members.reduce(
+        (accum, member) => ({ ...accum, [member]: true }),
+        {}
+      ),
+    }),
+    [members]
+  );
+  const methods = useForm({ defaultValues });
 
   return (
     <Container height="100vh" maxWidth="100%">
       <Navbar />
-      <FormProvider {...methods}>
-        <HStack alignItems="flex-start">
-          <SearchSidebar />
-          <Results members={members} boardgames={boardgames} />
-        </HStack>
-      </FormProvider>
+      <Box mt={12}>
+        <FormProvider {...methods}>
+          <Stack direction={["column", "row"]} alignItems="flex-start">
+            <SearchSidebar members={members} />
+            <Results members={members} boardgames={boardgames} />
+          </Stack>
+        </FormProvider>
+      </Box>
       <Footer />
     </Container>
   );
