@@ -71,7 +71,7 @@ export async function getStaticProps() {
 const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
   const defaultValues = useMemo(
     () => ({
-      orderBy: "name",
+      orderBy: "name_asc",
       members: members.reduce(
         (accum, member) => ({ ...accum, [member]: true }),
         {}

@@ -64,23 +64,34 @@ export const filterByPlayingTime = (
       })
     : boardgames;
 
+const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
+  if (orderBy.match("desc")) {
+    return a > b ? -1 : 1;
+  }
+  return a > b ? 1 : -1;
+};
+
 export const orderByFn = (boardgames: ItemType[], orderBy: string) => {
-  if (orderBy == "rating") {
+  if (orderBy.match("rating")) {
     return boardgames.sort((a, b) =>
-      a.stats.rating.bayesaverage.value > b.stats.rating.bayesaverage.value
-        ? -1
-        : 1
+      checkAsc(
+        a.stats.rating.bayesaverage.value,
+        b.stats.rating.bayesaverage.value,
+        orderBy
+      )
     );
-  } else if (orderBy == "numowned") {
+  } else if (orderBy.match("numowned")) {
     return boardgames.sort((a, b) =>
-      a.stats.numowned > b.stats.numowned ? -1 : 1
+      checkAsc(a.stats.numowned, b.stats.numowned, orderBy)
     );
-  } else if (orderBy == "year") {
+  } else if (orderBy.match("year")) {
     return boardgames.sort((a, b) =>
-      a.yearpublished > b.yearpublished ? -1 : 1
+      checkAsc(a.yearpublished, b.yearpublished, orderBy)
     );
   } else {
-    return boardgames.sort((a, b) => (a.name.text > b.name.text ? 1 : -1));
+    return boardgames.sort((a, b) =>
+      checkAsc(a.name.text, b.name.text, orderBy)
+    );
   }
 };
 export function useSearch<T>(
