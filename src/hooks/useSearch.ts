@@ -11,14 +11,14 @@ export interface IFuzzyClient<T> {
 export const filterByNumPlayers = (
   boardgames: ItemType[],
   numberOfPlayers: number
-) =>
-  numberOfPlayers
-    ? boardgames.filter(
-        (bg: ItemType) =>
-          bg.stats.maxplayers >= numberOfPlayers &&
-          bg.stats.minplayers <= numberOfPlayers
-      )
-    : boardgames;
+) => numberOfPlayers
+? boardgames.filter(
+    (bg: ItemType) =>
+      Number(bg.stats.maxplayers) >= numberOfPlayers &&
+      Number(bg.stats.minplayers) <= numberOfPlayers
+  )
+: boardgames;
+
 
 export const filterByPlayingTime = (
   boardgames: ItemType[],
@@ -111,8 +111,8 @@ export function useSearch<T>(
     let results: any = data;
     const { playingTime, numberOfPlayers } = otherFields;
     results = keyword ? (searcher.search(keyword) as T[]) : results;
-    results = filterByPlayingTime(results, playingTime);
-    results = filterByNumPlayers(results, numberOfPlayers);
+    results = filterByPlayingTime(results, Number(playingTime));
+    results = filterByNumPlayers(results, Number(numberOfPlayers));
     results = orderByFn(results, orderBy);
     return results;
   }, [
