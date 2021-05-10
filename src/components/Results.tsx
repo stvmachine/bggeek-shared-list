@@ -27,7 +27,7 @@ const Results = ({ members, boardgames }: ResultsProps) => {
   return (
     <Container mt={10} maxWidth={["100%", "80%"]}>
       {members && (
-        <Heading fontSize={"3xl"} mb={10}>
+        <Heading fontSize={"2xl"} mb={10}>
           Displaying {results.length} games owned for the following members:
           <UnorderedList>
             {members.map((member, index) => (

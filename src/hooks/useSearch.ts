@@ -1,12 +1,11 @@
 import Fuse, { FuseOptions } from "fuse.js";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { ItemType } from "../utils/types";
 
 export interface IFuzzyClient<T> {
   results: T[];
-  resetSearch: () => void;
 }
 
 export const filterByNumPlayers = (
@@ -76,6 +75,10 @@ export const orderByFn = (boardgames: ItemType[], orderBy: string) => {
     return boardgames.sort((a, b) =>
       a.stats.numowned > b.stats.numowned ? -1 : 1
     );
+  } else if (orderBy == "year") {
+    return boardgames.sort((a, b) =>
+      a.yearpublished > b.yearpublished ? -1 : 1
+    );
   } else {
     return boardgames.sort((a, b) => (a.name.text > b.name.text ? 1 : -1));
   }
@@ -87,31 +90,29 @@ export function useSearch<T>(
   const { watch } = useFormContext();
   const watchAllFields = watch();
   const { keyword, orderBy, ...otherFields } = watchAllFields;
-  const [results, setResults] = useState(data);
-
-  const resetSearch = () => setResults([]);
 
   const searcher = useMemo(() => {
     const defaultOptions = { tokenize: true, threshold: 0.2 };
     return new Fuse(data, { ...defaultOptions, ...options });
   }, [data, options]);
 
-  useEffect(() => {
+  const results = useMemo(() => {
     let results: any = data;
     const { playingTime, numberOfPlayers } = otherFields;
     results = keyword ? (searcher.search(keyword) as T[]) : results;
     results = filterByPlayingTime(results, playingTime);
     results = filterByNumPlayers(results, numberOfPlayers);
     results = orderByFn(results, orderBy);
-    setResults(results);
-
-    return () => {
-      resetSearch();
-    };
-  }, [keyword, orderBy, otherFields.playingTime, otherFields.numberOfPlayers]);
+    return results;
+  }, [
+    data,
+    keyword,
+    orderBy,
+    otherFields.playingTime,
+    otherFields.numberOfPlayers,
+  ]);
 
   return {
-    resetSearch,
     results,
   };
 }
