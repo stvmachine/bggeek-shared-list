@@ -18,12 +18,14 @@ import { useFormContext } from "react-hook-form";
 import { SearchIcon } from "@chakra-ui/icons";
 
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
+import { ICollection } from "../utils/types";
 
 type SearchSidebarProps = {
   members: string[];
+  collections: ICollection[];
 };
 
-const SearchSidebar = ({ members }: SearchSidebarProps) => {
+const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
   const { register } = useFormContext();
 
   return (
@@ -37,7 +39,7 @@ const SearchSidebar = ({ members }: SearchSidebarProps) => {
           <Input {...register("keyword")} placeholder="Search" />
         </InputGroup>
 
-        <Accordion defaultIndex={[0,1]} allowMultiple>
+        <Accordion defaultIndex={[0, 1]} allowMultiple>
           <AccordionItem width="xs">
             <h2>
               <AccordionButton id="basic-filters-accordion-button">
@@ -91,17 +93,17 @@ const SearchSidebar = ({ members }: SearchSidebarProps) => {
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              {members && (
+              {members && collections && (
                 <CheckboxGroup>
                   <VStack alignItems={"flex-start"}>
-                    {members.map((member) => (
+                    {members.map((member, index) => (
                       <Checkbox
                         {...register(`members[${member}]`)}
                         key={`checkbox-${member}`}
                         defaultIsChecked
                         isDisabled
                       >
-                        {member}
+                        {`${member} (${collections[index].totalitems})`}
                       </Checkbox>
                     ))}
                   </VStack>

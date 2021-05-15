@@ -2,18 +2,18 @@ import Fuse, { FuseOptions } from "fuse.js";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { ItemType } from "../utils/types";
+import { IItem } from "../utils/types";
 
 export interface IFuzzyClient<T> {
   results: T[];
 }
 
 export const filterByNumPlayers = (
-  boardgames: ItemType[],
+  boardgames: IItem[],
   numberOfPlayers: number
 ) => numberOfPlayers
 ? boardgames.filter(
-    (bg: ItemType) =>
+    (bg: IItem) =>
       Number(bg.stats.maxplayers) >= numberOfPlayers &&
       Number(bg.stats.minplayers) <= numberOfPlayers
   )
@@ -21,11 +21,11 @@ export const filterByNumPlayers = (
 
 
 export const filterByPlayingTime = (
-  boardgames: ItemType[],
+  boardgames: IItem[],
   playingTime: number
 ) =>
   playingTime
-    ? boardgames.filter((bg: ItemType) => {
+    ? boardgames.filter((bg: IItem) => {
         if (playingTime == 1 && bg.stats.maxplaytime <= 30) {
           return true;
         }
@@ -71,7 +71,7 @@ const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
   return a > b ? 1 : -1;
 };
 
-export const orderByFn = (boardgames: ItemType[], orderBy: string) => {
+export const orderByFn = (boardgames: IItem[], orderBy: string) => {
   if (orderBy.match("rating")) {
     return boardgames.sort((a, b) =>
       checkAsc(

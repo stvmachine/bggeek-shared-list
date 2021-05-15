@@ -11,16 +11,16 @@ import {
   LinkBox,
   LinkOverlay,
 } from "@chakra-ui/react";
-import { ItemType } from "../utils/types";
+import { IItem } from "../utils/types";
 import { useSearch } from "../hooks/useSearch";
 
 type ResultsProps = {
   members: string[];
-  boardgames: ItemType[];
+  boardgames: IItem[];
 };
 
 const Results = ({ members, boardgames }: ResultsProps) => {
-  const { results } = useSearch<ItemType>(boardgames, {
+  const { results } = useSearch<IItem>(boardgames, {
     keys: ["name.text"],
   });
 
@@ -47,7 +47,7 @@ const Results = ({ members, boardgames }: ResultsProps) => {
       )}
       <Wrap>
         {results.length > 0 &&
-          results.map(({ thumbnail, objectid }: ItemType, index) => (
+          results.map(({ thumbnail, objectid }: IItem, index) => (
             <WrapItem key={`${objectid}_${index}`}>
               <LinkBox>
                 <LinkOverlay

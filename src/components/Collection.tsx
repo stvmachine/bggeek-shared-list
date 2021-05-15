@@ -9,7 +9,7 @@ import {
   Text,
   Stack,
 } from "@chakra-ui/react";
-import { ItemType } from "../utils/types";
+import { IItem } from "../utils/types";
 import { BggCollectionResponse } from "bgg-xml-api-client";
 
 type CollectionProps = {
@@ -30,7 +30,7 @@ const Collection = ({ collectionData }: CollectionProps) => (
     <Container maxW={"6xl"} mt={10}>
       <Wrap>
         {collectionData.totalitems > 0 &&
-          collectionData.item.map(({ thumbnail, objectid }: ItemType) => (
+          collectionData.item.map(({ thumbnail, objectid }: IItem) => (
             <WrapItem key={objectid}>
               <Image boxSize="150px" objectFit="contain" src={thumbnail} />
             </WrapItem>
