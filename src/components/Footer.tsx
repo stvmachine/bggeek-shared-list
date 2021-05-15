@@ -63,7 +63,7 @@ const Footer = () => (
     bg={useColorModeValue("gray.50", "gray.900")}
     color={useColorModeValue("gray.700", "gray.200")}
   >
-    <Container as={Stack} maxW={"6xl"} py={10}>
+    {/* <Container as={Stack} maxW={"6xl"} py={10}>
       <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={8}>
         <Stack align={"flex-start"}>
           <ListHeader>Company</ListHeader>
@@ -88,7 +88,7 @@ const Footer = () => (
           <Link href={"#"}>Law Enforcement</Link>
         </Stack>
       </SimpleGrid>
-    </Container>
+    </Container> */}
 
     <Box
       borderTopWidth={1}
@@ -104,7 +104,7 @@ const Footer = () => (
         justify={{ md: "space-between" }}
         align={{ md: "center" }}
       >
-        <Text>© 2020 Chakra Templates. All rights reserved</Text>
+        <Text>© 2020 Made by stevmachine</Text>
         {/* <Stack direction={'row'} spacing={6}>
             <SocialButton label={'Twitter'} href={'#'}>
               <FaTwitter />
