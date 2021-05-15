@@ -24,10 +24,9 @@ export const fetchGroupCollection = async (
           name: { ...item.name },
           owners: [
             {
-              [username]: {
-                status: item.status,
-                collid: item.collid,
-              },
+              username,
+              status: item.status,
+              collid: item.collid,
             },
           ],
         })),
@@ -66,15 +65,8 @@ export const fetchGroupCollection = async (
       {}
     );
 
-  const boardgamesFiltered = Object.values(boardgames)
-    .filter(
-      (item: any, index, self) =>
-        self.findIndex((i: any) => i.objectid == item.objectid) == index
-    )
-    .sort((a: any, b: any) => (a.name.text > b.name.text ? 1 : -1));
-
   return {
     collections,
-    boardgames: boardgamesFiltered as IItem[],
+    boardgames: Object.values(boardgames) as IItem[],
   };
 };

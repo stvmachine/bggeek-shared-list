@@ -50,7 +50,11 @@ export type IItem = {
       usersrated: { value: number };
     };
   };
-  owners?: string[];
+  owners?: {
+    username: string;
+    status: any;
+    collid: string;
+  }[];
 };
 
 export type ICollection = {

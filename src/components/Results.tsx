@@ -13,24 +13,35 @@ import {
 } from "@chakra-ui/react";
 import { IItem } from "../utils/types";
 import { useSearch } from "../hooks/useSearch";
+import { useFormContext } from "react-hook-form";
 
 type ResultsProps = {
-  members: string[];
   boardgames: IItem[];
 };
 
-const Results = ({ members, boardgames }: ResultsProps) => {
+const Results = ({ boardgames }: ResultsProps) => {
   const { results } = useSearch<IItem>(boardgames, {
     keys: ["name.text"],
   });
+  const { watch } = useFormContext();
+  const watchedMembers = watch("members");
+  const checkedMembers = Object.keys(watchedMembers).reduce(
+    (accum: string[], key: string) => {
+      if (watchedMembers[key]) {
+        accum.push(key);
+      }
+      return accum;
+    },
+    []
+  );
 
   return (
     <Container mt={10} maxWidth={["100%", "80%"]}>
-      {members && (
+      {checkedMembers?.length > 0 ? (
         <Heading fontSize={"2xl"} mb={10}>
           Displaying {results.length} games owned for the following members:
           <UnorderedList>
-            {members.map((member, index) => (
+            {checkedMembers.map((member, index) => (
               <ListItem key={`${member}_${index}`}>
                 <LinkBox>
                   <LinkOverlay
@@ -44,6 +55,8 @@ const Results = ({ members, boardgames }: ResultsProps) => {
             ))}
           </UnorderedList>
         </Heading>
+      ) : (
+        <Heading fontSize={"2xl"} mb={10}>Please select at least one member to display their collection.</Heading>
       )}
       <Wrap>
         {results.length > 0 &&

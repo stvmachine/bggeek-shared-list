@@ -112,8 +112,6 @@ const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
                       <Checkbox
                         {...register(`members[${member}]`)}
                         key={`checkbox-${member}`}
-                        defaultIsChecked
-                        isDisabled
                       >
                         {`${member} (${collections[index].totalitems})`}
                       </Checkbox>
