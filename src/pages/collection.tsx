@@ -38,8 +38,6 @@ const Index: NextPage<CollectionPageProps> = (props) => {
     () => fetchGroupCollection(props.members),
     { initialData: props }
   );
-  const { boardgames, collections } = data;
-
   const defaultValues = useMemo(
     () => ({
       orderBy: "name_asc",
@@ -59,8 +57,11 @@ const Index: NextPage<CollectionPageProps> = (props) => {
         <FormProvider {...methods}>
           <SortBar />
           <Stack direction={["column", "row"]} alignItems="flex-start">
-            <SearchSidebar members={MEMBERS} collections={collections} />
-            <Results boardgames={boardgames} />
+            <SearchSidebar
+              members={MEMBERS}
+              collections={data?.collections || []}
+            />
+            <Results boardgames={data?.boardgames || []} />
           </Stack>
         </FormProvider>
       </Box>

@@ -1,24 +1,24 @@
-import { ReactNode } from "react";
+// import { ReactNode } from "react";
 import {
   Flex,
   Box,
   Container,
   Stack,
-  SimpleGrid,
+  // SimpleGrid,
   Text,
-  Link,
+  // Link,
   // VisuallyHidden,
   // chakra,
   useColorModeValue,
 } from "@chakra-ui/react";
 
-const ListHeader = ({ children }: { children: ReactNode }) => {
-  return (
-    <Text fontWeight={"500"} fontSize={"lg"} mb={2}>
-      {children}
-    </Text>
-  );
-};
+// const ListHeader = ({ children }: { children: ReactNode }) => {
+//   return (
+//     <Text fontWeight={"500"} fontSize={"lg"} mb={2}>
+//       {children}
+//     </Text>
+//   );
+// };
 
 // const SocialButton = ({
 //   children,
