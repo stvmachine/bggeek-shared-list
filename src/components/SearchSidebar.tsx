@@ -19,6 +19,7 @@ import { SearchIcon } from "@chakra-ui/icons";
 
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
 import { ICollection } from "../utils/types";
+import useKeydown from "../hooks/useKeydown";
 
 type SearchSidebarProps = {
   members: string[];
@@ -27,6 +28,17 @@ type SearchSidebarProps = {
 
 const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
   const { register } = useFormContext();
+  useKeydown({
+    callback: () => {
+      if (
+        document.activeElement &&
+        (document.activeElement as HTMLElement).blur &&
+        typeof (document.activeElement as HTMLElement).blur === "function"
+      ) {
+        (document.activeElement as HTMLElement).blur();
+      }
+    },
+  });
 
   return (
     <form>
@@ -40,7 +52,7 @@ const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
         </InputGroup>
 
         <Accordion defaultIndex={[0, 1]} allowMultiple>
-          <AccordionItem width="xs">
+          <AccordionItem width="xs" key="accordion-basic-filters">
             <h2>
               <AccordionButton id="basic-filters-accordion-button">
                 <Box flex="1" textAlign="left">
@@ -83,7 +95,7 @@ const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
             </AccordionPanel>
           </AccordionItem>
 
-          <AccordionItem width="xs">
+          <AccordionItem width="xs" key="accordion-members">
             <h2>
               <AccordionButton id="members-accordion-button">
                 <Box flex="1" textAlign="left">
