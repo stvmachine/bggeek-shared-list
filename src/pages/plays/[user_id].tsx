@@ -1,6 +1,6 @@
 import { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
-import { BggPlaysResponse, getBggPlays } from "bgg-xml-api-client";
+import { getBggPlays } from "bgg-xml-api-client";
 import { ParsedUrlQuery } from "querystring";
 import { useQuery } from "react-query";
 

@@ -27,7 +27,12 @@ type SearchSidebarProps = {
 };
 
 const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
-  const { register } = useFormContext();
+  const { register, handleSubmit } = useFormContext();
+  const onSubmit = (_: any, event: any) => {
+    event.preventDefault();
+  };
+  const onError = () => {};
+
   useKeydown({
     callback: () => {
       if (
@@ -41,7 +46,7 @@ const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
   });
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit, onError)}>
       <VStack width="xs">
         <InputGroup width="xs">
           <InputLeftElement
