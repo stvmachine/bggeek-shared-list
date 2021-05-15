@@ -26,23 +26,26 @@ type SearchSidebarProps = {
   collections: ICollection[];
 };
 
+const hideVirtualKeyboard = () => {
+  if (
+    document.activeElement &&
+    (document.activeElement as HTMLElement).blur &&
+    typeof (document.activeElement as HTMLElement).blur === "function"
+  ) {
+    (document.activeElement as HTMLElement).blur();
+  }
+};
+
 const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
   const { register, handleSubmit } = useFormContext();
   const onSubmit = (_: any, event: any) => {
     event.preventDefault();
+    hideVirtualKeyboard();
   };
   const onError = () => {};
 
   useKeydown({
-    callback: () => {
-      if (
-        document.activeElement &&
-        (document.activeElement as HTMLElement).blur &&
-        typeof (document.activeElement as HTMLElement).blur === "function"
-      ) {
-        (document.activeElement as HTMLElement).blur();
-      }
-    },
+    callback: hideVirtualKeyboard,
   });
 
   return (
