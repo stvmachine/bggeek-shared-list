@@ -1,17 +1,19 @@
 import { ChakraProvider } from "@chakra-ui/react";
-
-import theme from "../theme";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { AppProps } from "next/app";
-
+import theme from "../theme";
 import initAuth from "../utils/initAuth";
 
+const queryClient = new QueryClient();
 initAuth();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider resetCSS theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider resetCSS theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </QueryClientProvider>
   );
 }
 

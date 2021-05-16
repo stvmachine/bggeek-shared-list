@@ -2,82 +2,51 @@ import React, { useMemo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { NextPage } from "next";
 import { Box, Container, Stack } from "@chakra-ui/react";
-import { getBggCollection, BggCollectionResponse } from "bgg-xml-api-client";
+import { useQuery } from "react-query";
 
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { ItemType } from "../utils/types";
+import { IItem, ICollection } from "../utils/types";
 import SearchSidebar from "../components/SearchSidebar";
 import Results from "../components/Results";
 import SortBar from "../components/SortBar";
+import { fetchGroupCollection } from "../api/fetchGroupCollection";
 
-const fetchGroupCollection = async (usernames: string[]) => {
-  const collectionGroup = await Promise.all(
-    usernames.map(async (username) => {
-      const collectionResponse = await getBggCollection({
-        own: 1,
-        subtype: "boardgame",
-        stats: 1,
-        username,
-      });
-      return {
-        ...collectionResponse.data,
-        item: collectionResponse.data.item,
-      };
-    })
-  );
-
-  return collectionGroup;
-};
+const MEMBERS = ["donutgamer", "Jagger84", "stevmachine"];
 
 type CollectionPageProps = {
-  boardgames: ItemType[];
+  collections: ICollection[];
+  boardgames: IItem[];
   members: string[];
 };
 
 export async function getStaticProps() {
-  const members = ["stevmachine", "donutgamer", "Jagger84"];
-  const rawData = await fetchGroupCollection(members);
-
-  const items = rawData.reduce(
-    (accum: any[], collection: BggCollectionResponse) => {
-      return [...accum, ...collection.item]
-        .map((item) => ({
-          yearpublished: item.yearpublished,
-          stats: item.stats,
-          subtype: item.subtype,
-          objectid: item.objectid,
-          thumbnail: item.thumbnail,
-          name: { ...item.name },
-        }))
-
-        .filter(
-          (item, index, self) =>
-            self.findIndex((i) => i.objectid == item.objectid) == index
-        )
-        .sort((a, b) => (a.name.text > b.name.text ? 1 : -1));
-    },
-    []
-  );
+  const data = await fetchGroupCollection(MEMBERS);
+  const { boardgames, collections } = data;
 
   return {
     props: {
-      boardgames: items,
-      members,
+      boardgames,
+      collections,
     },
   };
 }
 
-const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
+const Index: NextPage<CollectionPageProps> = (props) => {
+  const { data } = useQuery(
+    "collections",
+    () => fetchGroupCollection(props.members),
+    { initialData: props }
+  );
   const defaultValues = useMemo(
     () => ({
       orderBy: "name_asc",
-      members: members.reduce(
+      members: MEMBERS.reduce(
         (accum, member) => ({ ...accum, [member]: true }),
         {}
       ),
     }),
-    [members]
+    [MEMBERS]
   );
   const methods = useForm({ defaultValues });
 
@@ -88,8 +57,11 @@ const Index: NextPage<CollectionPageProps> = ({ members, boardgames }) => {
         <FormProvider {...methods}>
           <SortBar />
           <Stack direction={["column", "row"]} alignItems="flex-start">
-            <SearchSidebar members={members} />
-            <Results members={members} boardgames={boardgames} />
+            <SearchSidebar
+              members={MEMBERS}
+              collections={data?.collections || []}
+            />
+            <Results boardgames={data?.boardgames || []} />
           </Stack>
         </FormProvider>
       </Box>

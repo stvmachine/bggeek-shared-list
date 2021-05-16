@@ -18,16 +18,38 @@ import { useFormContext } from "react-hook-form";
 import { SearchIcon } from "@chakra-ui/icons";
 
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
+import { ICollection } from "../utils/types";
+import useKeydown from "../hooks/useKeydown";
 
 type SearchSidebarProps = {
   members: string[];
+  collections: ICollection[];
 };
 
-const SearchSidebar = ({ members }: SearchSidebarProps) => {
-  const { register } = useFormContext();
+const hideVirtualKeyboard = () => {
+  if (
+    document.activeElement &&
+    (document.activeElement as HTMLElement).blur &&
+    typeof (document.activeElement as HTMLElement).blur === "function"
+  ) {
+    (document.activeElement as HTMLElement).blur();
+  }
+};
+
+const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
+  const { register, handleSubmit } = useFormContext();
+  const onSubmit = (_: any, event: any) => {
+    event.preventDefault();
+    hideVirtualKeyboard();
+  };
+  const onError = () => {};
+
+  useKeydown({
+    callback: hideVirtualKeyboard,
+  });
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit, onError)}>
       <VStack width="xs">
         <InputGroup width="xs">
           <InputLeftElement
@@ -37,8 +59,8 @@ const SearchSidebar = ({ members }: SearchSidebarProps) => {
           <Input {...register("keyword")} placeholder="Search" />
         </InputGroup>
 
-        <Accordion defaultIndex={[0,1]} allowMultiple>
-          <AccordionItem width="xs">
+        <Accordion defaultIndex={[0, 1]} allowMultiple>
+          <AccordionItem width="xs" key="accordion-basic-filters">
             <h2>
               <AccordionButton id="basic-filters-accordion-button">
                 <Box flex="1" textAlign="left">
@@ -81,7 +103,7 @@ const SearchSidebar = ({ members }: SearchSidebarProps) => {
             </AccordionPanel>
           </AccordionItem>
 
-          <AccordionItem width="xs">
+          <AccordionItem width="xs" key="accordion-members">
             <h2>
               <AccordionButton id="members-accordion-button">
                 <Box flex="1" textAlign="left">
@@ -91,17 +113,15 @@ const SearchSidebar = ({ members }: SearchSidebarProps) => {
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              {members && (
+              {members && collections && (
                 <CheckboxGroup>
                   <VStack alignItems={"flex-start"}>
-                    {members.map((member) => (
+                    {members.map((member, index) => (
                       <Checkbox
                         {...register(`members[${member}]`)}
                         key={`checkbox-${member}`}
-                        defaultIsChecked
-                        isDisabled
                       >
-                        {member}
+                        {`${member} (${collections[index].totalitems})`}
                       </Checkbox>
                     ))}
                   </VStack>

@@ -1,7 +1,7 @@
 import { ThingType } from "bgg-xml-api-client";
 declare type ZeroOrOne = 0 | 1;
 
-export type ItemType = {
+export type IItem = {
   collid: string;
   image: string;
   name: {
@@ -50,4 +50,17 @@ export type ItemType = {
       usersrated: { value: number };
     };
   };
+  owners?: {
+    username: string;
+    status: any;
+    collid: string;
+  }[];
+};
+
+export type ICollection = {
+  totalitems: string;
+  pubdate: string;
+  termsofuse?: string;
+  item?: IItem[];
+  username: string;
 };

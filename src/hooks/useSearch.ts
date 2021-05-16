@@ -2,30 +2,27 @@ import Fuse, { FuseOptions } from "fuse.js";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { ItemType } from "../utils/types";
+import { IItem } from "../utils/types";
 
 export interface IFuzzyClient<T> {
   results: T[];
 }
 
 export const filterByNumPlayers = (
-  boardgames: ItemType[],
+  boardgames: IItem[],
   numberOfPlayers: number
-) => numberOfPlayers
-? boardgames.filter(
-    (bg: ItemType) =>
-      Number(bg.stats.maxplayers) >= numberOfPlayers &&
-      Number(bg.stats.minplayers) <= numberOfPlayers
-  )
-: boardgames;
-
-
-export const filterByPlayingTime = (
-  boardgames: ItemType[],
-  playingTime: number
 ) =>
+  numberOfPlayers
+    ? boardgames.filter(
+        (bg: IItem) =>
+          Number(bg.stats.maxplayers) >= numberOfPlayers &&
+          Number(bg.stats.minplayers) <= numberOfPlayers
+      )
+    : boardgames;
+
+export const filterByPlayingTime = (boardgames: IItem[], playingTime: number) =>
   playingTime
-    ? boardgames.filter((bg: ItemType) => {
+    ? boardgames.filter((bg: IItem) => {
         if (playingTime == 1 && bg.stats.maxplaytime <= 30) {
           return true;
         }
@@ -64,6 +61,12 @@ export const filterByPlayingTime = (
       })
     : boardgames;
 
+export const filterByUsers = (boardgames: IItem[], usernames: string[]) =>
+  boardgames.filter(
+    (bg: IItem) =>
+      bg.owners?.filter((o) => usernames.includes(o.username))?.length
+  );
+
 const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
   if (orderBy.match("desc")) {
     return a > b ? -1 : 1;
@@ -71,7 +74,7 @@ const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
   return a > b ? 1 : -1;
 };
 
-export const orderByFn = (boardgames: ItemType[], orderBy: string) => {
+export const orderByFn = (boardgames: IItem[], orderBy: string) => {
   if (orderBy.match("rating")) {
     return boardgames.sort((a, b) =>
       checkAsc(
@@ -100,7 +103,7 @@ export function useSearch<T>(
 ): IFuzzyClient<T> {
   const { watch } = useFormContext();
   const watchAllFields = watch();
-  const { keyword, orderBy, ...otherFields } = watchAllFields;
+  const { keyword, members, orderBy, ...otherFields } = watchAllFields;
 
   const searcher = useMemo(() => {
     const defaultOptions = { tokenize: true, threshold: 0.2 };
@@ -111,9 +114,20 @@ export function useSearch<T>(
     let results: any = data;
     const { playingTime, numberOfPlayers } = otherFields;
     results = keyword ? (searcher.search(keyword) as T[]) : results;
+    const filteredMembers = Object.keys(members).reduce(
+      (accum: string[], key: string) => {
+        if (members[key]) {
+          accum.push(key);
+        }
+        return accum;
+      },
+      []
+    );
+    results = filterByUsers(results, filteredMembers);
     results = filterByPlayingTime(results, Number(playingTime));
     results = filterByNumPlayers(results, Number(numberOfPlayers));
     results = orderByFn(results, orderBy);
+
     return results;
   }, [
     data,
@@ -121,6 +135,7 @@ export function useSearch<T>(
     orderBy,
     otherFields.playingTime,
     otherFields.numberOfPlayers,
+    JSON.stringify(members),
   ]);
 
   return {
