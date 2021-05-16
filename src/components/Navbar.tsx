@@ -21,9 +21,17 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
+  const router = useRouter();
+  const auth = useAuth();
+
+  console.log(auth)
+
+  const goToSignin = () => router.push("/signin");
 
   return (
     <Box width={"100%"}>
@@ -78,6 +86,7 @@ export default function Navbar() {
             fontWeight={400}
             variant={"link"}
             href={"#"}
+            onClick={goToSignin}
           >
             Sign In
           </Button>

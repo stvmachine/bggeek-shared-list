@@ -2,18 +2,19 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { AppProps } from "next/app";
 import theme from "../theme";
-import initAuth from "../utils/initAuth";
+import { ProvideAuth } from "../hooks/useAuth";
 
 const queryClient = new QueryClient();
-initAuth();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider resetCSS theme={theme}>
-        <Component {...pageProps} />
-      </ChakraProvider>
-    </QueryClientProvider>
+    <ProvideAuth>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider resetCSS theme={theme}>
+          <Component {...pageProps} />
+        </ChakraProvider>
+      </QueryClientProvider>
+    </ProvideAuth>
   );
 }
 
