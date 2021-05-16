@@ -27,7 +27,7 @@ export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
   const router = useRouter();
 
-  const goToLogin = () => router.push("/login");
+  const goToLogin = () => router.push("/auth");
 
   return (
     <Box width={"100%"}>
