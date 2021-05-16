@@ -10,23 +10,22 @@ const initAuth = () => {
     // Required in most cases.
     firebaseAdminInitConfig: {
       credential: {
-        projectId: process.env.FIREBASE_PROJECT_ID || "FIREBASE_PROJECT_ID",
-        clientEmail:
-          process.env.FIREBASE_CLIENT_EMAIL || "FIREBASE_CLIENT_EMAIL",
+        projectId: "bbg-communities",
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: process.env.FIREBASE_PRIVATE_KEY
           ? process.env.FIREBASE_PRIVATE_KEY
           : undefined, // Expected to be undefined on client side
       },
-      databaseURL: process.env.FIREBASE_DATABASE_URL || "FIREBASE_DATABASE_URL",
+      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
     },
     firebaseClientInitConfig: {
-      apiKey: process.env.FIREBASE_API_KEY || "FIREBASE_API_KEY", // required
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.FIREBASE_DATABASE_URL,
-      projectId: process.env.FIREBASE_PROJECT_ID,
+      apiKey: "AIzaSyBYrPSeyNFKlGnSlIe2YnDTt-T1oO0G7mo", //process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY, // required
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+      projectId: "bbg-communities",
     },
     cookies: {
-      name: process.env.FIREBASE_PROJECT_ID, // required
+      name: "ExampleApp", // required
       // Keys are required unless you set `signed` to `false`.
       // The keys cannot be accessible on the client side.
       keys: [
