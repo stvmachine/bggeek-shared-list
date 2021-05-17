@@ -1,40 +1,45 @@
 import { BggCollectionResponse, getBggCollection } from "bgg-xml-api-client";
 import { ICollection, IItem } from "../utils/types";
 
-export const fetchGroupCollection = async (
+export const fetchCollections = async (
   usernames: string[]
-): Promise<{ boardgames: IItem[]; collections: ICollection[] }> => {
-  const rawData = await Promise.all(
-    usernames.map(async (username) => {
-      const collectionResponse = await getBggCollection({
-        own: 1,
-        subtype: "boardgame",
-        stats: 1,
-        username,
-      });
+): Promise<ICollection[]> =>
+  Promise.all(usernames.map((username) => fetchCollection(username)));
 
-      return {
-        ...collectionResponse.data,
-        item: collectionResponse.data.item.map((item: IItem) => ({
-          yearpublished: item.yearpublished,
-          stats: item.stats,
-          subtype: item.subtype,
-          objectid: item.objectid,
-          thumbnail: item.thumbnail,
-          name: { ...item.name },
-          owners: [
-            {
-              username,
-              status: item.status,
-              collid: item.collid,
-            },
-          ],
-        })),
-        username,
-      };
-    })
-  );
+export const fetchCollection = async (
+  username: string
+): Promise<ICollection> => {
+  const collectionResponse = await getBggCollection({
+    own: 1,
+    subtype: "boardgame",
+    stats: 1,
+    username,
+  });
 
+  return {
+    ...collectionResponse.data,
+    item: collectionResponse.data.item.map((item: IItem) => ({
+      yearpublished: item.yearpublished,
+      stats: item.stats,
+      subtype: item.subtype,
+      objectid: item.objectid,
+      thumbnail: item.thumbnail,
+      name: { ...item.name },
+      owners: [
+        {
+          username,
+          status: item.status,
+          collid: item.collid,
+        },
+      ],
+    })),
+    username,
+  } as ICollection;
+};
+
+export const mergeCollections = (
+  rawData: ICollection[]
+): { boardgames: IItem[]; collections: ICollection[] } => {
   const collections = rawData.map(({ totalitems, pubdate, username }: any) => ({
     totalitems,
     pubdate,
@@ -66,7 +71,7 @@ export const fetchGroupCollection = async (
     );
 
   return {
-    collections,
-    boardgames: Object.values(boardgames) as IItem[],
+    collections: collections,
+    boardgames: Object.values(boardgames),
   };
 };
