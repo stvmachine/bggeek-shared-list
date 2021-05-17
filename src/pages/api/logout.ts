@@ -1,9 +1,10 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import { unsetAuthCookies } from "next-firebase-auth";
-import initAuth from "../../utils/firebase/initAuth";
+import initAuth from "../../lib/firebase/initAuth";
 
 initAuth();
 
-const handler = async (req: any, res: any) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await unsetAuthCookies(req, res);
   } catch (e) {

@@ -28,6 +28,7 @@ export default function Navbar() {
   const router = useRouter();
 
   const goToLogin = () => router.push("/auth");
+  const goToRegister = () => router.push("/register");
 
   return (
     <Box width={"100%"}>
@@ -96,6 +97,7 @@ export default function Navbar() {
             _hover={{
               bg: "pink.300",
             }}
+            onClick={goToRegister}
           >
             Sign Up
           </Button>

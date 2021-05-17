@@ -2,7 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { AppProps } from "next/app";
 import theme from "../theme";
-import initAuth from "../utils/firebase/initAuth";
+import initAuth from "../lib/firebase/initAuth";
 
 initAuth();
 const queryClient = new QueryClient();
