@@ -1,26 +1,29 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getFirebaseAdmin } from 'next-firebase-auth';
-import firebase from 'firebase/app'
-import initAuth from "../../lib/firebase/initAuth";
-
-initAuth();
+import { auth, db } from "../../lib/firebase/firebase-admin";
 
 const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
-  try { 
+  try {
     const { email, password, name } = req.body;
-    const auth = getFirebaseAdmin().auth();
-    const response = await auth.createUserWithEmailAndPassword(email, password);
-    const newUser: firebase.User | null = response.user;
-    if (newUser?.uid) {
-      const responseFirestore = await getFirebaseAdmin().firestore()
-        .collection("users")
-        .doc(newUser.uid)
-        .set({
-          ...newUser,
-          name,
-        });
+
+    const newAuthUser = await auth.createUser({
+      email,
+      password,
+      displayName: name,
+    });
+
+    if (newAuthUser?.uid) {
+      const userParams = {
+        uid: newAuthUser.uid,
+        email: newAuthUser.email,
+        ...(newAuthUser?.displayName && {
+          displayName: newAuthUser.displayName,
+        }),
+        ...(newAuthUser?.photoURL && { photoURL: newAuthUser.photoURL }),
+      };
+      await db.collection("users").doc(newAuthUser.uid).set(userParams);
+
       return res.status(200).json({
-        user: responseFirestore,
+        user: userParams,
       });
     } else {
       throw new Error("The user creation attempt failed");
@@ -28,7 +31,7 @@ const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (e) {
     console.log(e);
     return res.status(500).json({
-      error: "Unexpected error",
+      error: e?.errorInfo?.message || "Unexpected error",
     });
   }
 };

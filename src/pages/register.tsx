@@ -15,6 +15,7 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 const avatars = [
   {
@@ -39,16 +40,24 @@ const avatars = [
   },
 ];
 
+type FormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
 export default function RegisterPage() {
-  const signUp = ({
-    name="esteban campos",
-    email="campos.esteban+test@gmail.com",
-    password="12345678",
-  }: {
-    name: string;
-    email: string;
-    password: string;
-  }) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    console.log(data)
+    const { firstName, lastName, email, password } = data;
+    const name = `${firstName} ${lastName}`;
     axios.post("/api/register", { name, email, password });
   };
 
@@ -159,43 +168,68 @@ export default function RegisterPage() {
               of our rockstar engineering team and skyrocket your career!
             </Text>
           </Stack>
-          <Box as={"form"} mt={10}>
-            <Stack spacing={4}>
-              <Input
-                placeholder="Firstname"
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{
-                  color: "gray.500",
+          <Box mt={10}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={4}>
+                <Input
+                  placeholder="First name"
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  {...register("firstName", { required: true })}
+                />
+                <Input
+                  placeholder="Last name"
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  {...register("lastName", { required: true })}
+                />
+                <Input
+                  placeholder="firstname@lastname.io"
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  type="email"
+                  {...register("email", { required: true })}
+                />
+                <Input
+                  placeholder="Password"
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  type="password"
+                  {...register("password", { required: true })}
+                />
+              </Stack>
+              <Button
+                fontFamily={"heading"}
+                mt={8}
+                w={"full"}
+                bgGradient="linear(to-r, red.400,pink.400)"
+                color={"white"}
+                _hover={{
+                  bgGradient: "linear(to-r, red.400,pink.400)",
+                  boxShadow: "xl",
                 }}
-              />
-              <Input
-                placeholder="firstname@lastname.io"
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{
-                  color: "gray.500",
-                }}
-              />
-            </Stack>
-            <Button
-              fontFamily={"heading"}
-              mt={8}
-              w={"full"}
-              bgGradient="linear(to-r, red.400,pink.400)"
-              color={"white"}
-              _hover={{
-                bgGradient: "linear(to-r, red.400,pink.400)",
-                boxShadow: "xl",
-              }}
-              onClick={() => signUp}
-            >
-              Submit
-            </Button>
+                type="submit"
+              >
+                Submit
+              </Button>
+            </form>
           </Box>
-          form
         </Stack>
       </Container>
       <Blur

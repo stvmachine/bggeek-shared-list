@@ -1,4 +1,6 @@
 const admin = require("firebase-admin");
+require("firebase/firestore");
+require("firebase/auth");
 
 try {
   admin.initializeApp({
@@ -14,7 +16,7 @@ try {
       auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
       client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
     }),
-    databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`,
+    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   });
 } catch (error) {
   /*
@@ -27,4 +29,14 @@ try {
   }
 }
 
-module.exports = admin.firestore();
+const db = admin.firestore();
+const auth = admin.auth();
+const signOut = async () => {
+  return auth.signOut();
+};
+
+module.exports = {
+  db: db,
+  auth: auth,
+  signOut: signOut,
+};
