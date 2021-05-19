@@ -58,7 +58,7 @@ export default function RegisterPage() {
     console.log(data)
     const { firstName, lastName, email, password } = data;
     const name = `${firstName} ${lastName}`;
-    axios.post("/api/register", { name, email, password });
+    axios.post("/api/v1/user/register", { name, email, password });
   };
 
   return (
