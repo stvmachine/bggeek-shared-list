@@ -1,10 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { auth, db } from "../../lib/firebase/firebase-admin";
+import { getFirebaseAdmin } from "next-firebase-auth";
+
+const admin = getFirebaseAdmin();
+const auth = admin.auth();
+const db = admin.firestore();
 
 const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { email, password, name } = req.body;
-
     const newAuthUser = await auth.createUser({
       email,
       password,
