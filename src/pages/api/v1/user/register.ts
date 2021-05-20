@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getFirebaseAdmin } from "next-firebase-auth";
+import initAuth from "../../../../lib/firebase/initAuth";
+
+initAuth();
 
 const admin = getFirebaseAdmin();
 const auth = admin.auth();

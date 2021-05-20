@@ -1,7 +1,6 @@
 import { GetStaticProps, NextPage } from "next";
 import { Box, Container, Wrap, WrapItem } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useQuery } from "react-query";
 import { getBggPlays, getBggThing } from "bgg-xml-api-client";
 import { ParsedUrlQuery } from "querystring";
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
@@ -18,14 +17,14 @@ type Props = {
 };
 
 interface Params extends ParsedUrlQuery {
-  user_id: string;
+  uid: string;
 }
 
 export const getStaticProps: GetStaticProps<Props, Params> = async (
   context
 ) => {
   const params = context.params!;
-  const plays = await getBggPlays({ username: params.user_id });
+  const plays = await getBggPlays({ username: params.uid });
   console.log(plays);
   const uniqueBgIds = plays.data?.play
     .map((play: IPlay) => play.item.objectid)
@@ -46,7 +45,7 @@ export const getStaticPaths = async () => {
   let data = ["stevmachine"];
 
   const paths = data.map((member) => ({
-    params: { user_id: member },
+    params: { uid: member },
   }));
 
   return { paths, fallback: false };
@@ -56,26 +55,13 @@ const Logs: NextPage<Props> = (rawData) => {
   const router = useRouter();
   const AuthUser = useAuthUser();
 
-  const { user_id } = router.query!;
+  const { uid } = router.query!;
 
-  const { data } = useQuery(
-    "plays",
-    async () => {
-      const response = await getBggPlays({
-        username: String(user_id),
-      });
-      return response.data;
-    },
-    {
-      initialData: rawData.plays,
-    }
-  );
-  console.log(rawData);
   return (
     <Container height="100vh" maxWidth="100%">
       <Navbar user={AuthUser} signOut={AuthUser.signOut} />
       <Box mt={12}>
-        <p>Logs for: {user_id}</p>
+        <p>Logs for: {uid}</p>
         <Wrap>
           {rawData?.bgs &&
             rawData.bgs.map((game: any) => (
