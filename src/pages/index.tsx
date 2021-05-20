@@ -9,6 +9,8 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
 import Collection from "../components/Collection";
+import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
+import FullPageLoader from "../components/FullPageLoader";
 
 export async function getStaticProps() {
   const results: BggCollectionResponse = await getBggCollection({
@@ -33,16 +35,18 @@ export async function getStaticProps() {
 }
 
 type IndexPageProps = {
-  collectionData: BggCollectionResponse;
+  collectionData?: BggCollectionResponse;
+  [prop: string]: any;
 };
 
 const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
+  const AuthUser = useAuthUser();
   return (
     <Container height="100vh">
-      <Navbar />
+      <Navbar user={AuthUser} signOut={AuthUser?.signOut} />
       <Main>
         <CTA />
-        <Collection collectionData={collectionData} />
+        <Collection collectionData={collectionData || []} />
         <StatsCard />
       </Main>
 
@@ -51,4 +55,7 @@ const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
   );
 };
 
-export default Index;
+export default withAuthUser({
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+  LoaderComponent: FullPageLoader,
+})(Index);

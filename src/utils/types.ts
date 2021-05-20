@@ -64,3 +64,27 @@ export type ICollection = {
   item?: IItem[];
   username: string;
 };
+
+export type IPlayer = {
+  color: string;
+  name: string;
+  new: ZeroOrOne;
+  rating: number;
+  score: number;
+  startposition: number;
+  userid: string;
+  username: string;
+  win: ZeroOrOne;
+};
+
+export type IPlay = {
+  id: string;
+  date: string;
+  incomplete: ZeroOrOne;
+  item: IItem;
+  length?: string;
+  location: string;
+  nowinstats?: string;
+  players: IPlayer[];
+  quantity: number;
+};

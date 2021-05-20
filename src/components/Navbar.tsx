@@ -1,13 +1,19 @@
 import {
+  Avatar,
   Box,
-  Flex,
-  Text,
-  IconButton,
   Button,
-  Stack,
   Collapse,
+  Flex,
   Icon,
+  IconButton,
   Link,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Text,
+  Stack,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -22,13 +28,17 @@ import {
   ChevronRightIcon,
 } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
+import { AuthUserContext } from "next-firebase-auth";
 
-export default function Navbar() {
+type NavbarProps = {
+  user: AuthUserContext;
+  signOut?: () => {};
+};
+
+export default function Navbar({ user, signOut }: NavbarProps) {
   const { isOpen, onToggle } = useDisclosure();
   const router = useRouter();
-
-  const goToLogin = () => router.push("/auth");
-  const goToRegister = () => router.push("/register");
+  const goTo = (route: string) => () => router.push(route);
 
   return (
     <Box width={"100%"}>
@@ -77,30 +87,59 @@ export default function Navbar() {
           direction={"row"}
           spacing={6}
         >
-          <Button
-            as={"a"}
-            fontSize={"sm"}
-            fontWeight={400}
-            variant={"link"}
-            href={"#"}
-            onClick={goToLogin}
-          >
-            Sign In
-          </Button>
-          <Button
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"pink.400"}
-            href={"#"}
-            _hover={{
-              bg: "pink.300",
-            }}
-            onClick={goToRegister}
-          >
-            Sign Up
-          </Button>
+          {user?.email ? (
+            <Flex alignItems={"center"}>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded={"full"}
+                  variant={"link"}
+                  cursor={"pointer"}
+                >
+                  <Avatar
+                    size={"sm"}
+                    src={
+                      user?.photoURL ||
+                      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                    }
+                  />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem>My account</MenuItem>
+                  <MenuItem onClick={goTo(`/plays/stevmachine`)}>Plays</MenuItem>
+                  <MenuDivider />
+                  <MenuItem onClick={signOut}>Sign out</MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
+          ) : (
+            <>
+              <Button
+                as={"a"}
+                fontSize={"sm"}
+                fontWeight={400}
+                variant={"link"}
+                href={"#"}
+                onClick={goTo("/auth")}
+              >
+                Sign In
+              </Button>
+              <Button
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"pink.400"}
+                href={"#"}
+                _hover={{
+                  bg: "pink.300",
+                }}
+                onClick={goTo("/register")}
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
         </Stack>
       </Flex>
 
