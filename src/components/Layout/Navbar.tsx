@@ -105,7 +105,7 @@ export default function Navbar({ user, signOut }: NavbarProps) {
                   />
                 </MenuButton>
                 <MenuList>
-                  <MenuItem>My account</MenuItem>
+                  <MenuItem onClick={goTo(`/my-account`)}>My account</MenuItem>
                   <MenuItem onClick={goTo(`/collection`)}>My Collection</MenuItem>
                   <MenuItem isDisabled>My Communities</MenuItem>
                   <MenuItem onClick={goTo(`/plays/stevmachine`)}>Plays</MenuItem>
