@@ -5,9 +5,10 @@ import { useQuery } from "react-query";
 import { getBggPlays, getBggThing } from "bgg-xml-api-client";
 import { ParsedUrlQuery } from "querystring";
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
-import Footer from "../../components/Footer";
-import Navbar from "../../components/Navbar";
-import FullPageLoader from "../../components/FullPageLoader";
+
+import Footer from "../../components/Layout/Footer";
+import Navbar from "../../components/Layout/Navbar";
+import FullPageLoader from "../../components/Layout/FullPageLoader";
 import Comments from "../../components/Comments";
 import GameCard from "../../components/GameCard";
 import { IPlay } from "../../utils/types";

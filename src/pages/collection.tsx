@@ -5,8 +5,8 @@ import { Box, Container, Stack } from "@chakra-ui/react";
 import { useQueries } from "react-query";
 import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
 
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Footer from "../components/Layout/Footer";
+import Navbar from "../components/Layout/Navbar";
 import Results from "../components/Results";
 import SortBar from "../components/SortBar";
 import SearchSidebar from "../components/SearchSidebar";
@@ -17,7 +17,7 @@ import {
   fetchCollection,
   mergeCollections,
 } from "../api/fetchGroupCollection";
-import FullPageLoader from "../components/FullPageLoader";
+import FullPageLoader from "../components/Layout/FullPageLoader";
 
 const MEMBERS = ["donutgamer", "Jagger84", "stevmachine"];
 

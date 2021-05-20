@@ -1,16 +1,16 @@
 import React from "react";
 import { NextPage } from "next";
 import { getBggCollection, BggCollectionResponse } from "bgg-xml-api-client";
+import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
 
 import { Container } from "../components/Container";
-import Main from "../components/Main";
+import Main from "../components/Layout/Main";
+import Footer from "../components/Layout/Footer";
+import Navbar from "../components/Layout/Navbar";
 import CTA from "../components/CTA";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
 import Collection from "../components/Collection";
-import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
-import FullPageLoader from "../components/FullPageLoader";
+import FullPageLoader from "../components/Layout/FullPageLoader";
 
 export async function getStaticProps() {
   const results: BggCollectionResponse = await getBggCollection({
