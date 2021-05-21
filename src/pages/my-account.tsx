@@ -1,43 +1,59 @@
 import React, { useMemo } from "react";
 import axios from "axios";
 import { Box, Button, Input, Stack } from "@chakra-ui/react";
-import { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
-  useAuthUser,
   withAuthUser,
   withAuthUserTokenSSR,
   AuthAction,
+  AuthUser,
 } from "next-firebase-auth";
-import FullPageLoader from "../components/Layout/FullPageLoader";
-import { ParsedUrlQuery } from "querystring";
 
-type MyAccountProps = {};
-
-type FormValues = {
-  firstName?: string;
-  lastName?: string;
-  email: string;
-  bbgeekUsername?: string;
+type MyAccountProps = {
+  user: AuthUser & {
+    bbgeekUsername: string;
+    bbgeekVerified: boolean;
+  };
 };
 
-const MyAccount: NextPage<MyAccountProps> = () => {
-  const AuthUser = useAuthUser();
+type FormValues = {
+  displayName: string;
+  email: string;
+  bbgeekUsername: string;
+};
 
-  const defaultValues = useMemo(
+const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
+  const initialValues = useMemo(
     () => ({
-      firstName: "",
-      lastName: "",
-      email: AuthUser.email,
-      bbgeekUsername: "",
+      displayName: user.displayName,
+      email: user.email,
+      bbgeekUsername: user.bbgeekUsername,
     }),
-    [AuthUser]
+    [user]
   );
+
   const { register, handleSubmit } = useForm({
-    defaultValues,
+    defaultValues: initialValues,
   });
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = (input) => {
+    const changedValues = (
+      Object.keys(input) as Array<keyof typeof input>
+    ).reduce<Record<string, string>>((accum, key) => {
+      if (initialValues[key] !== input[key] && !["email"].includes(key)) {
+        accum[key] = input[key];
+      }
+      return accum;
+    }, {});
+
+    if (
+      !(
+        Object.keys(changedValues).length === 0 &&
+        changedValues.constructor === Object
+      )
+    ) {
+      axios.patch(`/api/v1/user/${user.id}`, changedValues);
+    }
   };
 
   return (
@@ -52,24 +68,14 @@ const MyAccount: NextPage<MyAccountProps> = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={4}>
             <Input
-              placeholder="First name"
+              placeholder="Display Name"
               bg={"gray.100"}
               border={0}
               color={"gray.500"}
               _placeholder={{
                 color: "gray.500",
               }}
-              {...register("firstName")}
-            />
-            <Input
-              placeholder="Last name"
-              bg={"gray.100"}
-              border={0}
-              color={"gray.500"}
-              _placeholder={{
-                color: "gray.500",
-              }}
-              {...register("lastName")}
+              {...register("displayName")}
             />
             <Input
               placeholder="firstname@lastname.io"
@@ -80,7 +86,7 @@ const MyAccount: NextPage<MyAccountProps> = () => {
                 color: "gray.500",
               }}
               type="email"
-              {...register("email", { required: true })}
+              {...register("email")}
               isDisabled
             />
             <Input
@@ -125,7 +131,6 @@ export const getServerSideProps = withAuthUserTokenSSR({
     },
   });
   const { user } = response.data;
-  console.log(response.data);
   return {
     props: {
       user,
@@ -133,4 +138,4 @@ export const getServerSideProps = withAuthUserTokenSSR({
   };
 });
 
-export default withAuthUser()(MyAccount);
+export default withAuthUser<MyAccountProps>()(MyAccount);
