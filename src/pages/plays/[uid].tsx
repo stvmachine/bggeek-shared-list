@@ -25,24 +25,25 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (
 ) => {
   const params = context.params!;
   const plays = await getBggPlays({ username: params.uid });
-  console.log(plays);
-  const uniqueBgIds = plays.data?.play
-    .map((play: IPlay) => play.item.objectid)
-    .filter(
-      (value: string, index: number, self: string[]) =>
-        self.indexOf(value) === index
-    );
-  const uniqueBgs = await getBggThing({ id: uniqueBgIds });
+  const uniqueBgIds =
+    plays?.data?.play &&
+    plays.data.play
+      .map((play: IPlay) => play.item.objectid)
+      .filter(
+        (value: string, index: number, self: string[]) =>
+          self.indexOf(value) === index
+      );
+  const uniqueBgs = uniqueBgIds && (await getBggThing({ id: uniqueBgIds }));
   return {
     props: {
-      plays: plays.data,
-      bgs: uniqueBgs.data.item,
+      plays: plays?.data || [],
+      bgs: uniqueBgs?.data?.item || [],
     },
   };
 };
 
 export const getStaticPaths = async () => {
-  let data = ["stevmachine"];
+  let data = ["stevmachine", "Jagger84", "donutgamer"];
 
   const paths = data.map((member) => ({
     params: { uid: member },
@@ -77,8 +78,4 @@ const Logs: NextPage<Props> = (rawData) => {
   );
 };
 
-export default withAuthUser({
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  LoaderComponent: FullPageLoader,
-})(Logs);
+export default withAuthUser()(Logs);

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import axios from "axios";
-import { Box, Button, Input, Stack } from "@chakra-ui/react";
+import { Box, Button, Container, Input, Stack } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
@@ -8,7 +8,10 @@ import {
   withAuthUserTokenSSR,
   AuthAction,
   AuthUser,
+  useAuthUser,
 } from "next-firebase-auth";
+import Navbar from "../components/Layout/Navbar";
+import Footer from "../components/Layout/Footer";
 
 type MyAccountProps = {
   user: AuthUser & {
@@ -24,6 +27,8 @@ type FormValues = {
 };
 
 const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
+  const AuthUser = useAuthUser();
+
   const initialValues = useMemo(
     () => ({
       displayName: user.displayName,
@@ -57,66 +62,72 @@ const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
   };
 
   return (
-    <Stack
-      bg={"gray.50"}
-      rounded={"xl"}
-      p={{ base: 4, sm: 6, md: 8 }}
-      spacing={{ base: 8 }}
-      maxW={{ lg: "lg" }}
-    >
-      <Box mt={10}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={4}>
-            <Input
-              placeholder="Display Name"
-              bg={"gray.100"}
-              border={0}
-              color={"gray.500"}
-              _placeholder={{
-                color: "gray.500",
-              }}
-              {...register("displayName")}
-            />
-            <Input
-              placeholder="firstname@lastname.io"
-              bg={"gray.100"}
-              border={0}
-              color={"gray.500"}
-              _placeholder={{
-                color: "gray.500",
-              }}
-              type="email"
-              {...register("email")}
-              isDisabled
-            />
-            <Input
-              placeholder="Boardgame geek name"
-              bg={"gray.100"}
-              border={0}
-              color={"gray.500"}
-              _placeholder={{
-                color: "gray.500",
-              }}
-              {...register("bbgeekUsername")}
-            />
-          </Stack>
-          <Button
-            fontFamily={"heading"}
-            mt={8}
-            w={"full"}
-            bgGradient="linear(to-r, red.400,pink.400)"
-            color={"white"}
-            _hover={{
-              bgGradient: "linear(to-r, red.400,pink.400)",
-              boxShadow: "xl",
-            }}
-            type="submit"
-          >
-            Update
-          </Button>
-        </form>
+    <Container height="100vh" maxWidth="100%">
+      <Navbar user={AuthUser} signOut={AuthUser.signOut} />
+      <Box mt={12}>
+        <Stack
+          bg={"gray.50"}
+          rounded={"xl"}
+          p={{ base: 4, sm: 6, md: 8 }}
+          spacing={{ base: 8 }}
+          maxW={{ lg: "lg" }}
+        >
+          <Box mt={10}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={4}>
+                <Input
+                  placeholder="Display Name"
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  {...register("displayName")}
+                />
+                <Input
+                  placeholder="firstname@lastname.io"
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  type="email"
+                  {...register("email")}
+                  isDisabled
+                />
+                <Input
+                  placeholder="Boardgame geek name"
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  {...register("bbgeekUsername")}
+                />
+              </Stack>
+              <Button
+                fontFamily={"heading"}
+                mt={8}
+                w={"full"}
+                bgGradient="linear(to-r, red.400,pink.400)"
+                color={"white"}
+                _hover={{
+                  bgGradient: "linear(to-r, red.400,pink.400)",
+                  boxShadow: "xl",
+                }}
+                type="submit"
+              >
+                Update
+              </Button>
+            </form>
+          </Box>
+        </Stack>
       </Box>
-    </Stack>
+      <Footer />
+    </Container>
   );
 };
 
