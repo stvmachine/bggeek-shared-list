@@ -15,15 +15,15 @@ import Footer from "../components/Layout/Footer";
 
 type MyAccountProps = {
   user: AuthUser & {
-    bbgeekUsername: string;
-    bbgeekVerified: boolean;
+    bggeekUsername: string;
+    bggeekVerified: boolean;
   };
 };
 
 type FormValues = {
   displayName: string;
   email: string;
-  bbgeekUsername: string;
+  bggeekUsername: string;
 };
 
 const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
@@ -33,7 +33,7 @@ const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
     () => ({
       displayName: user.displayName,
       email: user.email,
-      bbgeekUsername: user.bbgeekUsername,
+      bggeekUsername: user.bggeekUsername,
     }),
     [user]
   );
@@ -105,7 +105,7 @@ const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
                   _placeholder={{
                     color: "gray.500",
                   }}
-                  {...register("bbgeekUsername")}
+                  {...register("bggeekUsername")}
                 />
               </Stack>
               <Button

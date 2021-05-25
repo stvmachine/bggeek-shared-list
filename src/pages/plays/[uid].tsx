@@ -1,71 +1,41 @@
-import { GetStaticProps, NextPage } from "next";
+import { NextPage } from "next";
 import { Box, Container, Wrap, WrapItem } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { getBggPlays, getBggThing } from "bgg-xml-api-client";
-import { ParsedUrlQuery } from "querystring";
-import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
+import {
+  useAuthUser,
+  withAuthUser,
+  withAuthUserTokenSSR,
+  AuthUser,
+} from "next-firebase-auth";
+import axios from "axios";
 
 import Footer from "../../components/Layout/Footer";
 import Navbar from "../../components/Layout/Navbar";
-import FullPageLoader from "../../components/Layout/FullPageLoader";
 import Comments from "../../components/Comments";
 import GameCard from "../../components/GameCard";
-import { IPlay } from "../../utils/types";
+import { IItem, IPlay } from "../../utils/types";
+import { getPlaysAndRelatedBggs } from "../../api/fetchPlays";
 
-type Props = {
-  [prop: string]: any;
+type PlaysPageProps = {
+  plays: IPlay[];
+  bgs: IItem[];
+  user: AuthUser & { bggeekUsername: string; bggeekVerified: boolean };
 };
 
-interface Params extends ParsedUrlQuery {
-  uid: string;
-}
-
-export const getStaticProps: GetStaticProps<Props, Params> = async (
-  context
-) => {
-  const params = context.params!;
-  const plays = await getBggPlays({ username: params.uid });
-  const uniqueBgIds =
-    plays?.data?.play &&
-    plays.data.play
-      .map((play: IPlay) => play.item.objectid)
-      .filter(
-        (value: string, index: number, self: string[]) =>
-          self.indexOf(value) === index
-      );
-  const uniqueBgs = uniqueBgIds && (await getBggThing({ id: uniqueBgIds }));
-  return {
-    props: {
-      plays: plays?.data || [],
-      bgs: uniqueBgs?.data?.item || [],
-    },
-  };
-};
-
-export const getStaticPaths = async () => {
-  let data = ["stevmachine", "Jagger84", "donutgamer"];
-
-  const paths = data.map((member) => ({
-    params: { uid: member },
-  }));
-
-  return { paths, fallback: false };
-};
-
-const Logs: NextPage<Props> = (rawData) => {
+const PlaysPage: NextPage<PlaysPageProps> = ({ user, bgs, plays }) => {
   const router = useRouter();
   const AuthUser = useAuthUser();
 
   const { uid } = router.query!;
-
+  console.log(bgs, plays);
   return (
     <Container height="100vh" maxWidth="100%">
       <Navbar user={AuthUser} signOut={AuthUser.signOut} />
       <Box mt={12}>
-        <p>Logs for: {uid}</p>
+        <p>Plays for: {uid}</p>
         <Wrap>
-          {rawData?.bgs &&
-            rawData.bgs.map((game: any) => (
+          {bgs &&
+            bgs.map((game: any) => (
               <WrapItem key={game.id}>
                 <GameCard image={game.image} />
               </WrapItem>
@@ -78,4 +48,35 @@ const Logs: NextPage<Props> = (rawData) => {
   );
 };
 
-export default withAuthUser()(Logs);
+const API_HOST = `http://localhost:3001`;
+
+export const getServerSideProps = withAuthUserTokenSSR()(
+  async ({ AuthUser: authUser, params }) => {
+    const token = await authUser.getIdToken();
+    const response = await axios.get(`${API_HOST}/api/v1/user/${authUser.id}`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    const { user: currentUser } = response.data;
+    const { uid } = params!;
+    let bggeekUsername;
+
+    if (currentUser.id === uid || currentUser.bggeekUsername === uid) {
+      bggeekUsername = currentUser.bggeekUsername;
+    }
+
+    const fetchPlaysResponse = await getPlaysAndRelatedBggs(bggeekUsername);
+    const { plays, bgs } = fetchPlaysResponse;
+
+    return {
+      props: {
+        user: currentUser,
+        plays,
+        bgs,
+      },
+    };
+  }
+);
+
+export default withAuthUser<PlaysPageProps>()(PlaysPage);

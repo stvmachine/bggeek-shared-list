@@ -24,8 +24,8 @@ const getAccountOptions = async (req: NextApiRequest, res: NextApiResponse) => {
       emailVerified,
       displayName,
       photoURL,
-      bbgeekUsername: userDoc.exists ? userDoc.get("bbgeekUsername") : "",
-      bbgeekVerified: userDoc.exists ? userDoc.get("bbgeekVerified") : false,
+      bggeekUsername: userDoc.exists ? userDoc.get("bggeekUsername") : "",
+      bggeekVerified: userDoc.exists ? userDoc.get("bggeekVerified") : false,
     };
 
     return res.status(200).json({ user });

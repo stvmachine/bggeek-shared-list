@@ -6,12 +6,18 @@ initAuth();
 
 const admin = getFirebaseAdmin();
 const db = admin.firestore();
+const auth = admin.auth()
+
 
 const apiUser = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     if (req.method === "GET") {
       const { uid } = req.query;
+
+      const userAuthDoc = await auth.getUsers([{ uid: String(uid) }]);
       const userDoc = await db.collection("users").doc(String(uid)).get();
+      console.log("userAuthDoc", userAuthDoc);
+      console.log("userDoc", userDoc);
 
       return res.status(200).json({
         user: userDoc.data(),
