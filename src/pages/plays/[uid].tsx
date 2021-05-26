@@ -58,7 +58,7 @@ const PlaysPage: NextPage<PlaysPageProps> = ({ bgs, plays }) => {
 export const getServerSideProps = withAuthUserTokenSSR()(
   async ({ AuthUser: authUser, params }) => {
     const token = await authUser.getIdToken();
-    const response = await axios.get(`${config.API_ENDPOINT}/api/v1/user/${authUser.id}`, {
+    const response = await axios.get(`${config.API_ENDPOINT}/user/${authUser.id}`, {
       headers: {
         Authorization: token,
       },
