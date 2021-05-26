@@ -51,8 +51,8 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors },
+    // watch,
+    // formState: { errors },
   } = useForm();
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data)

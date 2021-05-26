@@ -11,17 +11,17 @@ const initAuth = () => {
     firebaseAdminInitConfig: {
       credential: {
         projectId: "bbg-communities",
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
         privateKey: process.env.FIREBASE_PRIVATE_KEY
           ? process.env.FIREBASE_PRIVATE_KEY
-          : undefined, // Expected to be undefined on client side
+          : "", // Expected to be undefined on client side
       },
-      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "",
     },
     firebaseClientInitConfig: {
-      apiKey: "AIzaSyBYrPSeyNFKlGnSlIe2YnDTt-T1oO0G7mo", //process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY, // required
-      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+      apiKey: "AIzaSyBYrPSeyNFKlGnSlIe2YnDTt-T1oO0G7mo", // required
+      authDomain: "bbg-communities.firebaseapp.com",
+      databaseURL: "https://bbg-communities-default-rtdb.firebaseio.com/",
       projectId: "bbg-communities",
     },
     cookies: {

@@ -22,7 +22,7 @@ type PlaysPageProps = {
   user: AuthUser & { bggeekUsername: string; bggeekVerified: boolean };
 };
 
-const PlaysPage: NextPage<PlaysPageProps> = ({ user, bgs, plays }) => {
+const PlaysPage: NextPage<PlaysPageProps> = ({ bgs, plays }) => {
   const router = useRouter();
   const AuthUser = useAuthUser();
 
