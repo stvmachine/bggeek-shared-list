@@ -71,14 +71,18 @@ export default function GameCard({
           <Text color={"gray.500"}>{date}</Text>
         </Stack>
         <Stack mt={6} direction={"row"} spacing={2} align={"center"}>
-          {players &&
-            players.map(({ name }, index) => (
-              <Avatar
-                key={index}
-                size="xs"
-                name={name.includes("Anonymous player") ? "" : name}
-              />
-            ))}
+          {players && (
+            <>
+              {players.slice(0, 6).map(({ name }, index) => (
+                <Avatar
+                  key={index}
+                  size="xs"
+                  name={name.includes("Anonymous player") ? "" : name}
+                />
+              ))}
+              {players.length > 6 && <div>+{`${players.length - 6}`}</div>}
+            </>
+          )}
         </Stack>
       </Box>
     </Center>
