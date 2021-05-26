@@ -12,6 +12,7 @@ import {
 } from "next-firebase-auth";
 import Navbar from "../components/Layout/Navbar";
 import Footer from "../components/Layout/Footer";
+import config from "../utils/config";
 
 type MyAccountProps = {
   user: AuthUser & {
@@ -131,16 +132,18 @@ const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
   );
 };
 
-const API_HOST = `http://localhost:3001`;
 export const getServerSideProps = withAuthUserTokenSSR({
   whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser }) => {
   const token = await AuthUser.getIdToken();
-  const response = await axios.get(`${API_HOST}/api/v1/user/account-options`, {
-    headers: {
-      Authorization: token,
-    },
-  });
+  const response = await axios.get(
+    `${config.API_ENDPOINT}/user/account-options`,
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
   const { user } = response.data;
   return {
     props: {

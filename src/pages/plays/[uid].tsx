@@ -15,6 +15,7 @@ import Comments from "../../components/Comments";
 import GameCard from "../../components/GameCard";
 import { IBgDict, IPlay } from "../../utils/types";
 import { getPlaysAndRelatedBggs } from "../../api/fetchPlays";
+import config from "../../utils/config";
 
 type PlaysPageProps = {
   plays: IPlay[];
@@ -54,12 +55,10 @@ const PlaysPage: NextPage<PlaysPageProps> = ({ bgs, plays }) => {
   );
 };
 
-const API_HOST = `http://localhost:3001`;
-
 export const getServerSideProps = withAuthUserTokenSSR()(
   async ({ AuthUser: authUser, params }) => {
     const token = await authUser.getIdToken();
-    const response = await axios.get(`${API_HOST}/api/v1/user/${authUser.id}`, {
+    const response = await axios.get(`${config.API_ENDPOINT}/api/v1/user/${authUser.id}`, {
       headers: {
         Authorization: token,
       },
