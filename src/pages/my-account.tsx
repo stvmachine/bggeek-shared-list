@@ -149,4 +149,6 @@ export const getServerSideProps = withAuthUserTokenSSR({
   };
 });
 
-export default withAuthUser<MyAccountProps>()(MyAccount);
+export default withAuthUser<MyAccountProps>({
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+})(MyAccount);

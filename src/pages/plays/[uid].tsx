@@ -13,12 +13,12 @@ import Footer from "../../components/Layout/Footer";
 import Navbar from "../../components/Layout/Navbar";
 import Comments from "../../components/Comments";
 import GameCard from "../../components/GameCard";
-import { IItem, IPlay } from "../../utils/types";
+import { IBgDict, IPlay } from "../../utils/types";
 import { getPlaysAndRelatedBggs } from "../../api/fetchPlays";
 
 type PlaysPageProps = {
   plays: IPlay[];
-  bgs: IItem[];
+  bgs: IBgDict;
   user: AuthUser & { bggeekUsername: string; bggeekVerified: boolean };
 };
 
@@ -27,17 +27,23 @@ const PlaysPage: NextPage<PlaysPageProps> = ({ user, bgs, plays }) => {
   const AuthUser = useAuthUser();
 
   const { uid } = router.query!;
-  console.log(bgs, plays);
+  console.log(plays)
   return (
     <Container height="100vh" maxWidth="100%">
       <Navbar user={AuthUser} signOut={AuthUser.signOut} />
       <Box mt={12}>
         <p>Plays for: {uid}</p>
         <Wrap>
-          {bgs &&
-            bgs.map((game: any) => (
-              <WrapItem key={game.id}>
-                <GameCard image={game.image} />
+          {plays &&
+            plays.map(({ id, item, location, date, players }) => (
+              <WrapItem key={id}>
+                <GameCard
+                  image={bgs && bgs[item.objectid].image}
+                  bgName={item.name}
+                  location={location}
+                  date={date}
+                  players={players || []}
+                />
               </WrapItem>
             ))}
         </Wrap>

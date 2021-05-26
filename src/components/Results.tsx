@@ -1,16 +1,18 @@
 import React from "react";
 import {
-  Wrap,
-  WrapItem,
-  Image,
+  Center,
   Container,
   Heading,
-  Text,
-  UnorderedList,
   ListItem,
   LinkBox,
   LinkOverlay,
+  Skeleton,
+  Text,
+  UnorderedList,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
+import Image from "next/image";
 import { IItem } from "../utils/types";
 import { useSearch } from "../hooks/useSearch";
 import { useFormContext } from "react-hook-form";
@@ -56,23 +58,31 @@ const Results = ({ boardgames }: ResultsProps) => {
           </UnorderedList>
         </Heading>
       ) : (
-        <Heading fontSize={"2xl"} mb={10}>Please select at least one member to display their collection.</Heading>
+        <Heading fontSize={"2xl"} mb={10}>
+          Please select at least one member to display their collection.
+        </Heading>
       )}
-      <Wrap>
+      <Wrap align="center">
         {results.length > 0 &&
           results.map(({ thumbnail, objectid }: IItem, index) => (
             <WrapItem key={`${objectid}_${index}`}>
               <LinkBox>
-                <LinkOverlay
-                  href={`https://boardgamegeek.com/boardgame/${objectid}`}
-                  isExternal
-                >
-                  <Image
-                    boxSize={["92px", "180px"]}
-                    objectFit="contain"
-                    src={thumbnail}
-                  />
-                </LinkOverlay>
+                <Center w={["110px", "180px"]} h={["110px", "180px"]}>
+                  <LinkOverlay
+                    href={`https://boardgamegeek.com/boardgame/${objectid}`}
+                    isExternal
+                  >
+                    {thumbnail ? (
+                      <Image
+                        layout="fill"
+                        objectFit="contain"
+                        src={thumbnail}
+                      />
+                    ) : (
+                      <Skeleton height="100%" width="100%" />
+                    )}
+                  </LinkOverlay>
+                </Center>
               </LinkBox>
             </WrapItem>
           ))}

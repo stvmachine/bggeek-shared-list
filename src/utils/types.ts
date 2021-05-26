@@ -57,6 +57,22 @@ export type IItem = {
   }[];
 };
 
+export type IGame = {
+  id: string;
+  image: string;
+  thumbnail: string;
+  description: string;
+  name: {
+    type: "primary" | "alternate";
+    value: string;
+  }[];
+  [prop: string]: any;
+};
+
+export type IBgDict = {
+  [prop: string]: IGame;
+};
+
 export type ICollection = {
   totalitems: string;
   pubdate: string;
@@ -67,7 +83,7 @@ export type ICollection = {
 
 export type IPlayer = {
   color: string;
-  name: string;
+  name: "Anonymous player" | string;
   new: ZeroOrOne;
   rating: number;
   score: number;
@@ -81,7 +97,11 @@ export type IPlay = {
   id: string;
   date: string;
   incomplete: ZeroOrOne;
-  item: IItem;
+  item: {
+    name: string;
+    objectid: string;
+    objecttype: ThingType;
+  };
   length?: string;
   location: string;
   nowinstats?: string;

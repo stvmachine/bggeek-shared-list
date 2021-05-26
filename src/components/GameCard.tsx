@@ -9,12 +9,23 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { IPlayer } from "../utils/types";
 
 type GameCardProps = {
   image?: string;
+  location: string;
+  date: string;
+  bgName: string;
+  players: IPlayer[];
 };
 
-export default function GameCard({ image }: GameCardProps) {
+export default function GameCard({
+  image,
+  location,
+  date,
+  bgName,
+  players,
+}: GameCardProps) {
   return (
     <Center py={6}>
       <Box
@@ -35,7 +46,7 @@ export default function GameCard({ image }: GameCardProps) {
           pos={"relative"}
         >
           {image ? (
-            <Image src={image} layout={"fill"} />
+            <Image src={image} layout={"fill"} objectFit="contain" />
           ) : (
             <Skeleton height="100%" width="100%" />
           )}
@@ -48,31 +59,26 @@ export default function GameCard({ image }: GameCardProps) {
             fontSize={"sm"}
             letterSpacing={1.1}
           >
-            Blog
+            {bgName}
           </Text>
           <Heading
             color={useColorModeValue("gray.700", "white")}
             fontSize={"2xl"}
             fontFamily={"body"}
           >
-            Boost your conversion rate
+            {location}
           </Heading>
-          <Text color={"gray.500"}>
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-            nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-            erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-            et ea rebum.
-          </Text>
+          <Text color={"gray.500"}>{date}</Text>
         </Stack>
-        <Stack mt={6} direction={"row"} spacing={4} align={"center"}>
-          <Avatar
-            src={"https://avatars0.githubusercontent.com/u/1164541?v=4"}
-            alt={"Author"}
-          />
-          <Stack direction={"column"} spacing={0} fontSize={"sm"}>
-            <Text fontWeight={600}>Achim Rolle</Text>
-            <Text color={"gray.500"}>Feb 08, 2021 · 6min read</Text>
-          </Stack>
+        <Stack mt={6} direction={"row"} spacing={2} align={"center"}>
+          {players &&
+            players.map(({ name }, index) => (
+              <Avatar
+                key={index}
+                size="xs"
+                name={name.includes("Anonymous player") ? "" : name}
+              />
+            ))}
         </Stack>
       </Box>
     </Center>

@@ -1,5 +1,5 @@
 import { getBggPlays, getBggThing } from "bgg-xml-api-client";
-import { IItem, IPlay } from "../utils/types";
+import { IItem, IPlay, IGame, IBgDict, IPlayer } from "../utils/types";
 
 export const getUniqueBgsFromPlays = async (
   plays: IPlay[]
@@ -16,13 +16,37 @@ export const getUniqueBgsFromPlays = async (
 
 export const getPlaysAndRelatedBggs = async (
   bggeekUsername: string
-): Promise<{ bgs: IItem[]; plays: IPlay[] }> => {
-  const plays = await getBggPlays({ username: bggeekUsername });
+): Promise<{ bgs: IBgDict; plays: IPlay[] }> => {
+  const rawPlays = await getBggPlays({ username: bggeekUsername });
   const uniqueBgs =
-    plays?.data?.play && (await getUniqueBgsFromPlays(plays.data.play));
+    rawPlays?.data?.play && (await getUniqueBgsFromPlays(rawPlays.data.play));
+
+  let plays = rawPlays?.data?.play || [];
+  plays = plays.map((play: any) => ({
+    ...play,
+    players: play.players.player,
+  }));
+
+  plays = plays.map((play: IPlay) => ({
+    ...play,
+    players: [
+      ...play.players.filter(
+        ({ name }: IPlayer) => !name.includes("Anonymous player")
+      ),
+      ...play.players.filter(({ name }: IPlayer) =>
+        name.includes("Anonymous player")
+      ),
+    ],
+  }));
 
   return {
-    plays: plays?.data?.play || [],
-    bgs: uniqueBgs,
+    plays,
+    bgs: uniqueBgs.reduce(
+      (accum: IBgDict, bg: IGame) => ({
+        ...accum,
+        [bg.id]: bg,
+      }),
+      {}
+    ),
   };
 };
