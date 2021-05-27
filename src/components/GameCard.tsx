@@ -7,6 +7,8 @@ import {
   Stack,
   Skeleton,
   Text,
+  Wrap,
+  WrapItem,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { IPlayer } from "../utils/types";
@@ -27,9 +29,9 @@ export default function GameCard({
   players,
 }: GameCardProps) {
   return (
-    <Center py={6}>
+    <Center py={[2, 6]}>
       <Box
-        maxW={"300px"}
+        maxW={["180px", "240px", "300px"]}
         w={"full"}
         bg={useColorModeValue("white", "gray.900")}
         boxShadow={"2xl"}
@@ -38,7 +40,7 @@ export default function GameCard({
         overflow={"hidden"}
       >
         <Box
-          h={"200px"}
+          h={["150px", "200px"]}
           bg={"gray.100"}
           mt={-6}
           mx={-6}
@@ -63,7 +65,7 @@ export default function GameCard({
           </Text>
           <Heading
             color={useColorModeValue("gray.700", "white")}
-            fontSize={"2xl"}
+            fontSize={["md", "2xl"]}
             fontFamily={"body"}
           >
             {location}
@@ -71,18 +73,22 @@ export default function GameCard({
           <Text color={"gray.500"}>{date}</Text>
         </Stack>
         <Stack mt={6} direction={"row"} spacing={2} align={"center"}>
-          {players && (
-            <>
-              {players.slice(0, 6).map(({ name }, index) => (
-                <Avatar
-                  key={index}
-                  size="xs"
-                  name={name.includes("Anonymous player") ? "" : name}
-                />
-              ))}
-              {players.length > 6 && <div>+{`${players.length - 6}`}</div>}
-            </>
-          )}
+          <Wrap>
+            {players && (
+              <>
+                {players.slice(0, 6).map(({ name }, index) => (
+                  <WrapItem>
+                    <Avatar
+                      key={index}
+                      size="xs"
+                      name={name.includes("Anonymous player") ? "" : name}
+                    />
+                  </WrapItem>
+                ))}
+                {players.length > 6 && <WrapItem>+{`${players.length - 6}`}</WrapItem>}
+              </>
+            )}
+          </Wrap>
         </Stack>
       </Box>
     </Center>
