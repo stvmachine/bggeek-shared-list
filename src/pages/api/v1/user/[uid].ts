@@ -1,3 +1,4 @@
+import { getBggUser } from "bgg-xml-api-client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getFirebaseAdmin } from "next-firebase-auth";
 import initAuth from "../../../../lib/firebase/initAuth";
@@ -6,8 +7,7 @@ initAuth();
 
 const admin = getFirebaseAdmin();
 const db = admin.firestore();
-const auth = admin.auth()
-
+const auth = admin.auth();
 
 const apiUser = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -27,6 +27,16 @@ const apiUser = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "PATCH") {
       const { uid } = req.query;
       const params = req.body;
+
+      if (params.bggeekUsername) {
+        const userBgGeek = await getBggUser({ name: params.bggeekUsername });
+        if (!userBgGeek.data.id) {
+          throw new Error(
+            "Doesn't exist that user on boardgame geek. Please try again."
+          );
+        }
+      }
+
       await db
         .collection("users")
         .doc(String(uid))
@@ -41,7 +51,7 @@ const apiUser = async (req: NextApiRequest, res: NextApiResponse) => {
   } catch (e) {
     console.log(e);
     return res.status(500).json({
-      error: e?.errorInfo?.message || "Unexpected error",
+      error: e?.errorInfo?.message || e?.message || "Unexpected error",
     });
   }
 };

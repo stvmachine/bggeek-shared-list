@@ -1,6 +1,13 @@
 import React, { useMemo } from "react";
 import axios from "axios";
-import { Box, Button, Container, Input, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Input,
+  Stack,
+  useToast,
+} from "@chakra-ui/react";
 import { NextPage } from "next";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
@@ -29,6 +36,7 @@ type FormValues = {
 
 const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
   const AuthUser = useAuthUser();
+  const toast = useToast();
 
   const initialValues = useMemo(
     () => ({
@@ -42,7 +50,7 @@ const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
   const { register, handleSubmit } = useForm({
     defaultValues: initialValues,
   });
-  const onSubmit: SubmitHandler<FormValues> = (input) => {
+  const onSubmit: SubmitHandler<FormValues> = async (input) => {
     const changedValues = (
       Object.keys(input) as Array<keyof typeof input>
     ).reduce<Record<string, string>>((accum, key) => {
@@ -58,7 +66,25 @@ const MyAccount: NextPage<MyAccountProps> = ({ user }) => {
         changedValues.constructor === Object
       )
     ) {
-      axios.patch(`/api/v1/user/${user.id}`, changedValues);
+      const response = await axios.patch(
+        `/api/v1/user/${user.id}`,
+        changedValues,
+        { validateStatus: () => true }
+      );
+
+      if (response.status >= 200 && response.status < 300) {
+        toast({
+          title: `Changed data satisfactorily.`,
+          status: "success",
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: response.data?.error || "Unexpected error",
+          status: "error",
+          isClosable: true,
+        });
+      }
     }
   };
 
