@@ -73,6 +73,10 @@ export type IBgDict = {
   [prop: string]: IGame;
 };
 
+export type IPlaysByDateDict = {
+  [prop: string]: IPlay[];
+};
+
 export type ICollection = {
   totalitems: string;
   pubdate: string;

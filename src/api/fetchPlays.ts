@@ -1,5 +1,12 @@
 import { getBggPlays, getBggThing } from "bgg-xml-api-client";
-import { IItem, IPlay, IGame, IBgDict, IPlayer } from "../utils/types";
+import {
+  IItem,
+  IPlay,
+  IGame,
+  IBgDict,
+  IPlaysByDateDict,
+  IPlayer,
+} from "../utils/types";
 
 export const getUniqueBgsFromPlays = async (
   plays: IPlay[]
@@ -16,37 +23,48 @@ export const getUniqueBgsFromPlays = async (
 
 export const getPlaysAndRelatedBggs = async (
   bggeekUsername: string
-): Promise<{ bgs: IBgDict; plays: IPlay[] }> => {
+): Promise<{ bgs: IBgDict; plays: IPlaysByDateDict }> => {
   const rawPlays = await getBggPlays({ username: bggeekUsername });
+
+  // Boardgames
   const uniqueBgs =
     rawPlays?.data?.play && (await getUniqueBgsFromPlays(rawPlays.data.play));
+  const bgs = uniqueBgs.reduce(
+    (accum: IBgDict, bg: IGame) => ({
+      ...accum,
+      [bg.id]: bg,
+    }),
+    {}
+  );
 
+  // Plays
   let plays = rawPlays?.data?.play || [];
   plays = plays.map((play: any) => ({
     ...play,
     players: play.players.player,
   }));
 
-  plays = plays.map((play: IPlay) => ({
-    ...play,
-    players: [
-      ...play.players.filter(
-        ({ name }: IPlayer) => !name.includes("Anonymous player")
-      ),
-      ...play.players.filter(({ name }: IPlayer) =>
-        name.includes("Anonymous player")
-      ),
-    ],
-  }));
+  const playsDict: IPlaysByDateDict = plays
+    .map((play: IPlay) => ({
+      ...play,
+      players: [
+        ...play.players.filter(
+          ({ name }: IPlayer) => !name.includes("Anonymous player")
+        ),
+        ...play.players.filter(({ name }: IPlayer) =>
+          name.includes("Anonymous player")
+        ),
+      ],
+    }))
+    .reduce((accum: IPlaysByDateDict, play: IPlay) => {
+      return {
+        ...accum,
+        [play.date]: [...(accum[play.date] ? accum[play.date] : []), play],
+      };
+    }, {});
 
   return {
-    plays,
-    bgs: uniqueBgs.reduce(
-      (accum: IBgDict, bg: IGame) => ({
-        ...accum,
-        [bg.id]: bg,
-      }),
-      {}
-    ),
+    plays: playsDict,
+    bgs,
   };
 };

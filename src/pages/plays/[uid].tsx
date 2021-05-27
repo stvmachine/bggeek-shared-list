@@ -1,6 +1,6 @@
 import { NextPage } from "next";
-import { Box, Container, Wrap, WrapItem } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { Box, Container, Heading, Stack, Wrap, WrapItem } from "@chakra-ui/react";
+// import { useRouter } from "next/router";
 import {
   useAuthUser,
   withAuthUser,
@@ -13,41 +13,47 @@ import Footer from "../../components/Layout/Footer";
 import Navbar from "../../components/Layout/Navbar";
 import Comments from "../../components/Comments";
 import GameCard from "../../components/GameCard";
-import { IBgDict, IPlay } from "../../utils/types";
+import { IBgDict, IPlaysByDateDict } from "../../utils/types";
 import { getPlaysAndRelatedBggs } from "../../api/fetchPlays";
 import config from "../../utils/config";
 
 type PlaysPageProps = {
-  plays: IPlay[];
+  plays: IPlaysByDateDict;
   bgs: IBgDict;
   user: AuthUser & { bggeekUsername: string; bggeekVerified: boolean };
 };
 
 const PlaysPage: NextPage<PlaysPageProps> = ({ bgs, plays }) => {
-  const router = useRouter();
+  // const router = useRouter();
   const AuthUser = useAuthUser();
 
-  const { uid } = router.query!;
-  console.log(plays)
+  // const { uid } = router.query!;
   return (
     <Container height="100vh" maxWidth="100%">
       <Navbar user={AuthUser} signOut={AuthUser.signOut} />
       <Box mt={12}>
-        <p>Plays for: {uid}</p>
-        <Wrap>
-          {plays &&
-            plays.map(({ id, item, location, date, players }) => (
-              <WrapItem key={id}>
-                <GameCard
-                  image={bgs && bgs[item.objectid].image}
-                  bgName={item.name}
-                  location={location}
-                  date={date}
-                  players={players || []}
-                />
-              </WrapItem>
-            ))}
-        </Wrap>
+        {plays &&
+          Object.keys(plays) &&
+          Object.keys(plays).map((date) => (
+            <>
+              <Heading as="h3">{date}</Heading>
+              <Stack>
+                <Wrap>
+                  {plays[date].map(({ id, item, location, date, players }) => (
+                    <WrapItem key={id}>
+                      <GameCard
+                        image={bgs && bgs[item.objectid].image}
+                        bgName={item.name}
+                        location={location}
+                        date={date}
+                        players={players || []}
+                      />
+                    </WrapItem>
+                  ))}
+                </Wrap>
+              </Stack>
+            </>
+          ))}
       </Box>
       <Comments />
       <Footer />
@@ -58,11 +64,14 @@ const PlaysPage: NextPage<PlaysPageProps> = ({ bgs, plays }) => {
 export const getServerSideProps = withAuthUserTokenSSR()(
   async ({ AuthUser: authUser, params }) => {
     const token = await authUser.getIdToken();
-    const response = await axios.get(`${config.API_ENDPOINT}/user/${authUser.id}`, {
-      headers: {
-        Authorization: token,
-      },
-    });
+    const response = await axios.get(
+      `${config.API_ENDPOINT}/user/${authUser.id}`,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
     const { user: currentUser } = response.data;
     const { uid } = params!;
     let bggeekUsername;
