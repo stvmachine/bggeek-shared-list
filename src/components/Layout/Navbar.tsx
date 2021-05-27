@@ -28,10 +28,13 @@ import {
   ChevronRightIcon,
 } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { AuthUserContext } from "next-firebase-auth";
+import { AuthUser } from "next-firebase-auth";
 
 type NavbarProps = {
-  user: AuthUserContext;
+  user: AuthUser & {
+    bggUsername?: string;
+    bggVerified?: boolean;
+  };
   signOut?: () => {};
 };
 
@@ -106,9 +109,15 @@ export default function Navbar({ user, signOut }: NavbarProps) {
                 </MenuButton>
                 <MenuList>
                   <MenuItem onClick={goTo(`/my-account`)}>My account</MenuItem>
-                  <MenuItem onClick={goTo(`/collection`)}>My Collection</MenuItem>
+                  <MenuItem onClick={goTo(`/collection`)}>
+                    My Collection
+                  </MenuItem>
                   <MenuItem isDisabled>My Communities</MenuItem>
-                  <MenuItem onClick={goTo(`/plays/stevmachine`)}>Plays</MenuItem>
+                  <MenuItem
+                    onClick={goTo(`/plays/${user.bggUsername || user.id}`)}
+                  >
+                    Plays
+                  </MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={signOut}>Sign out</MenuItem>
                 </MenuList>

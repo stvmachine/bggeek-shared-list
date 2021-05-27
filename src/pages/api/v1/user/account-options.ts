@@ -24,8 +24,8 @@ const getAccountOptions = async (req: NextApiRequest, res: NextApiResponse) => {
       emailVerified,
       photoURL: userDoc.exists ? userDoc.get("photoURL") : photoURL,
       displayName: userDoc.exists ? userDoc.get("displayName") : displayName,
-      bggeekUsername: userDoc.exists ? userDoc.get("bggeekUsername") : "",
-      bggeekVerified: userDoc.exists ? userDoc.get("bggeekVerified") : false,
+      bggUsername: userDoc.exists ? userDoc.get("bggUsername") : "",
+      bggVerified: userDoc.exists ? userDoc.get("bggVerified") : false,
     };
 
     return res.status(200).json({ user });

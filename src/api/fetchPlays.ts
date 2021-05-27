@@ -22,20 +22,22 @@ export const getUniqueBgsFromPlays = async (
 };
 
 export const getPlaysAndRelatedBggs = async (
-  bggeekUsername: string
+  bggUsername: string
 ): Promise<{ bgs: IBgDict; plays: IPlaysByDateDict }> => {
-  const rawPlays = await getBggPlays({ username: bggeekUsername });
+  const rawPlays = await getBggPlays({ username: bggUsername });
 
   // Boardgames
   const uniqueBgs =
     rawPlays?.data?.play && (await getUniqueBgsFromPlays(rawPlays.data.play));
-  const bgs = uniqueBgs.reduce(
-    (accum: IBgDict, bg: IGame) => ({
-      ...accum,
-      [bg.id]: bg,
-    }),
-    {}
-  );
+  const bgs = uniqueBgs
+    ? uniqueBgs.reduce(
+        (accum: IBgDict, bg: IGame) => ({
+          ...accum,
+          [bg.id]: bg,
+        }),
+        {}
+      )
+    : {};
 
   // Plays
   let plays = rawPlays?.data?.play || [];

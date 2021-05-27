@@ -14,13 +14,21 @@ const apiUser = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
       const { uid } = req.query;
 
-      const userAuthDoc = await auth.getUsers([{ uid: String(uid) }]);
+      const userAuthDoc = await auth.getUser(String(uid));
       const userDoc = await db.collection("users").doc(String(uid)).get();
-      console.log("userAuthDoc", userAuthDoc);
-      console.log("userDoc", userDoc);
+      // console.log("userAuthDoc", userAuthDoc);
+      // console.log("userDoc", userDoc);
 
       return res.status(200).json({
-        user: userDoc.data(),
+        user: {
+          id: userAuthDoc.uid,
+          email: userAuthDoc.email,
+          displayName: userAuthDoc.displayName,
+          photoURL: userAuthDoc.photoURL,
+          emailVerified: userAuthDoc.emailVerified,
+          bggUsername: userDoc.exists ? userDoc.get("bggUsername") : "",
+          bggVerified: userDoc.exists ? userDoc.get("bggVerified") : false,
+        },
       });
     }
 
@@ -28,8 +36,8 @@ const apiUser = async (req: NextApiRequest, res: NextApiResponse) => {
       const { uid } = req.query;
       const params = req.body;
 
-      if (params.bggeekUsername) {
-        const userBgGeek = await getBggUser({ name: params.bggeekUsername });
+      if (params.bggUsername) {
+        const userBgGeek = await getBggUser({ name: params.bggUsername });
         if (!userBgGeek.data.id) {
           throw new Error(
             "Doesn't exist that user on boardgame geek. Please try again."

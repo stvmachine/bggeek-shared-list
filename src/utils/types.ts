@@ -1,4 +1,5 @@
 import { ThingType } from "bgg-xml-api-client";
+import { AuthUser } from "next-firebase-auth";
 declare type ZeroOrOne = 0 | 1;
 
 export type IItem = {
@@ -111,4 +112,9 @@ export type IPlay = {
   nowinstats?: string;
   players: IPlayer[];
   quantity: number;
+};
+
+export type IExtendedUser = AuthUser & {
+  bggUsername: string;
+  bggVerified: boolean;
 };

@@ -77,15 +77,16 @@ export default function GameCard({
             {players && (
               <>
                 {players.slice(0, 6).map(({ name }, index) => (
-                  <WrapItem>
+                  <WrapItem key={index}>
                     <Avatar
-                      key={index}
                       size="xs"
                       name={name.includes("Anonymous player") ? "" : name}
                     />
                   </WrapItem>
                 ))}
-                {players.length > 6 && <WrapItem>+{`${players.length - 6}`}</WrapItem>}
+                {players.length > 6 && (
+                  <WrapItem>+{`${players.length - 6}`}</WrapItem>
+                )}
               </>
             )}
           </Wrap>
