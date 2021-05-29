@@ -1,6 +1,6 @@
 import React from "react";
 import { NextPage } from "next";
-import { getBggCollection, BggCollectionResponse } from "bgg-xml-api-client";
+import { getBggHot, BggHotResponse } from "bgg-xml-api-client";
 import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
 
 import { Container } from "../components/Container";
@@ -9,22 +9,17 @@ import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import CTA from "../components/CTA";
 import StatsCard from "../components/StatsCard";
-import Collection from "../components/Collection";
+import HotGames from "../components/HotGames";
 import FullPageLoader from "../components/Layout/FullPageLoader";
 
 export async function getStaticProps() {
-  const results: BggCollectionResponse = await getBggCollection({
-    username: "stevmachine",
-    own: 1,
-    minbggrating: 7,
-    subtype: "boardgame",
-    excludesubtype: "boardgameexpansion",
-    stats: 1,
+  const results: BggHotResponse = await getBggHot({
+    type: "boardgame",
   });
 
   const collectionData = {
     ...results.data,
-    item: results.data.item.slice(0, 24),
+    item: results.data.item.sort(() => 0.5 - Math.random()).slice(0, 24),
   };
 
   return {
@@ -35,7 +30,7 @@ export async function getStaticProps() {
 }
 
 type IndexPageProps = {
-  collectionData?: BggCollectionResponse;
+  collectionData: BggHotResponse;
   [prop: string]: any;
 };
 
@@ -46,7 +41,7 @@ const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
       <Navbar user={AuthUser} signOut={AuthUser?.signOut} />
       <Main>
         <CTA />
-        <Collection collectionData={collectionData || []} />
+        <HotGames collectionData={collectionData} />
         <StatsCard />
       </Main>
 
@@ -55,7 +50,7 @@ const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
   );
 };
 
-export default withAuthUser({
+export default withAuthUser<IndexPageProps>({
   whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   LoaderComponent: FullPageLoader,
 })(Index);

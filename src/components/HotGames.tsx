@@ -9,14 +9,14 @@ import {
   Text,
   Stack,
 } from "@chakra-ui/react";
-import { IItem } from "../utils/types";
-import { BggCollectionResponse } from "bgg-xml-api-client";
+import { IHotItem } from "../utils/types";
+import { BggHotResponse } from "bgg-xml-api-client";
 
-type CollectionProps = {
-  collectionData: BggCollectionResponse;
+type HotGamesProps = {
+  collectionData: BggHotResponse;
 };
 
-const Collection = ({ collectionData }: CollectionProps) => (
+const HotGames = ({ collectionData }: HotGamesProps) => (
   <Box p={4}>
     <Stack spacing={4} as={Container} maxW={"3xl"} textAlign={"center"}>
       <Heading fontSize={"3xl"}>
@@ -29,10 +29,14 @@ const Collection = ({ collectionData }: CollectionProps) => (
 
     <Container maxW={"6xl"} mt={10}>
       <Wrap>
-        {collectionData.totalitems > 0 &&
-          collectionData.item.map(({ thumbnail, objectid }: IItem) => (
-            <WrapItem key={objectid}>
-              <Image boxSize="150px" objectFit="contain" src={thumbnail} />
+        {collectionData.item.length > 0 &&
+          collectionData.item.map(({ thumbnail, id }: IHotItem) => (
+            <WrapItem key={id}>
+              <Image
+                boxSize="150px"
+                objectFit="contain"
+                src={thumbnail.value}
+              />
             </WrapItem>
           ))}
       </Wrap>
@@ -40,4 +44,4 @@ const Collection = ({ collectionData }: CollectionProps) => (
   </Box>
 );
 
-export default Collection;
+export default HotGames;

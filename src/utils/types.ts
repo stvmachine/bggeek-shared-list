@@ -2,6 +2,20 @@ import { ThingType } from "bgg-xml-api-client";
 import { AuthUser } from "next-firebase-auth";
 declare type ZeroOrOne = 0 | 1;
 
+export type IHotItem = {
+  id: string;
+  name: {
+    value: string;
+  };
+  rank: number;
+  thumbnail: {
+    value: string;
+  };
+  yearpublished: {
+    value: number;
+  };
+};
+
 export type IItem = {
   collid: string;
   image: string;
