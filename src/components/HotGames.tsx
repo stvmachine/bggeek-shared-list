@@ -33,7 +33,7 @@ const HotGames = ({ collectionData }: HotGamesProps) => (
           collectionData.item.map(({ thumbnail, id }: IHotItem) => (
             <WrapItem key={id}>
               <Image
-                boxSize="150px"
+                boxSize={["95px","120px","150px"]}
                 objectFit="contain"
                 src={thumbnail.value}
               />

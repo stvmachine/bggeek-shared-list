@@ -6,6 +6,7 @@ import {
   Flex,
   Icon,
   IconButton,
+  Image,
   Link,
   Menu,
   MenuButton,
@@ -76,7 +77,7 @@ export default function Navbar({ user, signOut }: NavbarProps) {
             fontFamily={"heading"}
             color={useColorModeValue("gray.800", "white")}
           >
-            Logo
+            <Image src="/img/dice-logo-red.png" boxSize="35px"/>
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>

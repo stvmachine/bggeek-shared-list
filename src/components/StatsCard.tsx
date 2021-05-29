@@ -63,17 +63,17 @@ export default function BasicStatistics() {
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
         <StatsCard
           title={"Users"}
-          stat={100}
+          stat={50}
           icon={<BsPerson size={"3em"} />}
         />
         <StatsCard
           title={"Communities"}
-          stat={3}
+          stat={10}
           icon={<FaPeopleCarry size={"3em"} />}
         />
         <StatsCard
           title={"Events"}
-          stat={1}
+          stat={300}
           icon={<FaBeer size={"3em"} />}
         />
       </SimpleGrid>
