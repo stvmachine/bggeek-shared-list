@@ -1,5 +1,12 @@
 import { NextPage } from "next";
-import { Box, Container } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Heading,
+  Stack,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
 import {
   useAuthUser,
   withAuthUser,
@@ -8,54 +15,68 @@ import {
 
 import Footer from "../../components/Layout/Footer";
 import Navbar from "../../components/Layout/Navbar";
-import { IExtendedUser } from "../../utils/types";
+// import { getCommunities } from "../../api/getCommunities";
 
-type PlaysPageProps = {
-  user: IExtendedUser;
-};
+type CommunitiesPageProps = {};
 
-const PlaysPage: NextPage<PlaysPageProps> = () => {
-  // const router = useRouter();
+const GROUPS = [
+  {
+    id: 1,
+    name: "Soutbank Boardgames",
+    address: "60 Cavanagh St",
+    members: ["donutgamer", "stevmachine", "Jagger84"],
+  },
+  {
+    id: 2,
+    name: "Lockdown Friends BG",
+    address: "Melbourne Fortress",
+    members: ["stevmachine", "Jagger84"],
+  },
+  {
+    id: 3,
+    name: "Bots Chilenos",
+    address: "470 St Kilda Rd",
+    members: ["stevmachine"],
+  },
+];
+
+const PlaysPage: NextPage<CommunitiesPageProps> = () => {
   const AuthUser = useAuthUser();
-  // const { uid } = router.query!;
   return (
     <Container height="100vh" maxWidth="100%">
       <Navbar user={AuthUser} signOut={AuthUser.signOut} />
       <Box mt={12}>
-        {/* {plays &&
-          Object.keys(plays) &&
-          Object.keys(plays).map((date) => (
-            <Box mt={2} key={date}>
+        {GROUPS &&
+          GROUPS.map((group) => (
+            <Box mt={2} key={group.id}>
               <Heading as="h3" size={"md"}>
-                {date}
+                {group.name}
               </Heading>
               <Stack>
                 <Wrap>
-                  {plays[date].map(({ id, item, location, date, players }) => (
-                    <WrapItem key={id}>
-                      <GameCard
-                        image={bgs && bgs[item.objectid].image}
-                        bgName={item.name}
-                        location={location}
-                        date={date}
-                        players={players || []}
-                      />
-                    </WrapItem>
+                  {group.members.map((memberName) => (
+                    <WrapItem key={memberName}>{memberName}</WrapItem>
                   ))}
                 </Wrap>
               </Stack>
             </Box>
-          ))} */}
+          ))}
       </Box>
       <Footer />
     </Container>
   );
 };
 
-export const getServerSideProps = withAuthUserTokenSSR()(async () => {
-  return {
-    props: {},
-  };
-});
+export const getServerSideProps = withAuthUserTokenSSR()(
+  async () => {
+    // const token = await AuthUser.getIdToken();
+    // const communities = await getCommunities({ token, userId: AuthUser.id });
+    return {
+      props: {
+        // communities,
+      },
+    };
+  }
+);
 
-export default withAuthUser<PlaysPageProps>()(PlaysPage);
+export default withAuthUser<CommunitiesPageProps>()(PlaysPage);
