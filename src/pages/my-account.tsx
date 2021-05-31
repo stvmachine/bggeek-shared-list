@@ -21,7 +21,7 @@ import BoardgameGeekProfile from "../components/Profile/BoardgameGeekProfile";
 import Profile from "../components/Profile/Profile";
 import { useQuery } from "react-query";
 import { IExtendedUser } from "../utils/types";
-import { getUser } from "../api/getUser";
+import { getUserAccountOptions } from "../api/getUser";
 
 type MyAccountProps = {
   user: IExtendedUser;
@@ -31,7 +31,7 @@ const MyAccount: NextPage<MyAccountProps> = (props) => {
   const AuthUser = useAuthUser();
   const { data: userData } = useQuery<any, any>(
     "user",
-    async () => getUser(await AuthUser.getIdToken()),
+    async () => getUserAccountOptions(await AuthUser.getIdToken()),
     { initialData: props.user }
   );
 
@@ -65,7 +65,7 @@ export const getServerSideProps = withAuthUserTokenSSR({
   whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
 })(async ({ AuthUser }) => {
   const token = await AuthUser.getIdToken();
-  const user = await getUser(token);
+  const user = await getUserAccountOptions(token);
   return {
     props: {
       user,

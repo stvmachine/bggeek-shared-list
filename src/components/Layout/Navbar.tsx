@@ -77,7 +77,7 @@ export default function Navbar({ user, signOut }: NavbarProps) {
             fontFamily={"heading"}
             color={useColorModeValue("gray.800", "white")}
           >
-            <Image src="/img/dice-logo-red.png" boxSize="35px"/>
+            <Image src="/img/dice-logo-red.png" boxSize="35px" />
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -109,16 +109,14 @@ export default function Navbar({ user, signOut }: NavbarProps) {
                   />
                 </MenuButton>
                 <MenuList>
-                  <MenuItem onClick={goTo(`/my-account`)}>My account</MenuItem>
+                  <MenuItem onClick={goTo(`/my-account`)}>Settings</MenuItem>
                   <MenuItem onClick={goTo(`/collection`)}>
-                    My Collection
+                    My collection
                   </MenuItem>
-                  <MenuItem isDisabled>My Communities</MenuItem>
-                  <MenuItem
-                    onClick={goTo(`/plays/${user.bggUsername || user.id}`)}
-                  >
-                    Plays
+                  <MenuItem onClick={goTo(`/communities/${user.id}`)}>
+                    My groups
                   </MenuItem>
+                  <MenuItem onClick={goTo(`/plays/${user.id}`)}>Plays</MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={signOut}>Sign out</MenuItem>
                 </MenuList>
