@@ -12,11 +12,11 @@ import {
   withAuthUser,
   withAuthUserTokenSSR,
 } from "next-firebase-auth";
+import axios from "axios";
 
 import Footer from "../../../components/Layout/Footer";
 import Navbar from "../../../components/Layout/Navbar";
-import { getCommunities } from "../../../api/getCommunities";
-// import { getCommunities } from "../../api/getCommunities";
+import config from "../../../utils/config";
 
 type CommunitiesPageProps = {};
 
@@ -70,10 +70,16 @@ const PlaysPage: NextPage<CommunitiesPageProps> = () => {
 
 export const getServerSideProps = withAuthUserTokenSSR()(async ({ params }) => {
   const { uid } = params!;
-  const data = await getCommunities(String(uid));
+  const response = await await axios.get(
+    `${config.API_ENDPOINT}/communities?userId=${uid}`
+  );
+  const {
+    data: { communities },
+  } = response || {};
+
   return {
     props: {
-      communities: data.communities,
+      communities,
     },
   };
 });

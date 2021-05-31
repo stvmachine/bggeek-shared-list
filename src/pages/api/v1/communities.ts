@@ -15,9 +15,7 @@ const getCommunities = async (req: NextApiRequest, res: NextApiResponse) => {
       .where("user_id", "==", userId)
       .get();
 
-    return res
-      .status(200)
-      .json({ communities: communitiesRef.empty ? [] : communitiesRef.docs });
+    return res.status(200).json({ communities: communitiesRef.docs });
   } catch (e) {
     console.log(e);
     return res.status(500).json({
