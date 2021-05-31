@@ -14,13 +14,13 @@ import {
   withAuthUserTokenSSR,
 } from "next-firebase-auth";
 
-import Footer from "../../components/Layout/Footer";
-import Navbar from "../../components/Layout/Navbar";
-import Comments from "../../components/Comments";
-import GameCard from "../../components/GameCard";
-import { IBgDict, IExtendedUser, IPlaysByDateDict } from "../../utils/types";
-import { getPlaysAndRelatedBggs } from "../../api/fetchPlays";
-import { getUser } from "../../api/getUser";
+import Footer from "../../../components/Layout/Footer";
+import Navbar from "../../../components/Layout/Navbar";
+import Comments from "../../../components/Comments";
+import GameCard from "../../../components/GameCard";
+import { IBgDict, IExtendedUser, IPlaysByDateDict } from "../../../utils/types";
+import { getPlaysAndRelatedBggs } from "../../../api/fetchPlays";
+import { getUser } from "../../../api/getUser";
 
 type PlaysPageProps = {
   plays: IPlaysByDateDict;

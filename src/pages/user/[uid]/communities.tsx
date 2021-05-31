@@ -13,8 +13,9 @@ import {
   withAuthUserTokenSSR,
 } from "next-firebase-auth";
 
-import Footer from "../../components/Layout/Footer";
-import Navbar from "../../components/Layout/Navbar";
+import Footer from "../../../components/Layout/Footer";
+import Navbar from "../../../components/Layout/Navbar";
+import { getCommunities } from "../../../api/getCommunities";
 // import { getCommunities } from "../../api/getCommunities";
 
 type CommunitiesPageProps = {};
@@ -67,16 +68,14 @@ const PlaysPage: NextPage<CommunitiesPageProps> = () => {
   );
 };
 
-export const getServerSideProps = withAuthUserTokenSSR()(
-  async () => {
-    // const token = await AuthUser.getIdToken();
-    // const communities = await getCommunities({ token, userId: AuthUser.id });
-    return {
-      props: {
-        // communities,
-      },
-    };
-  }
-);
+export const getServerSideProps = withAuthUserTokenSSR()(async ({ params }) => {
+  const { uid } = params!;
+  const data = await getCommunities(String(uid));
+  return {
+    props: {
+      communities: data.communities,
+    },
+  };
+});
 
 export default withAuthUser<CommunitiesPageProps>()(PlaysPage);

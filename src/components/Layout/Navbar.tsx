@@ -110,13 +110,15 @@ export default function Navbar({ user, signOut }: NavbarProps) {
                 </MenuButton>
                 <MenuList>
                   <MenuItem onClick={goTo(`/my-account`)}>Settings</MenuItem>
-                  <MenuItem onClick={goTo(`/collection`)}>
+                  <MenuItem onClick={goTo(`/user/${user.id}/collection`)}>
                     My collection
                   </MenuItem>
-                  <MenuItem onClick={goTo(`/communities/${user.id}`)}>
+                  <MenuItem onClick={goTo(`/user/${user.id}/communities`)}>
                     My groups
                   </MenuItem>
-                  <MenuItem onClick={goTo(`/plays/${user.id}`)}>Plays</MenuItem>
+                  <MenuItem onClick={goTo(`/user/${user.id}/plays`)}>
+                    Plays
+                  </MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={signOut}>Sign out</MenuItem>
                 </MenuList>
