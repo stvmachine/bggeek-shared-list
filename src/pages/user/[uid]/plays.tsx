@@ -17,7 +17,7 @@ import {
 import Footer from "../../../components/Layout/Footer";
 import Navbar from "../../../components/Layout/Navbar";
 import Comments from "../../../components/Comments";
-import GameCard from "../../../components/GameCard";
+import PlayCard from "../../../components/PlayCard";
 import { IBgDict, IExtendedUser, IPlaysByDateDict } from "../../../utils/types";
 import { getPlaysAndRelatedBggs } from "../../../api/fetchPlays";
 import { getUser } from "../../../api/getUser";
@@ -48,7 +48,7 @@ const PlaysPage: NextPage<PlaysPageProps> = ({ bgs, plays }) => {
                 <Wrap>
                   {plays[date].map(({ id, item, location, date, players }) => (
                     <WrapItem key={id}>
-                      <GameCard
+                      <PlayCard
                         image={bgs && bgs[item.objectid].image}
                         bgName={item.name}
                         location={location}

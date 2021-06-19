@@ -13,9 +13,10 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import Image from "next/image";
+import { useFormContext } from "react-hook-form";
 import { IItem } from "../utils/types";
 import { useSearch } from "../hooks/useSearch";
-import { useFormContext } from "react-hook-form";
+import GameCard from "./GameCard";
 
 type ResultsProps = {
   boardgames: IItem[];
@@ -64,27 +65,14 @@ const Results = ({ boardgames }: ResultsProps) => {
       )}
       <Wrap align="center">
         {results.length > 0 &&
-          results.map(({ thumbnail, objectid }: IItem, index) => (
-            <WrapItem key={`${objectid}_${index}`}>
-              <LinkBox>
-                <Center w={["110px", "180px"]} h={["110px", "180px"]}>
-                  <LinkOverlay
-                    href={`https://boardgamegeek.com/boardgame/${objectid}`}
-                    isExternal
-                  >
-                    {thumbnail ? (
-                      <Image
-                        layout="fill"
-                        objectFit="contain"
-                        src={thumbnail}
-                      />
-                    ) : (
-                      <Skeleton height="100%" width="100%" />
-                    )}
-                  </LinkOverlay>
-                </Center>
-              </LinkBox>
-            </WrapItem>
+          results.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
+            <GameCard
+              image={thumbnail}
+              key={`${objectid}_${index}`}
+              bgName={name.text}
+              owners={owners}
+              objectid={objectid}
+            />
           ))}
       </Wrap>
     </Container>

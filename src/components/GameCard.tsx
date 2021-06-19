@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import {
   Avatar,
@@ -10,88 +11,105 @@ import {
   Wrap,
   WrapItem,
   useColorModeValue,
+  LinkBox,
+  LinkOverlay,
 } from "@chakra-ui/react";
 import { IPlayer } from "../utils/types";
 
 type GameCardProps = {
   image?: string;
-  location: string;
-  date: string;
+  objectid: string;
   bgName: string;
-  players: IPlayer[];
+  owners?: {
+    username: string;
+    status: any;
+    collid: string;
+  }[];
 };
 
-export default function GameCard({
+const GameCard: React.FC<GameCardProps> = ({
   image,
-  location,
-  date,
+  objectid,
   bgName,
-  players,
-}: GameCardProps) {
+  owners,
+}) => {
   return (
-    <Center py={[2, 6]}>
+    <WrapItem w={["100%", "180px"]} h={["125px", "300px"]}>
       <Box
-        maxW={["180px", "240px", "300px"]}
-        w={"full"}
+        w={["100%", "180px"]}
+        h={["125px", "300px"]}
         bg={useColorModeValue("white", "gray.900")}
         boxShadow={"2xl"}
         rounded={"md"}
         p={6}
-        overflow={"hidden"}
+        display="flex"
+        flexDirection={["row", "column"]}
       >
+        <LinkBox w={["125px", "180px"]} h={["125px", "180px"]}>
+          <LinkOverlay
+            href={`https://boardgamegeek.com/boardgame/${objectid}`}
+            isExternal
+          >
+            <Box
+              w={["125px", "180px"]}
+              h={["125px", "180px"]}
+              bg={"gray.100"}
+              mt={-6}
+              mx={-6}
+              mb={2}
+              pos={"relative"}
+            >
+              {image ? (
+                <Image src={image} layout={"fill"} objectFit="contain" />
+              ) : (
+                <Skeleton height="100%" width="100%" />
+              )}
+            </Box>
+          </LinkOverlay>
+        </LinkBox>
+
         <Box
-          h={["150px", "200px"]}
-          bg={"gray.100"}
-          mt={-6}
-          mx={-6}
-          mb={6}
-          pos={"relative"}
+          w="100%"
+          ml={[8, 0]}
+          display="flex"
+          flexDirection="column"
+          alignContent="space-between"
         >
-          {image ? (
-            <Image src={image} layout={"fill"} objectFit="contain" />
-          ) : (
-            <Skeleton height="100%" width="100%" />
-          )}
+          <Stack>
+            <Text
+              textTransform={"uppercase"}
+              fontWeight={800}
+              fontSize={["xx-small", "x-small"]}
+              letterSpacing={0.85}
+              break
+              dangerouslySetInnerHTML={{ __html: bgName }}
+            />
+          </Stack>
+          <Stack
+            mt={6}
+            direction={"row"}
+            spacing={2}
+            align={"center"}
+          >
+            <Wrap>
+              {owners && (
+                <>
+                  {owners.slice(0, 6).map(({ username }, index) => (
+                    <WrapItem key={index}>
+                      <Avatar size="xs" name={username} />
+                    </WrapItem>
+                  ))}
+                  {owners.length > 6 && (
+                    <WrapItem>+{`${owners.length - 6}`}</WrapItem>
+                  )}
+                </>
+              )}
+            </Wrap>
+          </Stack>
         </Box>
-        <Stack>
-          <Text
-            color={"green.500"}
-            textTransform={"uppercase"}
-            fontWeight={800}
-            fontSize={"sm"}
-            letterSpacing={1.1}
-          >
-            {bgName}
-          </Text>
-          <Heading
-            color={useColorModeValue("gray.700", "white")}
-            fontSize={["md", "2xl"]}
-            fontFamily={"body"}
-          >
-            {location}
-          </Heading>
-          <Text color={"gray.500"}>{date}</Text>
-        </Stack>
-        <Stack mt={6} direction={"row"} spacing={2} align={"center"}>
-          <Wrap>
-            {players && (
-              <>
-                {players.slice(0, 6).map(({ name }, index) => (
-                  <WrapItem key={index}>
-                    <Avatar
-                      size="xs"
-                      name={name.includes("Anonymous player") ? "" : name}
-                    />
-                  </WrapItem>
-                ))}
-                {players.length > 6 && (
-                  <WrapItem>+{`${players.length - 6}`}</WrapItem>
-                )}
-              </>
-            )}
-          </Wrap>
-        </Stack>
       </Box>
-    </Center>
+    </WrapItem>
   );
-}
+};
+
+export default React.memo(GameCard);
