@@ -1,18 +1,14 @@
 import React from "react";
 import {
-  Center,
   Container,
   Heading,
   ListItem,
   LinkBox,
   LinkOverlay,
-  Skeleton,
   Text,
   UnorderedList,
   Wrap,
-  WrapItem,
 } from "@chakra-ui/react";
-import Image from "next/image";
 import { useFormContext } from "react-hook-form";
 import { IItem } from "../utils/types";
 import { useSearch } from "../hooks/useSearch";

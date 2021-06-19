@@ -3,8 +3,6 @@ import Image from "next/image";
 import {
   Avatar,
   Box,
-  Center,
-  Heading,
   Stack,
   Skeleton,
   Text,
@@ -14,7 +12,6 @@ import {
   LinkBox,
   LinkOverlay,
 } from "@chakra-ui/react";
-import { IPlayer } from "../utils/types";
 
 type GameCardProps = {
   image?: string;
@@ -85,12 +82,7 @@ const GameCard: React.FC<GameCardProps> = ({
               dangerouslySetInnerHTML={{ __html: bgName }}
             />
           </Stack>
-          <Stack
-            mt={6}
-            direction={"row"}
-            spacing={2}
-            align={"center"}
-          >
+          <Stack mt={6} direction={"row"} spacing={2} align={"center"}>
             <Wrap>
               {owners && (
                 <>
