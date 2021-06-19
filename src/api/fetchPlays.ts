@@ -49,14 +49,17 @@ export const getPlaysAndRelatedBggs = async (
   const playsDict: IPlaysByDateDict = plays
     .map((play: IPlay) => ({
       ...play,
-      players: [
-        ...play.players.filter(
-          ({ name }: IPlayer) => !name.includes("Anonymous player")
-        ),
-        ...play.players.filter(({ name }: IPlayer) =>
-          name.includes("Anonymous player")
-        ),
-      ],
+      players:
+        play.players.length > 0
+          ? [
+              ...play.players.filter(
+                ({ name }: IPlayer) => !name.includes("Anonymous player")
+              ),
+              ...play.players.filter(({ name }: IPlayer) =>
+                name.includes("Anonymous player")
+              ),
+            ]
+          : [],
     }))
     .reduce((accum: IPlaysByDateDict, play: IPlay) => {
       return {

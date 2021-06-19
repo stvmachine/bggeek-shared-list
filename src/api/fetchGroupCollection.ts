@@ -23,7 +23,7 @@ export const fetchCollection = async (
       stats: item.stats,
       subtype: item.subtype,
       objectid: item.objectid,
-      thumbnail: item.thumbnail,
+      thumbnail: item.thumbnail ? item.thumbnail : null,
       name: { ...item.name },
       owners: [
         {

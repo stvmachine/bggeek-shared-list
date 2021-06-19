@@ -32,11 +32,13 @@ const HotGames = ({ collectionData }: HotGamesProps) => (
         {collectionData.item.length > 0 &&
           collectionData.item.map(({ thumbnail, id }: IHotItem) => (
             <WrapItem key={id}>
-              <Image
-                boxSize={["95px","120px","150px"]}
-                objectFit="contain"
-                src={thumbnail.value}
-              />
+              {thumbnail?.value && (
+                <Image
+                  boxSize={["95px", "120px", "150px"]}
+                  objectFit="contain"
+                  src={thumbnail.value}
+                />
+              )}
             </WrapItem>
           ))}
       </Wrap>

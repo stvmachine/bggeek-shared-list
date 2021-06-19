@@ -8,7 +8,7 @@ export type IHotItem = {
     value: string;
   };
   rank: number;
-  thumbnail: {
+  thumbnail?: {
     value: string;
   };
   yearpublished: {
@@ -38,7 +38,7 @@ export type IItem = {
     whishlist: ZeroOrOne;
   };
   subtype: ThingType;
-  thumbnail: string;
+  thumbnail?: string;
   yearpublished: string;
   stats: {
     maxplayers: number;
@@ -75,7 +75,7 @@ export type IItem = {
 export type IGame = {
   id: string;
   image: string;
-  thumbnail: string;
+  thumbnail?: string;
   description: string;
   name: {
     type: "primary" | "alternate";
