@@ -24,9 +24,10 @@ import useKeydown from "../hooks/useKeydown";
 type SearchSidebarProps = {
   members: string[];
   collections: ICollection[];
+  isOpenDrawer?: boolean;
 };
 
-const hideVirtualKeyboard = () => {
+const hideVirtualKeyboard = (): void => {
   if (
     document.activeElement &&
     (document.activeElement as HTMLElement).blur &&
@@ -36,22 +37,24 @@ const hideVirtualKeyboard = () => {
   }
 };
 
-const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
-  const { register, handleSubmit } = useFormContext();
+const SearchSidebar = ({
+  members,
+  collections,
+  isOpenDrawer,
+}: SearchSidebarProps) => {
+  const { register, handleSubmit, setValue, getValues } = useFormContext();
   const onSubmit = (_: any, event: any) => {
     event.preventDefault();
     hideVirtualKeyboard();
   };
   const onError = () => {};
 
-  useKeydown({
-    callback: hideVirtualKeyboard,
-  });
+  useKeydown(hideVirtualKeyboard);
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <VStack width="xs">
-        <InputGroup width="xs">
+      <VStack width={isOpenDrawer ? "100%" : "xs"}>
+        <InputGroup width={isOpenDrawer ? "100%" : "xs"}>
           <InputLeftElement
             pointerEvents="none"
             children={<SearchIcon color="gray.300" />}
@@ -118,8 +121,16 @@ const SearchSidebar = ({ members, collections }: SearchSidebarProps) => {
                   <VStack alignItems={"flex-start"}>
                     {members.map((member, index) => (
                       <Checkbox
-                        {...register(`members[${member}]`)}
-                        key={`checkbox-${member}`}
+                        key={`checkbox-${member}-${
+                          isOpenDrawer ? "-mobile" : ""
+                        }`}
+                        onChange={() => {
+                          setValue(
+                            `members[${member}]`,
+                            !getValues(`members[${member}]`)
+                          );
+                        }}
+                        isChecked={getValues(`members[${member}]`)}
                       >
                         {`${member} (${collections[index].totalitems})`}
                       </Checkbox>

@@ -1,7 +1,17 @@
 import React, { useMemo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { NextPage } from "next";
-import { Box, Container, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  Stack,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useQueries } from "react-query";
 import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
 
@@ -9,14 +19,13 @@ import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import Results from "../components/Results";
 import SearchSidebar from "../components/SearchSidebar";
+import FullPageLoader from "../components/Layout/FullPageLoader";
 import { ICollection } from "../utils/types";
-
 import {
   fetchCollections,
   fetchCollection,
   mergeCollections,
 } from "../api/fetchGroupCollection";
-import FullPageLoader from "../components/Layout/FullPageLoader";
 
 const MEMBERS = ["donutgamer", "Jagger84", "stevmachine"];
 
@@ -64,23 +73,47 @@ const Index: NextPage<CollectionPageProps> = ({ initialData }) => {
   );
   const methods = useForm({ defaultValues });
 
-  return (
-    <Container height="100vh" maxWidth="100%">
-      <Navbar user={AuthUser} signOut={AuthUser.signOut} />
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-      <Box mt={12}>
-        <FormProvider {...methods}>
+  return (
+    <FormProvider {...methods}>
+      <Container height="100vh" maxWidth="100%">
+        <Navbar
+          user={AuthUser}
+          signOut={AuthUser.signOut}
+          openDrawer={onOpen}
+          isOpenDrawer={isOpen}
+        />
+
+        <Box mt={12}>
           <Stack direction={["column", "row"]} alignItems="flex-start">
+            <Box display={{ base: "none", md: "flex" }}>
+              <SearchSidebar
+                members={MEMBERS}
+                collections={data?.collections || []}
+              />
+            </Box>
+
+            <Results boardgames={data?.boardgames || []} />
+          </Stack>
+        </Box>
+        <Footer />
+      </Container>
+
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerHeader borderBottomWidth="1px">Filter</DrawerHeader>
+          <DrawerBody>
             <SearchSidebar
+              isOpenDrawer
               members={MEMBERS}
               collections={data?.collections || []}
             />
-            <Results boardgames={data?.boardgames || []} />
-          </Stack>
-        </FormProvider>
-      </Box>
-      <Footer />
-    </Container>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </FormProvider>
   );
 };
 

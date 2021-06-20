@@ -37,7 +37,7 @@ const Results = ({ boardgames }: ResultsProps) => {
   );
 
   return (
-    <Container mt={10} maxWidth={["100%", "80%"]}>
+    <Container mt={10} maxWidth={"100%"}>
       {checkedMembers?.length > 0 ? (
         <Heading fontSize={"2xl"} mb={10}>
           Displaying {results.length} games owned for the following members:
