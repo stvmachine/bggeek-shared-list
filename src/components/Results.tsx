@@ -12,6 +12,8 @@ import {
 import { useFormContext } from "react-hook-form";
 import { IItem } from "../utils/types";
 import { useSearch } from "../hooks/useSearch";
+import SortBar from "../components/SortBar";
+
 import GameCard from "./GameCard";
 
 type ResultsProps = {
@@ -59,7 +61,9 @@ const Results = ({ boardgames }: ResultsProps) => {
           Please select at least one member to display their collection.
         </Heading>
       )}
-      <Wrap align="center">
+
+      <SortBar />
+      <Wrap align="center" spacing="3">
         {results.length > 0 &&
           results.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
             <GameCard

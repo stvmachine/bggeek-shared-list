@@ -8,7 +8,6 @@ import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import Results from "../components/Results";
-import SortBar from "../components/SortBar";
 import SearchSidebar from "../components/SearchSidebar";
 import { ICollection } from "../utils/types";
 
@@ -71,7 +70,6 @@ const Index: NextPage<CollectionPageProps> = ({ initialData }) => {
 
       <Box mt={12}>
         <FormProvider {...methods}>
-          <SortBar />
           <Stack direction={["column", "row"]} alignItems="flex-start">
             <SearchSidebar
               members={MEMBERS}

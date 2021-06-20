@@ -6,9 +6,9 @@ const SortBar = () => {
   const { register } = useFormContext();
 
   return (
-    <FormControl id="orderBy-wrapper">
-      <HStack justifyContent="flex-end" alignItems="center">
-        <FormLabel fontSize="md" mt={2}>Sort: </FormLabel>
+    <FormControl id="orderBy-wrapper" my={4}>
+      <HStack justifyContent="flex-start" alignItems="center">
+        <FormLabel fontSize="md">Sort: </FormLabel>
         <Select
           {...register("orderBy")}
           width="xxs"
