@@ -1,17 +1,14 @@
-import { useEffect, KeyboardEvent } from "react";
+import { useEffect, useCallback, KeyboardEvent } from "react";
 
-type useKeydownProps = {
-  callback: () => void;
-};
+const useKeydown = (callback: () => void) => {
+  const listener: any = useCallback((event: KeyboardEvent): void => {
+    if (event.code === "Enter" || event.code === "NumpadEnter") {
+      event.preventDefault();
+      callback();
+    }
+  },[callback]);
 
-const useKeydown = ({ callback }: useKeydownProps) => {
   useEffect(() => {
-    const listener: any = (event: KeyboardEvent) => {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
-        event.preventDefault();
-        callback();
-      }
-    };
     document.addEventListener("keydown", listener);
     return () => {
       document.removeEventListener("keydown", listener);

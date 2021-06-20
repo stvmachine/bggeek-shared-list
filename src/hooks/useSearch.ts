@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { IItem } from "../utils/types";
+import useDebounce from "./useDebounce";
 
 export interface IFuzzyClient<T> {
   results: T[];
@@ -110,6 +111,18 @@ export function useSearch<T>(
     return new Fuse(data, { ...defaultOptions, ...options });
   }, [data, options]);
 
+  const debouncedValue = useDebounce(
+    [
+      data,
+      keyword,
+      orderBy,
+      otherFields.playingTime,
+      otherFields.numberOfPlayers,
+      JSON.stringify(members),
+    ],
+    500
+  );
+
   const results = useMemo(() => {
     let results: any = data;
     const { playingTime, numberOfPlayers } = otherFields;
@@ -129,14 +142,7 @@ export function useSearch<T>(
     results = orderByFn(results, orderBy);
 
     return results;
-  }, [
-    data,
-    keyword,
-    orderBy,
-    otherFields.playingTime,
-    otherFields.numberOfPlayers,
-    JSON.stringify(members),
-  ]);
+  }, [...debouncedValue]);
 
   return {
     results,
