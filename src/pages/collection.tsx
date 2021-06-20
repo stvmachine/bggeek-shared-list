@@ -26,6 +26,7 @@ import {
   fetchCollection,
   mergeCollections,
 } from "../api/fetchGroupCollection";
+import { useSwipeable } from "react-swipeable";
 
 const MEMBERS = ["donutgamer", "Jagger84", "stevmachine"];
 
@@ -74,6 +75,9 @@ const Index: NextPage<CollectionPageProps> = ({ initialData }) => {
   const methods = useForm({ defaultValues });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const handlers = useSwipeable({
+    onSwipedLeft: () => onClose,
+  });
 
   return (
     <FormProvider {...methods}>
@@ -100,9 +104,14 @@ const Index: NextPage<CollectionPageProps> = ({ initialData }) => {
         <Footer />
       </Container>
 
-      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
+      <Drawer
+        placement="left"
+        onClose={onClose}
+        isOpen={isOpen}
+        autoFocus={false}
+      >
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent {...handlers}>
           <DrawerHeader borderBottomWidth="1px">Filter</DrawerHeader>
           <DrawerBody>
             <SearchSidebar
