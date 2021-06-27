@@ -27,7 +27,6 @@
     "react-hook-form": "^7.4.2",
     "react-icons": "^4.2.0",
     "react-query": "^3.16.0",
-    "react-swipeable": "^6.1.2",
     "xml2json": "^0.12.0"
   },
   "devDependencies": {
