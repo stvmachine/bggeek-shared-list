@@ -65,6 +65,7 @@ const GameCard: React.FC<GameCardProps> = ({
       </LinkBox>
 
       <Box
+        h="100%"
         w="100%"
         ml={[8, 0]}
         display="flex"
@@ -81,7 +82,7 @@ const GameCard: React.FC<GameCardProps> = ({
             dangerouslySetInnerHTML={{ __html: bgName }}
           />
         </Stack>
-        <Stack mt={6} direction={"row"} spacing={2} align={"center"}>
+        <Stack mt="auto" direction={"row"} spacing={2} align={"center"}>
           <Wrap>
             {owners && (
               <>
