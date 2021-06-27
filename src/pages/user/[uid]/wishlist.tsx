@@ -29,7 +29,7 @@ import {
 
 const MEMBERS = ["stevmachine"];
 
-type CollectionPageProps = {
+type WisthlistPage = {
   initialData?: ICollection[];
 };
 
@@ -41,7 +41,7 @@ export const getStaticPaths = async () => {
 };
 
 export async function getStaticProps() {
-  const initialData = await fetchCollections(MEMBERS);
+  const initialData = await fetchCollections(MEMBERS, { wishlist: 1, own: 0 });
 
   return {
     props: {
@@ -50,13 +50,13 @@ export async function getStaticProps() {
   };
 }
 
-const Index: NextPage<CollectionPageProps> = ({ initialData }) => {
+const Index: NextPage<WisthlistPage> = ({ initialData }) => {
   const AuthUser = useAuthUser();
 
   const results = useQueries(
     MEMBERS.map((member, index) => ({
-      queryKey: ["collection", member],
-      queryFn: () => fetchCollection(member),
+      queryKey: ["wishlist", member],
+      queryFn: () => fetchCollection(member, { wishlist: 1, own: 0 }),
       initialData:
         initialData && initialData[index] ? initialData[index] : null,
       refetchOnWindowFocus: false,

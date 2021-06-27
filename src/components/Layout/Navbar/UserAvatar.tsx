@@ -53,6 +53,9 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user, signOut }) => {
               <MenuItem onClick={goTo(`/user/${user.id}/collection`)}>
                 My collection
               </MenuItem>
+              <MenuItem onClick={goTo(`/user/${user.id}/wishlist`)}>
+                Wishlist
+              </MenuItem>
               <MenuItem onClick={goTo(`/user/${user.id}/communities`)}>
                 My groups
               </MenuItem>
