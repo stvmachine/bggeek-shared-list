@@ -61,9 +61,9 @@ const PlayCard: React.FC<PlayCardProps> = ({
             fontWeight={800}
             fontSize={"sm"}
             letterSpacing={1.1}
-          >
-            {bgName}
-          </Text>
+            break
+            dangerouslySetInnerHTML={{ __html: bgName }}
+          />
           <Heading
             color={useColorModeValue("gray.700", "white")}
             fontSize={["md", "2xl"]}

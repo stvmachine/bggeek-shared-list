@@ -16,7 +16,6 @@ import {
 
 import Footer from "../../../components/Layout/Footer";
 import Navbar from "../../../components/Layout/Navbar";
-import Comments from "../../../components/Comments";
 import PlayCard from "../../../components/PlayCard";
 import { IBgDict, IExtendedUser, IPlaysByDateDict } from "../../../utils/types";
 import { getPlaysAndRelatedBggs } from "../../../api/fetchPlays";
@@ -62,7 +61,6 @@ const PlaysPage: NextPage<PlaysPageProps> = ({ bgs, plays }) => {
             </Box>
           ))}
       </Box>
-      <Comments />
       <Footer />
     </Container>
   );

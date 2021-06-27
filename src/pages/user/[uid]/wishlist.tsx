@@ -13,7 +13,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQueries } from "react-query";
-import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
+import {
+  AuthAction,
+  useAuthUser,
+  withAuthUser,
+  withAuthUserTokenSSR,
+} from "next-firebase-auth";
 
 import Footer from "../../../components/Layout/Footer";
 import Navbar from "../../../components/Layout/Navbar";
@@ -26,35 +31,21 @@ import {
   fetchCollection,
   mergeCollections,
 } from "../../../api/fetchGroupCollection";
+import { getUser } from "../../../api/getUser";
 
-const MEMBERS = ["stevmachine"];
-
-type WisthlistPage = {
+type WisthlistPageProps = {
   initialData?: ICollection[];
+  members: string[];
 };
 
-export const getStaticPaths = async () => {
-  return {
-    paths: [], //indicates that no page needs be created at build time
-    fallback: "blocking", //indicates the type of fallback
-  };
-};
-
-export async function getStaticProps() {
-  const initialData = await fetchCollections(MEMBERS, { wishlist: 1, own: 0 });
-
-  return {
-    props: {
-      initialData,
-    },
-  };
-}
-
-const Index: NextPage<WisthlistPage> = ({ initialData }) => {
+const WishlistPage: NextPage<WisthlistPageProps> = ({
+  initialData,
+  members,
+}) => {
   const AuthUser = useAuthUser();
 
   const results = useQueries(
-    MEMBERS.map((member, index) => ({
+    members.map((member, index) => ({
       queryKey: ["wishlist", member],
       queryFn: () => fetchCollection(member, { wishlist: 1, own: 0 }),
       initialData:
@@ -71,12 +62,12 @@ const Index: NextPage<WisthlistPage> = ({ initialData }) => {
   const defaultValues = useMemo(
     () => ({
       orderBy: "name_asc",
-      members: MEMBERS.reduce(
+      members: members.reduce(
         (accum, member) => ({ ...accum, [member]: true }),
         {}
       ),
     }),
-    [MEMBERS]
+    [members]
   );
   const methods = useForm({ defaultValues });
 
@@ -96,7 +87,7 @@ const Index: NextPage<WisthlistPage> = ({ initialData }) => {
           <Stack direction={["column", "row"]} alignItems="flex-start">
             <Box display={{ base: "none", md: "flex" }}>
               <SearchSidebar
-                members={MEMBERS}
+                members={members}
                 collections={data?.collections || []}
               />
             </Box>
@@ -114,7 +105,7 @@ const Index: NextPage<WisthlistPage> = ({ initialData }) => {
           <DrawerBody>
             <SearchSidebar
               isOpenDrawer
-              members={MEMBERS}
+              members={members}
               collections={data?.collections || []}
             />
           </DrawerBody>
@@ -124,7 +115,28 @@ const Index: NextPage<WisthlistPage> = ({ initialData }) => {
   );
 };
 
-export default withAuthUser({
+export const getServerSideProps = withAuthUserTokenSSR()(async ({ params }) => {
+  const { uid } = params!;
+  const user = await getUser(String(uid));
+
+  if (user.id === uid) {
+    const initialData = await fetchCollections([user.bggUsername], {
+      wishlist: 1,
+      own: 0,
+    });
+
+    return {
+      props: {
+        initialData,
+        members: [user.bggUsername],
+      },
+    };
+  } else {
+    return { props: {} };
+  }
+});
+
+export default withAuthUser<WisthlistPageProps>({
   whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   LoaderComponent: FullPageLoader,
-})(Index);
+})(WishlistPage);
