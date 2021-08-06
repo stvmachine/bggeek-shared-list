@@ -1,5 +1,5 @@
 import Fuse, { FuseOptions } from "fuse.js";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { IItem } from "../utils/types";

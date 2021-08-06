@@ -25,7 +25,6 @@ import Navbar from "../../../components/Layout/Navbar";
 import Results from "../../../components/Results";
 import SearchSidebar from "../../../components/SearchSidebar";
 import FullPageLoader from "../../../components/Layout/FullPageLoader";
-import { ICollection } from "../../../utils/types";
 import {
   fetchCollection,
   mergeCollections,
