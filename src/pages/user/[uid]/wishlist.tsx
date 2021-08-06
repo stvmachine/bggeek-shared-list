@@ -27,36 +27,37 @@ import SearchSidebar from "../../../components/SearchSidebar";
 import FullPageLoader from "../../../components/Layout/FullPageLoader";
 import { ICollection } from "../../../utils/types";
 import {
-  fetchCollections,
   fetchCollection,
   mergeCollections,
 } from "../../../api/fetchGroupCollection";
 import { getUser } from "../../../api/getUser";
 
 type WisthlistPageProps = {
-  initialData?: ICollection[];
   members: string[];
 };
 
-const WishlistPage: NextPage<WisthlistPageProps> = ({
-  initialData,
-  members,
-}) => {
+const WishlistPage: NextPage<WisthlistPageProps> = ({ members }) => {
   const AuthUser = useAuthUser();
 
   const results = useQueries(
-    members.map((member, index) => ({
+    members.map((member) => ({
       queryKey: ["wishlist", member],
       queryFn: () => fetchCollection(member, { wishlist: 1, own: 0 }),
-      initialData:
-        initialData && initialData[index] ? initialData[index] : null,
       refetchOnWindowFocus: false,
     }))
   );
 
-  const data = useMemo(
-    () => mergeCollections(results.map((result: any) => result?.data)),
+  const isLoading = useMemo(
+    () => results.reduce((acc, next) => next.isLoading || acc, false),
     [results]
+  );
+
+  const data = useMemo(
+    () =>
+      !isLoading
+        ? mergeCollections(results.map((result: any) => result?.data))
+        : undefined,
+    [isLoading]
   );
 
   const defaultValues = useMemo(
@@ -119,15 +120,9 @@ export const getServerSideProps = withAuthUserTokenSSR()(async ({ params }) => {
   const { uid } = params!;
   const user = await getUser(String(uid));
 
-  if (user.id === uid) {
-    const initialData = await fetchCollections([user.bggUsername], {
-      wishlist: 1,
-      own: 0,
-    });
-
+  if (user.id === uid || user.bggUsername === uid) {
     return {
       props: {
-        initialData,
         members: [user.bggUsername],
       },
     };

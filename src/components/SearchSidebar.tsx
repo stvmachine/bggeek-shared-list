@@ -132,7 +132,7 @@ const SearchSidebar = ({
                         }}
                         isChecked={getValues(`members[${member}]`)}
                       >
-                        {`${member} (${collections[index].totalitems})`}
+                        {`${member} (${collections[index]?.totalitems})`}
                       </Checkbox>
                     ))}
                   </VStack>

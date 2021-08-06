@@ -3,7 +3,7 @@ const prodConfig = {
 };
 
 const devConfig = {
-  API_ENDPOINT: "http://localhost:3001/api/v1",
+  API_ENDPOINT: "http://localhost:3000/api/v1",
 };
 
 const config = process.env.NODE_ENV === "production" ? prodConfig : devConfig;

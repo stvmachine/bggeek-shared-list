@@ -17,13 +17,16 @@ import SortBar from "../components/SortBar";
 import GameCard from "./GameCard";
 
 type ResultsProps = {
-  boardgames: IItem[];
+  boardgames?: IItem[];
 };
 
 const Results = ({ boardgames }: ResultsProps) => {
-  const { results } = useSearch<IItem>(boardgames, {
-    keys: ["name.text"],
-  });
+  const { results } = useSearch<IItem>(
+    boardgames || [],
+    {
+      keys: ["name.text"],
+    }
+  );
   const { watch } = useFormContext();
   const watchedMembers = watch("members");
   const checkedMembers = Object.keys(watchedMembers).reduce(
@@ -40,7 +43,7 @@ const Results = ({ boardgames }: ResultsProps) => {
     <Container mt={10} maxWidth={"100%"}>
       {checkedMembers?.length > 0 ? (
         <Heading fontSize={"2xl"} mb={10}>
-          Displaying {results.length} games owned for the following members:
+          {`Displaying ${results.length} games owned for the following members:`}
           <UnorderedList>
             {checkedMembers.map((member, index) => (
               <ListItem key={`${member}_${index}`}>
@@ -61,7 +64,6 @@ const Results = ({ boardgames }: ResultsProps) => {
           Please select at least one member to display their collection.
         </Heading>
       )}
-
       <SortBar />
       <Wrap align="center" spacing="3">
         {results.length > 0 &&

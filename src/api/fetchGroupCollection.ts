@@ -45,11 +45,14 @@ export const fetchCollection = async (
 export const mergeCollections = (
   rawData: ICollection[]
 ): { boardgames: IItem[]; collections: ICollection[] } => {
-  const collections = rawData.map(({ totalitems, pubdate, username }: any) => ({
-    totalitems,
-    pubdate,
-    username,
-  }));
+  const collections = rawData.map((item: ICollection) => {
+    const { totalitems, pubdate, username } = item || {};
+    return {
+      totalitems,
+      pubdate,
+      username,
+    };
+  });
 
   const boardgames = rawData
     .reduce(

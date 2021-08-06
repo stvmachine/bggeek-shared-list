@@ -21,11 +21,7 @@ import Results from "../components/Results";
 import SearchSidebar from "../components/SearchSidebar";
 import FullPageLoader from "../components/Layout/FullPageLoader";
 import { ICollection } from "../utils/types";
-import {
-  fetchCollections,
-  fetchCollection,
-  mergeCollections,
-} from "../api/fetchGroupCollection";
+import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
 
 const MEMBERS = ["donutgamer", "Jagger84", "stevmachine"];
 
@@ -34,31 +30,33 @@ type CollectionPageProps = {
 };
 
 export async function getStaticProps() {
-  const initialData = await fetchCollections(MEMBERS);
-
   return {
-    props: {
-      initialData,
-    },
+    props: {},
   };
 }
 
-const Index: NextPage<CollectionPageProps> = ({ initialData }) => {
+const Index: NextPage<CollectionPageProps> = () => {
   const AuthUser = useAuthUser();
 
   const results = useQueries(
-    MEMBERS.map((member, index) => ({
+    MEMBERS.map((member) => ({
       queryKey: ["collection", member],
       queryFn: () => fetchCollection(member),
-      initialData:
-        initialData && initialData[index] ? initialData[index] : null,
       refetchOnWindowFocus: false,
     }))
   );
 
-  const data = useMemo(
-    () => mergeCollections(results.map((result: any) => result?.data)),
+  const isLoading = useMemo(
+    () => results.reduce((acc, next) => next.isLoading || acc, false),
     [results]
+  );
+
+  const data = useMemo(
+    () =>
+      !isLoading
+        ? mergeCollections(results.map((result: any) => result?.data))
+        : undefined,
+    [isLoading]
   );
 
   const defaultValues = useMemo(
@@ -87,14 +85,20 @@ const Index: NextPage<CollectionPageProps> = ({ initialData }) => {
 
         <Box mt={12}>
           <Stack direction={["column", "row"]} alignItems="flex-start">
-            <Box display={{ base: "none", md: "flex" }}>
-              <SearchSidebar
-                members={MEMBERS}
-                collections={data?.collections || []}
-              />
-            </Box>
+            {!isLoading && data ? (
+              <>
+                <Box display={{ base: "none", md: "flex" }}>
+                  <SearchSidebar
+                    members={MEMBERS}
+                    collections={data.collections}
+                  />
+                </Box>
 
-            <Results boardgames={data?.boardgames || []} />
+                <Results boardgames={data?.boardgames} />
+              </>
+            ) : (
+              <div>loading</div>
+            )}
           </Stack>
         </Box>
         <Footer />
@@ -110,11 +114,13 @@ const Index: NextPage<CollectionPageProps> = ({ initialData }) => {
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Filter</DrawerHeader>
           <DrawerBody>
-            <SearchSidebar
-              isOpenDrawer
-              members={MEMBERS}
-              collections={data?.collections || []}
-            />
+            {data && (
+              <SearchSidebar
+                isOpenDrawer
+                members={MEMBERS}
+                collections={data.collections}
+              />
+            )}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
