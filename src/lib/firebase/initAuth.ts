@@ -1,6 +1,10 @@
 import { init } from "next-firebase-auth";
 
 const initAuth = () => {
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY
+    ? process.env.FIREBASE_PRIVATE_KEY
+    : "";
+
   init({
     authPageURL: "/auth",
     appPageURL: "/",
@@ -12,9 +16,7 @@ const initAuth = () => {
       credential: {
         projectId: "bbg-communities",
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
-        privateKey: process.env.FIREBASE_PRIVATE_KEY
-          ? process.env.FIREBASE_PRIVATE_KEY
-          : "", // Expected to be undefined on client side
+        privateKey, // Expected to be undefined on client side
       },
       databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "",
     },
