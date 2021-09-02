@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   InputLeftElement,
@@ -13,8 +13,13 @@ import {
   AccordionIcon,
   CheckboxGroup,
   Checkbox,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
 } from "@chakra-ui/react";
-import { useFormContext } from "react-hook-form";
+import { appendErrors, useFormContext } from "react-hook-form";
 import { SearchIcon } from "@chakra-ui/icons";
 
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
@@ -23,8 +28,10 @@ import useKeydown from "../hooks/useKeydown";
 
 type SearchSidebarProps = {
   members: string[];
+  addMember: (members: string) => void;
   collections: ICollection[];
   isOpenDrawer?: boolean;
+  hotSeatError?: string;
 };
 
 const hideVirtualKeyboard = (): void => {
@@ -39,9 +46,13 @@ const hideVirtualKeyboard = (): void => {
 
 const SearchSidebar = ({
   members,
+  addMember,
+  hotSeatError,
   collections,
   isOpenDrawer,
 }: SearchSidebarProps) => {
+  const [showHotSeat, displayHotSeat] = useState(false);
+  const [hotSeatMember, setHotSeatMember] = useState("");
   const { register, handleSubmit, setValue, getValues } = useFormContext();
   const onSubmit = (_: any, event: any) => {
     event.preventDefault();
@@ -51,6 +62,7 @@ const SearchSidebar = ({
 
   useKeydown(hideVirtualKeyboard);
 
+  console.log(hotSeatError);
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
       <VStack width={isOpenDrawer ? "100%" : "xs"}>
@@ -119,6 +131,31 @@ const SearchSidebar = ({
               {members && collections && (
                 <CheckboxGroup>
                   <VStack alignItems={"flex-start"}>
+                    <Button
+                      onClick={() => displayHotSeat(!showHotSeat)}
+                      colorScheme="teal"
+                      type="button"
+                      alignSelf="flex-end"
+                    >
+                      {!showHotSeat ? "Add more" : "Hide"}
+                    </Button>
+
+                    {showHotSeat && (
+                      <FormControl
+                        id="hot-seat-member"
+                        isInvalid={!!hotSeatError}
+                        py={3}
+                      >
+                        <FormLabel>Add new member</FormLabel>
+                        <Input
+                          value={hotSeatMember}
+                          onBlur={() => addMember(hotSeatMember)}
+                          onChange={(e) => setHotSeatMember(e.target.value)}
+                        />
+                        <FormErrorMessage>{hotSeatError}</FormErrorMessage>
+                      </FormControl>
+                    )}
+
                     {members.map((member, index) => (
                       <Checkbox
                         key={`checkbox-${member}-${
