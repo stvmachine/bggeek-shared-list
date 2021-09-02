@@ -45,7 +45,7 @@ const Index: NextPage<CollectionPageProps> = () => {
   const addMember = useCallback(
     async (newMember) => {
       setHotSeatError("");
-      if (!members.find((m) => m === newMember)) {
+      if (!members.find((m) => m.toLowerCase() === newMember.toLowerCase())) {
         const user = await getBggUser({ name: newMember });
         if (user?.data?.id) {
           setMembers([...members, newMember]);
