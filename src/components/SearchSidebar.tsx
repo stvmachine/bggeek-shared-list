@@ -16,10 +16,9 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
 } from "@chakra-ui/react";
-import { appendErrors, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { SearchIcon } from "@chakra-ui/icons";
 
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
