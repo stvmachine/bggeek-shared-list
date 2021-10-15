@@ -27,8 +27,8 @@ import useKeydown from "../hooks/useKeydown";
 
 type SearchSidebarProps = {
   members: string[];
-  addMember: (members: string) => void;
   collections: ICollection[];
+  addMember?: (members: string) => void;
   isOpenDrawer?: boolean;
   hotSeatError?: string;
 };
@@ -139,7 +139,7 @@ const SearchSidebar = ({
                       {!showHotSeat ? "Add more" : "Hide"}
                     </Button>
 
-                    {showHotSeat && (
+                    {showHotSeat && addMember && (
                       <FormControl
                         id="hot-seat-member"
                         isInvalid={!!hotSeatError}
