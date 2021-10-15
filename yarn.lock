@@ -3496,6 +3496,11 @@ lru-memoizer@^2.1.2:
     lodash.clonedeep "^4.5.0"
     lru-cache "~4.0.0"
 
+madr@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/madr/-/madr-2.1.2.tgz#0cd604e858d51f8e2be5ca573c887879063909fb"
+  integrity sha512-n+dkvy8NMMIHEMp2qaOQfxiy1Zqs5UfygEw1hqmBYqQdMgnVZSrS2BWN9NThzoHKWuFnhyWwmy0ls6k5XZ03Gg==
+
 make-dir@^3.0.0, make-dir@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.1.0.tgz#415e967046b3a7f1d185277d84aa58203726a13f"
