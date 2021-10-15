@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { NextPage } from "next";
 import {
@@ -22,8 +22,7 @@ import SearchSidebar from "../components/SearchSidebar";
 import FullPageLoader from "../components/Layout/FullPageLoader";
 import { ICollection } from "../utils/types";
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
-
-const MEMBERS = ["donutgamer", "Jagger84", "stevmachine"];
+import { getBggUser } from "bgg-xml-api-client";
 
 type CollectionPageProps = {
   initialData?: ICollection[];
@@ -36,10 +35,34 @@ export async function getStaticProps() {
 }
 
 const Index: NextPage<CollectionPageProps> = () => {
+  const [members, setMembers] = useState<string[]>([
+    "donutgamer",
+    "Jagger84",
+    "stevmachine",
+  ]);
+
+  const [hotSeatError, setHotSeatError] = useState<string>("");
+  const addMember = useCallback(
+    async (newMember) => {
+      setHotSeatError("");
+      if (!members.find((m) => m.toLowerCase() === newMember.toLowerCase())) {
+        const user = await getBggUser({ name: newMember });
+        if (user?.data?.id) {
+          setMembers([...members, newMember]);
+        }else{
+          setHotSeatError("Username doesn't exist in BGGeek, please try again")
+        }
+      } else {
+        setHotSeatError("Username already added to the list");
+      }
+    },
+    [members, setMembers]
+  );
+
   const AuthUser = useAuthUser();
 
   const results = useQueries(
-    MEMBERS.map((member) => ({
+    members.map((member) => ({
       queryKey: ["collection", member],
       queryFn: () => fetchCollection(member),
       refetchOnWindowFocus: false,
@@ -62,12 +85,12 @@ const Index: NextPage<CollectionPageProps> = () => {
   const defaultValues = useMemo(
     () => ({
       orderBy: "name_asc",
-      members: MEMBERS.reduce(
+      members: members.reduce(
         (accum, member) => ({ ...accum, [member]: true }),
         {}
       ),
     }),
-    [MEMBERS]
+    [members]
   );
   const methods = useForm({ defaultValues });
 
@@ -89,7 +112,9 @@ const Index: NextPage<CollectionPageProps> = () => {
               <>
                 <Box display={{ base: "none", md: "flex" }}>
                   <SearchSidebar
-                    members={MEMBERS}
+                    members={members}
+                    addMember={addMember}
+                    hotSeatError={hotSeatError}
                     collections={data.collections}
                   />
                 </Box>
@@ -117,7 +142,9 @@ const Index: NextPage<CollectionPageProps> = () => {
             {data && (
               <SearchSidebar
                 isOpenDrawer
-                members={MEMBERS}
+                members={members}
+                addMember={addMember}
+                hotSeatError={hotSeatError}
                 collections={data.collections}
               />
             )}
