@@ -1,265 +1,269 @@
 import {
   Box,
-  Flex,
-  Stack,
-  Heading,
-  Text,
-  Container,
-  Input,
   Button,
-  SimpleGrid,
-  Avatar,
-  AvatarGroup,
-  useBreakpointValue,
-  IconProps,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  HStack,
   Icon,
+  Input,
+  Link,
+  Switch,
+  Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
-import axios from "axios";
-import { SubmitHandler, useForm } from "react-hook-form";
+import React from "react";
+import { FaFacebook, FaGoogle } from "react-icons/fa";
+import NextLink from "next/link";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useFirebaseAuth } from "../components/FirebaseAuth";
 
-const avatars = [
-  {
-    name: "Ryan Florence",
-    url: "https://bit.ly/ryan-florence",
-  },
-  {
-    name: "Segun Adebayo",
-    url: "https://bit.ly/sage-adebayo",
-  },
-  {
-    name: "Kent Dodds",
-    url: "https://bit.ly/kent-c-dodds",
-  },
-  {
-    name: "Prosper Otemuyiwa",
-    url: "https://bit.ly/prosper-baba",
-  },
-  {
-    name: "Christian Nwamba",
-    url: "https://bit.ly/code-beast",
-  },
-];
+const validationSchema = yup.object({
+  email: yup.string().required("Required"),
+  password: yup.string().required("Required"),
+});
 
-type FormValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+function Register() {
+  const titleColor = useColorModeValue("teal.300", "teal.200");
+  const textColor = useColorModeValue("gray.700", "white");
+  const bgColor = useColorModeValue("white", "gray.700");
+  const bgIcons = useColorModeValue("teal.200", "rgba(255, 255, 255, 0.5)");
 
-export default function RegisterPage() {
   const {
     register,
     handleSubmit,
-    // watch,
-    // formState: { errors },
-  } = useForm();
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data)
-    const { firstName, lastName, email, password } = data;
-    const name = `${firstName} ${lastName}`;
-    axios.post("/api/v1/user/register", { name, email, password });
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const { createUserWithEmailAndPassword } = useFirebaseAuth();
+
+  const onSubmit = async (data: { email: string; password: string }) => {
+    const { email, password } = data;
+    const result = await createUserWithEmailAndPassword(email, password);
+    console.log(result);
   };
 
   return (
-    <Box position={"relative"}>
-      <Container
-        as={SimpleGrid}
-        maxW={"7xl"}
-        columns={{ base: 1, md: 2 }}
-        spacing={{ base: 10, lg: 32 }}
-        py={{ base: 10, sm: 20, lg: 32 }}
+    <Flex
+      direction="column"
+      alignSelf="center"
+      justifySelf="center"
+      overflow="hidden"
+    >
+      <Box
+        position="absolute"
+        minH={{ base: "70vh", md: "50vh" }}
+        w={{ md: "calc(100vw - 50px)" }}
+        borderRadius={{ md: "15px" }}
+        left="0"
+        right="0"
+        bgRepeat="no-repeat"
+        overflow="hidden"
+        zIndex="-1"
+        top="0"
+        bgImage="url('/img/BgSignUp.png')"
+        bgSize="cover"
+        mx={{ md: "auto" }}
+        mt={{ md: "14px" }}
+      ></Box>
+      <Flex
+        direction="column"
+        textAlign="center"
+        justifyContent="center"
+        align="center"
+        mt="6.5rem"
+        mb="30px"
       >
-        <Stack spacing={{ base: 10, md: 20 }}>
-          <Heading
-            lineHeight={1.1}
-            fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
+        <Text fontSize="4xl" color="white" fontWeight="bold">
+          Welcome!
+        </Text>
+        <Text
+          fontSize="md"
+          color="white"
+          fontWeight="normal"
+          mt="10px"
+          mb="26px"
+          w={{ base: "90%", sm: "60%", lg: "40%", xl: "30%" }}
+        >
+          Use these awesome forms to login or create new account in your project
+          for free.
+        </Text>
+      </Flex>
+      <Flex alignItems="center" justifyContent="center" mb="60px" mt="20px">
+        <Flex
+          direction="column"
+          w="445px"
+          background="transparent"
+          borderRadius="15px"
+          p="40px"
+          mx={{ base: "100px" }}
+          bg={bgColor}
+          boxShadow="0 20px 27px 0 rgb(0 0 0 / 5%)"
+        >
+          <Text
+            fontSize="xl"
+            color={textColor}
+            fontWeight="bold"
+            textAlign="center"
+            mb="22px"
           >
-            Senior web designers{" "}
-            <Text
-              as={"span"}
-              bgGradient="linear(to-r, red.400,pink.400)"
-              bgClip="text"
-            >
-              &
-            </Text>{" "}
-            Full-Stack Developers
-          </Heading>
-          <Stack direction={"row"} spacing={4} align={"center"}>
-            <AvatarGroup>
-              {avatars.map((avatar) => (
-                <Avatar
-                  key={avatar.name}
-                  name={avatar.name}
-                  src={avatar.url}
-                  size={useBreakpointValue({ base: "md", md: "lg" })}
-                  position={"relative"}
-                  zIndex={2}
-                  _before={{
-                    content: '""',
-                    width: "full",
-                    height: "full",
-                    rounded: "full",
-                    transform: "scale(1.125)",
-                    bgGradient: "linear(to-bl, red.400,pink.400)",
-                    position: "absolute",
-                    zIndex: -1,
-                    top: 0,
-                    left: 0,
-                  }}
-                />
-              ))}
-            </AvatarGroup>
-            <Text fontFamily={"heading"} fontSize={{ base: "4xl", md: "6xl" }}>
-              +
-            </Text>
+            Register With
+          </Text>
+          {/* <HStack spacing="15px" justify="center" mb="22px">
             <Flex
-              align={"center"}
-              justify={"center"}
-              fontFamily={"heading"}
-              fontSize={{ base: "sm", md: "lg" }}
-              bg={"gray.800"}
-              color={"white"}
-              rounded={"full"}
-              width={useBreakpointValue({ base: "44px", md: "60px" })}
-              height={useBreakpointValue({ base: "44px", md: "60px" })}
-              position={"relative"}
-              _before={{
-                content: '""',
-                width: "full",
-                height: "full",
-                rounded: "full",
-                transform: "scale(1.125)",
-                bgGradient: "linear(to-bl, orange.400,yellow.400)",
-                position: "absolute",
-                zIndex: -1,
-                top: 0,
-                left: 0,
+              justify="center"
+              align="center"
+              w="75px"
+              h="75px"
+              borderRadius="15px"
+              border="1px solid lightgray"
+              cursor="pointer"
+              transition="all .25s ease"
+              _hover={{ filter: "brightness(120%)", bg: bgIcons }}
+            >
+              <Link href="#">
+                <Icon
+                  as={FaFacebook}
+                  w="30px"
+                  h="30px"
+                  _hover={{ filter: "brightness(120%)" }}
+                />
+              </Link>
+            </Flex>
+
+            <Flex
+              justify="center"
+              align="center"
+              w="75px"
+              h="75px"
+              borderRadius="15px"
+              border="1px solid lightgray"
+              cursor="pointer"
+              transition="all .25s ease"
+              _hover={{ filter: "brightness(120%)", bg: bgIcons }}
+            >
+              <Link href="#">
+                <Icon
+                  as={FaGoogle}
+                  w="30px"
+                  h="30px"
+                  _hover={{ filter: "brightness(120%)" }}
+                />
+              </Link>
+            </Flex>
+          </HStack>
+          <Text
+            fontSize="lg"
+            color="gray.400"
+            fontWeight="bold"
+            textAlign="center"
+            mb="22px"
+          >
+            or
+          </Text> */}
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* <FormControl id="name">
+              <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+                Name
+              </FormLabel>
+              <Input
+                fontSize="sm"
+                ms="4px"
+                borderRadius="15px"
+                type="text"
+                placeholder="Your full name"
+                mb="24px"
+                size="lg"
+              />
+            </FormControl> */}
+            <FormControl id="email" isInvalid={errors.email?.message} mb="24px">
+              <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+                Email
+              </FormLabel>
+              <Input
+                fontSize="sm"
+                ms="4px"
+                borderRadius="15px"
+                type="email"
+                placeholder="Your email address"
+                size="lg"
+                {...register("email")}
+              />
+              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl
+              id="password"
+              isInvalid={errors.password?.message}
+              mb="24px"
+            >
+              <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+                Password
+              </FormLabel>
+              <Input
+                fontSize="sm"
+                ms="4px"
+                borderRadius="15px"
+                type="password"
+                placeholder="Your password"
+                size="lg"
+                {...register("password")}
+              />
+              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+            </FormControl>
+
+            {/* <FormControl display="flex" alignItems="center" mb="24px">
+                <Switch id="remember-login" colorScheme="teal" me="10px" />
+                <FormLabel htmlFor="remember-login" mb="0" fontWeight="normal">
+                  Remember me
+                </FormLabel>
+              </FormControl> */}
+            <Button
+              type="submit"
+              bg="teal.300"
+              fontSize="medium"
+              color="white"
+              fontWeight="bold"
+              w="100%"
+              h="45"
+              mb="24px"
+              _hover={{
+                bg: "teal.200",
+              }}
+              _active={{
+                bg: "teal.400",
               }}
             >
-              YOU
-            </Flex>
-          </Stack>
-        </Stack>
-        <Stack
-          bg={"gray.50"}
-          rounded={"xl"}
-          p={{ base: 4, sm: 6, md: 8 }}
-          spacing={{ base: 8 }}
-          maxW={{ lg: "lg" }}
-        >
-          <Stack spacing={4}>
-            <Heading
-              color={"gray.800"}
-              lineHeight={1.1}
-              fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
-            >
-              Join us
-              <Text
-                as={"span"}
-                bgGradient="linear(to-r, red.400,pink.400)"
-                bgClip="text"
-              >
-                !
-              </Text>
-            </Heading>
-            <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
-              We’re looking for amazing engineers just like you! Become a part
-              of our rockstar engineering team and skyrocket your career!
+              SIGN UP
+            </Button>
+          </form>
+
+          <Flex
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            maxW="100%"
+            mt="0px"
+          >
+            <Text color={textColor} fontWeight="medium">
+              Already have an account?
+              <NextLink href="/auth" passHref>
+                <Link color={titleColor} as="span" ms="5px" fontWeight="bold">
+                  Sign In
+                </Link>
+              </NextLink>
             </Text>
-          </Stack>
-          <Box mt={10}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Stack spacing={4}>
-                <Input
-                  placeholder="First name"
-                  bg={"gray.100"}
-                  border={0}
-                  color={"gray.500"}
-                  _placeholder={{
-                    color: "gray.500",
-                  }}
-                  {...register("firstName", { required: true })}
-                />
-                <Input
-                  placeholder="Last name"
-                  bg={"gray.100"}
-                  border={0}
-                  color={"gray.500"}
-                  _placeholder={{
-                    color: "gray.500",
-                  }}
-                  {...register("lastName", { required: true })}
-                />
-                <Input
-                  placeholder="firstname@lastname.io"
-                  bg={"gray.100"}
-                  border={0}
-                  color={"gray.500"}
-                  _placeholder={{
-                    color: "gray.500",
-                  }}
-                  type="email"
-                  {...register("email", { required: true })}
-                />
-                <Input
-                  placeholder="Password"
-                  bg={"gray.100"}
-                  border={0}
-                  color={"gray.500"}
-                  _placeholder={{
-                    color: "gray.500",
-                  }}
-                  type="password"
-                  {...register("password", { required: true })}
-                />
-              </Stack>
-              <Button
-                fontFamily={"heading"}
-                mt={8}
-                w={"full"}
-                bgGradient="linear(to-r, red.400,pink.400)"
-                color={"white"}
-                _hover={{
-                  bgGradient: "linear(to-r, red.400,pink.400)",
-                  boxShadow: "xl",
-                }}
-                type="submit"
-              >
-                Submit
-              </Button>
-            </form>
-          </Box>
-        </Stack>
-      </Container>
-      <Blur
-        position={"absolute"}
-        top={-10}
-        left={-10}
-        style={{ filter: "blur(70px)" }}
-      />
-    </Box>
+          </Flex>
+        </Flex>
+      </Flex>
+    </Flex>
   );
 }
 
-export const Blur = (props: IconProps) => {
-  return (
-    <Icon
-      width={useBreakpointValue({ base: "100%", md: "40vw", lg: "30vw" })}
-      zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
-      height="560px"
-      viewBox="0 0 528 560"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <circle cx="71" cy="61" r="111" fill="#F56565" />
-      <circle cx="244" cy="106" r="139" fill="#ED64A6" />
-      <circle cy="291" r="139" fill="#ED64A6" />
-      <circle cx="80.5" cy="189.5" r="101.5" fill="#ED8936" />
-      <circle cx="196.5" cy="317.5" r="101.5" fill="#ECC94B" />
-      <circle cx="70.5" cy="458.5" r="101.5" fill="#48BB78" />
-      <circle cx="426.5" cy="-0.5" r="101.5" fill="#4299E1" />
-    </Icon>
-  );
-};
+export default Register;
