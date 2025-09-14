@@ -56,9 +56,25 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
     () => getBggUser({ name: usernameToValidate! }),
     {
       enabled: !!usernameToValidate,
-      retry: false,
+      retry: (failureCount, error: any) => {
+        // Don't retry on 404 or user not found errors
+        if (error?.response?.status === 404) {
+          return false;
+        }
+        // Don't retry if the error suggests user doesn't exist
+        if (error?.message?.includes('not found') || error?.message?.includes('404')) {
+          return false;
+        }
+        // Only retry network errors once
+        return failureCount < 1;
+      },
+      retryDelay: 1000, // 1 second delay between retries
       staleTime: 5 * 60 * 1000, // 5 minutes
       cacheTime: 10 * 60 * 1000, // 10 minutes
+      onError: (error: any) => {
+        // Log the error for debugging
+        console.log('Username validation error:', error);
+      },
     }
   );
 
@@ -71,7 +87,24 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
         reset();
         clearErrors();
       } else if (validationError) {
-        // Username validation failed
+        // Handle different types of errors
+        const error = validationError as any;
+        let errorMessage = `Username "${usernameToValidate}" not found on BoardGameGeek`;
+        
+        if (error?.response?.status === 404 || error?.message?.includes('404')) {
+          errorMessage = `Username "${usernameToValidate}" does not exist on BoardGameGeek`;
+        } else if (error?.code === 'NETWORK_ERROR' || error?.message?.includes('network')) {
+          errorMessage = `Network error. Please check your connection and try again.`;
+        } else if (error?.response?.status >= 500) {
+          errorMessage = `BoardGameGeek is temporarily unavailable. Please try again later.`;
+        }
+        
+        setError("username", {
+          type: "manual",
+          message: errorMessage,
+        });
+      } else if (!userData?.data?.id && usernameToValidate) {
+        // No error but also no valid user data - treat as not found
         setError("username", {
           type: "manual",
           message: `Username "${usernameToValidate}" not found on BoardGameGeek`,

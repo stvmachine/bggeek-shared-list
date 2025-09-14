@@ -6,7 +6,15 @@ import theme from "../theme";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors (client errors like 404, 401, etc.)
+        if (error?.response?.status >= 400 && error?.response?.status < 500) {
+          return false;
+        }
+        // Only retry network errors and 5xx server errors once
+        return failureCount < 1;
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000, // 5 minutes
       cacheTime: 10 * 60 * 1000, // 10 minutes
