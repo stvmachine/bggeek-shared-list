@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { AddIcon, CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import {
-  VStack,
+  Badge,
+  Button,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  HStack,
+  IconButton,
   Input,
   InputGroup,
   InputRightElement,
-  IconButton,
-  Button,
-  FormControl,
-  FormErrorMessage,
   Text,
-  Flex,
-  Badge,
-  HStack,
+  VStack,
 } from "@chakra-ui/react";
-import { AddIcon, SearchIcon, CloseIcon } from "@chakra-ui/icons";
 import { getBggUser } from "bgg-xml-api-client";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 type FormData = {
   username: string;
@@ -35,7 +35,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   isValidating,
 }) => {
   const [isAddingUsername, setIsAddingUsername] = useState(false);
-  
+
   const {
     control,
     handleSubmit,
@@ -52,7 +52,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   const validateUsername = async (username: string): Promise<boolean> => {
     try {
       const user = await getBggUser({ name: username });
-      return !!(user?.data?.id);
+      return !!user?.data?.id;
     } catch (error) {
       console.log(`Username "${username}" not found on BoardGameGeek`);
       return false;
@@ -61,7 +61,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
 
   const onSubmit = async (data: FormData) => {
     const trimmedUsername = data.username.trim();
-    
+
     if (!trimmedUsername) return;
 
     // Check if username already exists
@@ -78,7 +78,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
 
     try {
       const isValid = await validateUsername(trimmedUsername);
-      
+
       if (isValid) {
         onUsernamesChange([...usernames, trimmedUsername]);
         reset();
@@ -100,7 +100,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   };
 
   const handleRemoveUsername = (usernameToRemove: string) => {
-    const newUsernames = usernames.filter(u => u !== usernameToRemove);
+    const newUsernames = usernames.filter((u) => u !== usernameToRemove);
     onUsernamesChange(newUsernames);
   };
 
@@ -211,10 +211,11 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
         maxW="md"
         w="full"
       >
-        {isValidating 
-          ? "Validating..." 
-          : `View ${usernames.length > 0 ? usernames.length : ""} Collection${usernames.length !== 1 ? "s" : ""}`
-        }
+        {isValidating
+          ? "Validating..."
+          : `View ${usernames.length > 0 ? usernames.length : ""} Collection${
+              usernames.length !== 1 ? "s" : ""
+            }`}
       </Button>
     </VStack>
   );
