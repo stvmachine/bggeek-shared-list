@@ -18,12 +18,8 @@ export default function CTA() {
   const [isValidating, setIsValidating] = useState(false);
 
   const validateUsername = async (username: string): Promise<boolean> => {
-    try {
-      const user = await getBggUser({ name: username });
-      return !!(user?.data?.id);
-    } catch (error) {
-      return false;
-    }
+    const user = await getBggUser({ name: username }).catch(() => null);
+    return !!(user?.data?.id);
   };
 
   const handleSearch = async () => {
@@ -34,28 +30,24 @@ export default function CTA() {
     // Validate all usernames before redirecting
     setIsValidating(true);
 
-    try {
-      const validationPromises = usernames.map(async (username) => {
-        const isValid = await validateUsername(username);
-        return { username, isValid };
-      });
+    const validationPromises = usernames.map(async (username) => {
+      const isValid = await validateUsername(username);
+      return { username, isValid };
+    });
 
-      const results = await Promise.all(validationPromises);
-      const invalidUsers = results.filter(r => !r.isValid);
+    const results = await Promise.all(validationPromises);
+    const invalidUsers = results.filter(r => !r.isValid);
 
-      if (invalidUsers.length > 0) {
-        console.log(`Invalid usernames: ${invalidUsers.map(u => u.username).join(", ")}`);
-        return;
-      }
-
-      // All usernames are valid, redirect
-      const usernameParam = usernames.map(u => encodeURIComponent(u)).join(",");
-      router.push(`/collection?usernames=${usernameParam}`);
-    } catch (error) {
-      console.error("Error validating usernames:", error);
-    } finally {
+    if (invalidUsers.length > 0) {
+      console.log(`Invalid usernames: ${invalidUsers.map(u => u.username).join(", ")}`);
       setIsValidating(false);
+      return;
     }
+
+    // All usernames are valid, redirect
+    const usernameParam = usernames.map(u => encodeURIComponent(u)).join(",");
+    router.push(`/collection?usernames=${usernameParam}`);
+    setIsValidating(false);
   };
 
 
