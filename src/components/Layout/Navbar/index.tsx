@@ -1,22 +1,13 @@
 import { Box, Flex, IconButton, useColorModeValue } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { AuthUser } from "next-firebase-auth";
-import UserAvatar from "./UserAvatar";
 import Logo from "./Logo";
 
 type NavbarProps = {
-  user: AuthUser & {
-    bggUsername?: string;
-    bggVerified?: boolean;
-  };
-  signOut?: () => void;
   openDrawer?: () => void;
   isOpenDrawer?: boolean;
 };
 
 const Navbar: React.FC<NavbarProps> = ({
-  user,
-  signOut,
   isOpenDrawer,
   openDrawer,
 }) => {
@@ -52,8 +43,6 @@ const Navbar: React.FC<NavbarProps> = ({
           />
         </Flex>
         <Logo />
-
-        <UserAvatar user={user} signOut={signOut} />
       </Flex>
     </Box>
   );

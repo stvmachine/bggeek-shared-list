@@ -1,16 +1,13 @@
 import React from "react";
 import { NextPage } from "next";
 import { getBggHot, BggHotResponse } from "bgg-xml-api-client";
-import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
 
 import { Container } from "../components/Container";
 import Main from "../components/Layout/Main";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import CTA from "../components/CTA";
-import StatsCard from "../components/StatsCard";
 import HotGames from "../components/HotGames";
-import FullPageLoader from "../components/Layout/FullPageLoader";
 
 export async function getStaticProps() {
   try {
@@ -48,14 +45,12 @@ type IndexPageProps = {
 };
 
 const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
-  const AuthUser = useAuthUser();
   return (
     <Container height="100vh">
-      <Navbar user={AuthUser} signOut={AuthUser?.signOut} />
+      <Navbar />
       <Main>
         <CTA />
         <HotGames collectionData={collectionData} />
-        <StatsCard />
       </Main>
 
       <Footer />
@@ -63,7 +58,4 @@ const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
   );
 };
 
-export default withAuthUser<IndexPageProps>({
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-  LoaderComponent: FullPageLoader,
-})(Index);
+export default Index;

@@ -121,7 +121,7 @@ const SearchSidebar = ({
             <h2>
               <AccordionButton id="members-accordion-button">
                 <Box flex="1" textAlign="left">
-                  Members
+                  👥 Group Collectors ({members.length})
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
@@ -132,11 +132,12 @@ const SearchSidebar = ({
                   <VStack alignItems={"flex-start"}>
                     <Button
                       onClick={() => displayHotSeat(!showHotSeat)}
-                      colorScheme="teal"
+                      colorScheme="blue"
                       type="button"
                       alignSelf="flex-end"
+                      size="sm"
                     >
-                      {!showHotSeat ? "Add more" : "Hide"}
+                      {!showHotSeat ? "Add Collector" : "Hide"}
                     </Button>
 
                     {showHotSeat && addMember && (
@@ -145,11 +146,15 @@ const SearchSidebar = ({
                         isInvalid={!!hotSeatError}
                         py={3}
                       >
-                        <FormLabel>Add new member</FormLabel>
+                        <FormLabel fontSize="sm" fontWeight="bold">
+                          Add BoardGameGeek Username
+                        </FormLabel>
                         <Input
+                          placeholder="Enter BGG username"
                           value={hotSeatMember}
                           onBlur={() => addMember(hotSeatMember)}
                           onChange={(e) => setHotSeatMember(e.target.value)}
+                          size="sm"
                         />
                         <FormErrorMessage>{hotSeatError}</FormErrorMessage>
                       </FormControl>
@@ -168,7 +173,7 @@ const SearchSidebar = ({
                         }}
                         isChecked={getValues(`members[${member}]`)}
                       >
-                        {`${member} (${collections[index]?.totalitems})`}
+                        {`${member} (${collections[index]?.totalitems || 0} games)`}
                       </Checkbox>
                     ))}
                   </VStack>

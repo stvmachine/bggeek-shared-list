@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import {
   Box,
   Container,
@@ -13,13 +14,11 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useQueries } from "react-query";
-import { AuthAction, useAuthUser, withAuthUser } from "next-firebase-auth";
 
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import Results from "../components/Results";
 import SearchSidebar from "../components/SearchSidebar";
-import FullPageLoader from "../components/Layout/FullPageLoader";
 import { ICollection } from "../utils/types";
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
 import { getBggUser } from "bgg-xml-api-client";
@@ -35,13 +34,19 @@ export async function getStaticProps() {
 }
 
 const Index: NextPage<CollectionPageProps> = () => {
-  const [members, setMembers] = useState<string[]>([
-    "donutgamer",
-    "Jagger84",
-    "stevmachine",
-  ]);
-
+  const router = useRouter();
+  const { username } = router.query;
+  
+  const [members, setMembers] = useState<string[]>([]);
   const [hotSeatError, setHotSeatError] = useState<string>("");
+
+  // Initialize with username from query params
+  useEffect(() => {
+    if (username && typeof username === 'string') {
+      setMembers([username]);
+    }
+  }, [username]);
+
   const addMember = useCallback(
     async (newMember: string) => {
       setHotSeatError("");
@@ -58,8 +63,6 @@ const Index: NextPage<CollectionPageProps> = () => {
     },
     [members, setMembers]
   );
-
-  const AuthUser = useAuthUser();
 
   const results = useQueries(
     members.map((member) => ({
@@ -100,8 +103,6 @@ const Index: NextPage<CollectionPageProps> = () => {
     <FormProvider {...methods}>
       <Container height="100vh" maxWidth="100%">
         <Navbar
-          user={AuthUser}
-          signOut={AuthUser.signOut}
           openDrawer={onOpen}
           isOpenDrawer={isOpen}
         />
@@ -155,7 +156,4 @@ const Index: NextPage<CollectionPageProps> = () => {
   );
 };
 
-export default withAuthUser<CollectionPageProps>({
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-  LoaderComponent: FullPageLoader,
-})(Index);
+export default Index;
