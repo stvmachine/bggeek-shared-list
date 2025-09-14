@@ -19,7 +19,7 @@ export default function CTA() {
 
   const validateUsername = async (username: string): Promise<boolean> => {
     const user = await getBggUser({ name: username }).catch(() => null);
-    return !!(user?.data?.id);
+    return !!user?.data?.id;
   };
 
   const handleSearch = async () => {

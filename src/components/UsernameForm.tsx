@@ -16,6 +16,7 @@ import {
 import { getBggUser } from "bgg-xml-api-client";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useQuery } from "react-query";
 
 type FormData = {
   username: string;
@@ -34,7 +35,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   onSearch,
   isValidating,
 }) => {
-  const [isAddingUsername, setIsAddingUsername] = useState(false);
+  const [usernameToValidate, setUsernameToValidate] = useState<string | null>(null);
 
   const {
     control,
@@ -49,17 +50,38 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
     },
   });
 
-  const validateUsername = async (username: string): Promise<boolean> => {
-    try {
-      const user = await getBggUser({ name: username });
-      return !!user?.data?.id;
-    } catch (error) {
-      console.log(`Username "${username}" not found on BoardGameGeek`);
-      return false;
+  // Use useQuery for username validation
+  const { data: userData, isLoading: isValidatingUsername, error: validationError } = useQuery(
+    ["validateUser", usernameToValidate],
+    () => getBggUser({ name: usernameToValidate! }),
+    {
+      enabled: !!usernameToValidate,
+      retry: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
     }
-  };
+  );
 
-  const onSubmit = async (data: FormData) => {
+  // Handle validation result when query completes
+  React.useEffect(() => {
+    if (usernameToValidate && !isValidatingUsername) {
+      if (userData?.data?.id) {
+        // Username is valid, add it to the list
+        onUsernamesChange([...usernames, usernameToValidate]);
+        reset();
+        clearErrors();
+      } else if (validationError) {
+        // Username validation failed
+        setError("username", {
+          type: "manual",
+          message: `Username "${usernameToValidate}" not found on BoardGameGeek`,
+        });
+      }
+      setUsernameToValidate(null);
+    }
+  }, [usernameToValidate, isValidatingUsername, userData, validationError, usernames, onUsernamesChange, reset, clearErrors, setError]);
+
+  const onSubmit = (data: FormData) => {
     const trimmedUsername = data.username.trim();
 
     if (!trimmedUsername) return;
@@ -73,30 +95,8 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
       return;
     }
 
-    setIsAddingUsername(true);
     clearErrors("username");
-
-    try {
-      const isValid = await validateUsername(trimmedUsername);
-
-      if (isValid) {
-        onUsernamesChange([...usernames, trimmedUsername]);
-        reset();
-        clearErrors();
-      } else {
-        setError("username", {
-          type: "manual",
-          message: `Username "${trimmedUsername}" not found on BoardGameGeek`,
-        });
-      }
-    } catch (error) {
-      setError("username", {
-        type: "manual",
-        message: `Error validating username "${trimmedUsername}"`,
-      });
-    } finally {
-      setIsAddingUsername(false);
-    }
+    setUsernameToValidate(trimmedUsername);
   };
 
   const handleRemoveUsername = (usernameToRemove: string) => {
@@ -153,8 +153,8 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
                   size="sm"
                   colorScheme="green"
                   type="submit"
-                  isLoading={isAddingUsername}
-                  isDisabled={isAddingUsername}
+                  isLoading={isValidatingUsername}
+                  isDisabled={isValidatingUsername}
                 />
               </InputRightElement>
             </InputGroup>
