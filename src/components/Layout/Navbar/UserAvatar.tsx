@@ -70,11 +70,9 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user, signOut }) => {
       ) : (
         <>
           <Button
-            as={"a"}
             fontSize={"sm"}
             fontWeight={400}
             variant={"link"}
-            href={"#"}
             onClick={goTo("/auth")}
           >
             Sign In
@@ -85,7 +83,6 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user, signOut }) => {
             fontWeight={600}
             color={"white"}
             bg={"pink.400"}
-            href={"#"}
             _hover={{
               bg: "pink.300",
             }}

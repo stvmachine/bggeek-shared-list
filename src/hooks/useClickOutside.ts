@@ -6,8 +6,8 @@ const useClickOutside = (
   const ref = useRef<HTMLElement>(null);
 
   const onClickOutside = useCallback(
-    (event) => {
-      if (ref && ref.current && !ref.current.contains(event.target)) {
+    (event: MouseEvent) => {
+      if (ref && ref.current && !ref.current.contains(event.target as Node)) {
         event.stopPropagation();
         event.preventDefault();
         handleClickOutside();

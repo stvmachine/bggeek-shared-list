@@ -13,20 +13,33 @@ import HotGames from "../components/HotGames";
 import FullPageLoader from "../components/Layout/FullPageLoader";
 
 export async function getStaticProps() {
-  const results: BggHotResponse = await getBggHot({
-    type: "boardgame",
-  });
+  try {
+    const results: BggHotResponse = await getBggHot({
+      type: "boardgame",
+    });
 
-  const collectionData = {
-    ...results.data,
-    item: results.data.item.sort(() => 0.5 - Math.random()).slice(0, 24),
-  };
+    const collectionData = {
+      ...results.data,
+      item: results.data.item.sort(() => 0.5 - Math.random()).slice(0, 24),
+    };
 
-  return {
-    props: {
-      collectionData,
-    },
-  };
+    return {
+      props: {
+        collectionData,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching hot games:", error);
+    
+    // Return empty data structure as fallback
+    return {
+      props: {
+        collectionData: {
+          item: [],
+        },
+      },
+    };
+  }
 }
 
 type IndexPageProps = {
