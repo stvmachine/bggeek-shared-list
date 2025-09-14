@@ -6,29 +6,56 @@ import {
   Heading,
   Container,
   Text,
-  Input,
-  InputGroup,
-  InputRightElement,
-  IconButton,
-  HStack,
   VStack,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { SearchIcon, InfoIcon } from "@chakra-ui/icons";
+import UsernameForm from "./UsernameForm";
+import ExamplesSection from "./ExamplesSection";
+import { getBggUser } from "bgg-xml-api-client";
 
 export default function CTA() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [isValidating, setIsValidating] = useState(false);
 
-  const handleSearch = () => {
-    if (username.trim()) {
-      router.push(`/collection?username=${encodeURIComponent(username.trim())}`);
+  const validateUsername = async (username: string): Promise<boolean> => {
+    try {
+      const user = await getBggUser({ name: username });
+      return !!(user?.data?.id);
+    } catch (error) {
+      return false;
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSearch();
+  const handleSearch = async () => {
+    if (usernames.length === 0) {
+      return;
+    }
+
+    // Validate all usernames before redirecting
+    setIsValidating(true);
+
+    try {
+      const validationPromises = usernames.map(async (username) => {
+        const isValid = await validateUsername(username);
+        return { username, isValid };
+      });
+
+      const results = await Promise.all(validationPromises);
+      const invalidUsers = results.filter(r => !r.isValid);
+
+      if (invalidUsers.length > 0) {
+        console.log(`Invalid usernames: ${invalidUsers.map(u => u.username).join(", ")}`);
+        return;
+      }
+
+      // All usernames are valid, redirect
+      const usernameParam = usernames.map(u => encodeURIComponent(u)).join(",");
+      router.push(`/collection?usernames=${usernameParam}`);
+    } catch (error) {
+      console.error("Error validating usernames:", error);
+    } finally {
+      setIsValidating(false);
     }
   };
 
@@ -95,50 +122,15 @@ export default function CTA() {
           </VStack>
 
           {/* Username Input */}
-          <VStack spacing={4} w="full" maxW="md">
-            <Box w="full">
-              <InputGroup size="lg">
-                <Input
-                  placeholder="BoardGameGeek Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  bg="gray.100"
-                  border="none"
-                  _focus={{
-                    bg: "gray.200",
-                    boxShadow: "none"
-                  }}
-                />
-                <InputRightElement>
-                  <HStack spacing={2}>
-                    <IconButton
-                      aria-label="Info"
-                      icon={<InfoIcon />}
-                      size="sm"
-                      variant="ghost"
-                    />
-                    <IconButton
-                      aria-label="Search"
-                      icon={<SearchIcon />}
-                      size="sm"
-                      colorScheme="blue"
-                      onClick={handleSearch}
-                    />
-                  </HStack>
-                </InputRightElement>
-              </InputGroup>
-            </Box>
+          <VStack spacing={6} w="full" maxW="2xl">
+            <UsernameForm
+              usernames={usernames}
+              onUsernamesChange={setUsernames}
+              onSearch={handleSearch}
+              isValidating={isValidating}
+            />
             
-            {/* Group vs Individual Options */}
-            <VStack spacing={3} w="full">
-              <Text fontSize="sm" color="gray.600" textAlign="center">
-                <Text as="span" fontWeight="bold">Gaming Group?</Text> Add multiple usernames to combine collections
-              </Text>
-              <Text fontSize="sm" color="gray.500" textAlign="center">
-                <Text as="span" fontWeight="bold">Solo Collector?</Text> We'll help you organize and explore your single collection
-              </Text>
-            </VStack>
+            <ExamplesSection />
           </VStack>
 
           {/* Features Section */}

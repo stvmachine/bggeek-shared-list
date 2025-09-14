@@ -35,17 +35,22 @@ export async function getStaticProps() {
 
 const Index: NextPage<CollectionPageProps> = () => {
   const router = useRouter();
-  const { username } = router.query;
+  const { usernames, username } = router.query;
   
   const [members, setMembers] = useState<string[]>([]);
   const [hotSeatError, setHotSeatError] = useState<string>("");
 
-  // Initialize with username from query params
+  // Initialize with usernames from query params
   useEffect(() => {
-    if (username && typeof username === 'string') {
+    if (usernames && typeof usernames === 'string') {
+      // Handle comma-separated usernames
+      const usernameList = usernames.split(',').map(u => u.trim()).filter(u => u);
+      setMembers(usernameList);
+    } else if (username && typeof username === 'string') {
+      // Handle single username for backward compatibility
       setMembers([username]);
     }
-  }, [username]);
+  }, [usernames, username]);
 
   const addMember = useCallback(
     async (newMember: string) => {
