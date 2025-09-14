@@ -29,7 +29,7 @@ const HotGames = ({ collectionData }: HotGamesProps) => (
 
     <Container maxW={"6xl"} mt={10}>
       <Wrap>
-        {collectionData.item.length > 0 &&
+        {collectionData?.item && collectionData.item.length > 0 &&
           collectionData.item.map(({ thumbnail, id }: IHotItem) => (
             <WrapItem key={id}>
               {thumbnail?.value && (
@@ -37,6 +37,7 @@ const HotGames = ({ collectionData }: HotGamesProps) => (
                   boxSize={["95px", "120px", "150px"]}
                   objectFit="contain"
                   src={thumbnail.value}
+                  alt="Board game thumbnail"
                 />
               )}
             </WrapItem>

@@ -56,7 +56,7 @@ const GameCard: React.FC<GameCardProps> = ({
             pos={"relative"}
           >
             {image ? (
-              <Image src={image} layout={"fill"} objectFit="contain" />
+              <Image src={image} alt={bgName} layout={"fill"} objectFit="contain" />
             ) : (
               <Skeleton height="100%" width="100%" />
             )}
@@ -78,7 +78,7 @@ const GameCard: React.FC<GameCardProps> = ({
             fontWeight={800}
             fontSize={["xx-small", "x-small"]}
             letterSpacing={0.85}
-            break
+            wordBreak="break-word"
             dangerouslySetInnerHTML={{ __html: bgName }}
           />
         </Stack>

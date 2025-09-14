@@ -23,7 +23,7 @@ export const CardStyles = {
     },
   },
   // The default variant value
-  defaultProps: {
+  defaultVariants: {
     variant: "smooth",
   },
 };

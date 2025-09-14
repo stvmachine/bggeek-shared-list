@@ -43,7 +43,7 @@ const Index: NextPage<CollectionPageProps> = () => {
 
   const [hotSeatError, setHotSeatError] = useState<string>("");
   const addMember = useCallback(
-    async (newMember) => {
+    async (newMember: string) => {
       setHotSeatError("");
       if (!members.find((m) => m.toLowerCase() === newMember.toLowerCase())) {
         const user = await getBggUser({ name: newMember });
@@ -155,7 +155,7 @@ const Index: NextPage<CollectionPageProps> = () => {
   );
 };
 
-export default withAuthUser({
+export default withAuthUser<CollectionPageProps>({
   whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
   LoaderComponent: FullPageLoader,
 })(Index);
