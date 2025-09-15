@@ -17,7 +17,6 @@ import Results from "../components/Results";
 import SearchSidebar from "../components/SearchSidebar";
 import { ICollection } from "../utils/types";
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
-import { getBggUser } from "bgg-xml-api-client";
 import {
   parseUsernamesFromUrl,
   generatePermalink,
@@ -40,7 +39,8 @@ const Index: NextPage<CollectionPageProps> = () => {
   const { usernames: urlUsernames, username } = router.query;
 
   const [members, setMembers] = useState<string[]>([]);
-  const [hotSeatError, setHotSeatError] = useState<string>("");
+  const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
+  const [isValidating, setIsValidating] = useState(false);
 
   // Initialize with usernames from query params
   useEffect(() => {
@@ -66,25 +66,26 @@ const Index: NextPage<CollectionPageProps> = () => {
     }
   }, [members]);
 
-  const addMember = useCallback(
-    async (newMember: string) => {
-      setHotSeatError("");
-      if (!members.find((m) => m.toLowerCase() === newMember.toLowerCase())) {
-        try {
-          const user = await getBggUser({ name: newMember });
-          if (user?.data?.id) {
-            const newMembers = [...members, newMember];
-            setMembers(newMembers);
-          } else {
-            setHotSeatError(
-              "Username doesn't exist in BGGeek, please try again"
-            );
-          }
-        } catch (error) {
-          setHotSeatError("Error validating username, please try again");
-        }
-      } else {
-        setHotSeatError("Username already added to the list");
+  const handleSearch = useCallback(
+    (usernames: string[]) => {
+      // This is called when usernames are submitted for validation
+      // Don't proceed yet - wait for validation
+      console.log('UsernameManager submitted usernames for validation:', usernames);
+    },
+    []
+  );
+
+  const handleValidatedUsernames = useCallback(
+    (validatedUsernames: string[]) => {
+      // This is called when usernames are successfully validated
+      const validNewMembers = validatedUsernames.filter(
+        (member) => 
+          member.trim() && 
+          !members.find((m) => m.toLowerCase() === member.toLowerCase())
+      );
+      
+      if (validNewMembers.length > 0) {
+        setMembers(prev => [...prev, ...validNewMembers]);
       }
     },
     [members]
@@ -135,6 +136,11 @@ const Index: NextPage<CollectionPageProps> = () => {
   );
   const methods = useForm({ defaultValues });
 
+  // Reset form when members change
+  useEffect(() => {
+    methods.reset(defaultValues);
+  }, [members, methods, defaultValues]);
+
   const { open: isOpen, onOpen, onClose } = useDisclosure();
 
   const handleShare = async () => {
@@ -181,11 +187,13 @@ const Index: NextPage<CollectionPageProps> = () => {
                   <Box display={{ base: "none", md: "flex" }}>
                     <SearchSidebar
                       members={members}
-                      addMember={addMember}
+                      onSearch={handleSearch}
+                      onValidatedUsernames={handleValidatedUsernames}
                       removeMember={removeMember}
                       removeAllMembers={removeAllMembers}
-                      hotSeatError={hotSeatError}
                       collections={data.collections}
+                      isValidating={isValidating}
+                      pendingUsernames={pendingUsernames}
                     />
                   </Box>
 
@@ -228,11 +236,13 @@ const Index: NextPage<CollectionPageProps> = () => {
                 <SearchSidebar
                   isOpenDrawer
                   members={members}
-                  addMember={addMember}
+                  onSearch={handleSearch}
+                  onValidatedUsernames={handleValidatedUsernames}
                   removeMember={removeMember}
                   removeAllMembers={removeAllMembers}
-                  hotSeatError={hotSeatError}
                   collections={data.collections}
+                  isValidating={isValidating}
+                  pendingUsernames={pendingUsernames}
                 />
               )}
             </Box>

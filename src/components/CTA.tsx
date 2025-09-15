@@ -10,50 +10,38 @@ import {
 import UsernameForm from "./UsernameForm";
 import ExamplesSection from "./ExamplesSection";
 import FeaturesSection from "./FeaturesSection";
-import { getBggUser } from "bgg-xml-api-client";
 import { generatePermalink } from "../utils/permalink";
 
 export default function CTA() {
   const router = useRouter();
   const [isValidating, setIsValidating] = useState(false);
 
-  const validateUsername = async (username: string): Promise<boolean> => {
-    const user = await getBggUser({ name: username }).catch(() => null);
-    return !!user?.data?.id;
+  const handleSearch = async (usernames: string[]) => {
+    // This is called when usernames are submitted for validation
+    // Don't proceed yet - wait for validation
+    console.log('UsernameForm submitted usernames for validation:', usernames);
   };
 
-  const handleSearch = async (usernames: string[]) => {
+  const handleValidatedUsernames = async (usernames: string[]) => {
     if (usernames.length === 0) {
       return;
     }
 
-    // Validate all usernames before redirecting
+    // Usernames are now validated, so we can proceed
     setIsValidating(true);
-
-    const validationPromises = usernames.map(async (username) => {
-      const isValid = await validateUsername(username);
-      return { username, isValid };
-    });
-
-    const results = await Promise.all(validationPromises);
-    const invalidUsers = results.filter(r => !r.isValid);
-
-    if (invalidUsers.length > 0) {
-      console.log(`Invalid usernames: ${invalidUsers.map(u => u.username).join(", ")}`);
-      setIsValidating(false);
-      return;
-    }
-
-    // All usernames are valid, generate permalink and redirect
-    const permalink = generatePermalink(usernames);
     
-    // Use window.location for more reliable navigation
-    if (typeof window !== 'undefined') {
-      window.location.href = permalink;
-    } else {
-      router.push(permalink);
+    try {
+      const permalink = generatePermalink(usernames);
+      
+      // Use window.location for more reliable navigation
+      if (typeof window !== 'undefined') {
+        window.location.href = permalink;
+      } else {
+        router.push(permalink);
+      }
+    } finally {
+      setIsValidating(false);
     }
-    setIsValidating(false);
   };
 
 
@@ -90,6 +78,7 @@ export default function CTA() {
           <VStack gap={6} w="full" maxW="2xl">
             <UsernameForm
               onSearch={handleSearch}
+              onValidatedUsernames={handleValidatedUsernames}
               isValidating={isValidating}
             />
             
