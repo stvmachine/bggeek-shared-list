@@ -1,17 +1,24 @@
-import React from "react";
-import { HStack, Select, FormControl, FormLabel } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
 import { useFormContext } from "react-hook-form";
 
 const SortBar = () => {
   const { register } = useFormContext();
 
   return (
-    <FormControl id="orderBy-wrapper" my={4}>
+    <Box id="orderBy-wrapper" my={4}>
       <HStack justifyContent="flex-start" alignItems="center">
-        <FormLabel fontSize="md">Sort: </FormLabel>
-        <Select
+        <Box fontSize="md" fontWeight="bold">
+          Sort:{" "}
+        </Box>
+        <Box
+          as="select"
           {...register("orderBy")}
           width="xxs"
+          p={2}
+          border="1px solid"
+          borderColor="gray.300"
+          borderRadius="md"
+          bg="white"
         >
           <option value="name_asc" key="order_by_name_asc">
             Name: A-Z
@@ -31,9 +38,9 @@ const SortBar = () => {
           <option value="year_desc" key="order_by_year_desc">
             Year: Newest first
           </option>
-        </Select>
+        </Box>
       </HStack>
-    </FormControl>
+    </Box>
   );
 };
 

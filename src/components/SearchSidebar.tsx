@@ -1,29 +1,10 @@
-import React, { useState } from "react";
-import {
-  Box,
-  InputLeftElement,
-  InputGroup,
-  Input,
-  Select,
-  VStack,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  CheckboxGroup,
-  Checkbox,
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from "@chakra-ui/react";
+import { Accordion, Box, Button, Input, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { SearchIcon } from "@chakra-ui/icons";
 
+import useKeydown from "../hooks/useKeydown";
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
 import { ICollection } from "../utils/types";
-import useKeydown from "../hooks/useKeydown";
 
 type SearchSidebarProps = {
   members: string[];
@@ -65,30 +46,32 @@ const SearchSidebar = ({
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
       <VStack width={isOpenDrawer ? "100%" : "xs"}>
-        <InputGroup width={isOpenDrawer ? "100%" : "xs"}>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<SearchIcon color="gray.300" />}
-          />
-          <Input {...register("keyword")} placeholder="Search" />
-        </InputGroup>
+        <Input
+          {...register("keyword")}
+          placeholder="🔍 Search"
+          width={isOpenDrawer ? "100%" : "xs"}
+        />
 
-        <Accordion defaultIndex={[0, 1]} allowMultiple>
-          <AccordionItem width="xs" key="accordion-basic-filters">
-            <h2>
-              <AccordionButton id="basic-filters-accordion-button">
-                <Box flex="1" textAlign="left">
-                  Basic filters
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <Select
+        <Accordion.Root defaultValue={["0", "1"]} multiple>
+          <Accordion.Item value="0" width="xs">
+            <Accordion.ItemTrigger>
+              <Box flex="1" textAlign="left">
+                Basic filters
+              </Box>
+              <Accordion.ItemIndicator />
+            </Accordion.ItemTrigger>
+            <Accordion.ItemContent pb={4}>
+              <Box
+                as="select"
                 {...register("numberOfPlayers")}
-                placeholder="Number of players"
                 width="xxs"
+                p={2}
+                border="1px solid"
+                borderColor="gray.300"
+                borderRadius="md"
+                bg="white"
               >
+                <option value="">Number of players</option>
                 {numberOfPlayersOptions &&
                   numberOfPlayersOptions.map((item) => (
                     <option
@@ -98,12 +81,19 @@ const SearchSidebar = ({
                       {item.name}
                     </option>
                   ))}
-              </Select>
-              <Select
+              </Box>
+              <Box
+                as="select"
                 {...register("playingTime")}
-                placeholder="Playing time"
                 width="xxs"
+                p={2}
+                border="1px solid"
+                borderColor="gray.300"
+                borderRadius="md"
+                bg="white"
+                mt={2}
               >
+                <option value="">Playing time</option>
                 {playingTimeOptions &&
                   playingTimeOptions.map((item) => (
                     <option
@@ -113,26 +103,24 @@ const SearchSidebar = ({
                       {item.name}
                     </option>
                   ))}
-              </Select>
-            </AccordionPanel>
-          </AccordionItem>
+              </Box>
+            </Accordion.ItemContent>
+          </Accordion.Item>
 
-          <AccordionItem width="xs" key="accordion-members">
-            <h2>
-              <AccordionButton id="members-accordion-button">
-                <Box flex="1" textAlign="left">
-                  👥 Group Collectors ({members.length})
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
+          <Accordion.Item value="1" width="xs">
+            <Accordion.ItemTrigger>
+              <Box flex="1" textAlign="left">
+                👥 Group Collectors ({members.length})
+              </Box>
+              <Accordion.ItemIndicator />
+            </Accordion.ItemTrigger>
+            <Accordion.ItemContent pb={4}>
               {members && collections && (
-                <CheckboxGroup>
+                <Box>
                   <VStack alignItems={"flex-start"}>
                     <Button
                       onClick={() => displayHotSeat(!showHotSeat)}
-                      colorScheme="blue"
+                      colorPalette="blue"
                       type="button"
                       alignSelf="flex-end"
                       size="sm"
@@ -141,47 +129,56 @@ const SearchSidebar = ({
                     </Button>
 
                     {showHotSeat && addMember && (
-                      <FormControl
-                        id="hot-seat-member"
-                        isInvalid={!!hotSeatError}
-                        py={3}
-                      >
-                        <FormLabel fontSize="sm" fontWeight="bold">
+                      <Box id="hot-seat-member" py={3}>
+                        <Box fontSize="sm" fontWeight="bold" mb={2}>
                           Add BoardGameGeek Username
-                        </FormLabel>
+                        </Box>
                         <Input
                           placeholder="Enter BGG username"
                           value={hotSeatMember}
                           onBlur={() => addMember(hotSeatMember)}
                           onChange={(e) => setHotSeatMember(e.target.value)}
                           size="sm"
+                          borderColor={hotSeatError ? "red.500" : "gray.300"}
                         />
-                        <FormErrorMessage>{hotSeatError}</FormErrorMessage>
-                      </FormControl>
+                        {hotSeatError && (
+                          <Box color="red.500" fontSize="sm" mt={1}>
+                            {hotSeatError}
+                          </Box>
+                        )}
+                      </Box>
                     )}
 
                     {members.map((member, index) => (
-                      <Checkbox
+                      <Box
                         key={`checkbox-${member}-${
                           isOpenDrawer ? "-mobile" : ""
                         }`}
-                        onChange={() => {
-                          setValue(
-                            `members[${member}]`,
-                            !getValues(`members[${member}]`)
-                          );
-                        }}
-                        isChecked={getValues(`members[${member}]`)}
+                        display="flex"
+                        alignItems="center"
+                        gap={2}
                       >
-                        {`${member} (${collections[index]?.totalitems || 0} games)`}
-                      </Checkbox>
+                        <input
+                          type="checkbox"
+                          onChange={() => {
+                            setValue(
+                              `members[${member}]`,
+                              !getValues(`members[${member}]`)
+                            );
+                          }}
+                          checked={getValues(`members[${member}]`)}
+                        />
+                        <Box>{`${member} (${
+                          collections[index]?.totalitems || 0
+                        } games)`}</Box>
+                      </Box>
                     ))}
                   </VStack>
-                </CheckboxGroup>
+                </Box>
               )}
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+            </Accordion.ItemContent>
+          </Accordion.Item>
+        </Accordion.Root>
       </VStack>
     </form>
   );

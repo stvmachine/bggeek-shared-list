@@ -1,18 +1,17 @@
-import React from "react";
 import {
+  Box,
   Container,
   Heading,
-  ListItem,
   LinkBox,
   LinkOverlay,
+  ListItem,
   Text,
-  UnorderedList,
   Wrap,
 } from "@chakra-ui/react";
 import { useFormContext } from "react-hook-form";
-import { IItem } from "../utils/types";
-import { useSearch } from "../hooks/useSearch";
 import SortBar from "../components/SortBar";
+import { useSearch } from "../hooks/useSearch";
+import { IItem } from "../utils/types";
 
 import GameCard from "./GameCard";
 
@@ -21,12 +20,9 @@ type ResultsProps = {
 };
 
 const Results = ({ boardgames }: ResultsProps) => {
-  const { results } = useSearch<IItem>(
-    boardgames || [],
-    {
-      keys: ["name.text"],
-    }
-  );
+  const { results } = useSearch<IItem>(boardgames || [], {
+    keys: ["name.text"],
+  });
   const { watch } = useFormContext();
   const watchedMembers = watch("members");
   const checkedMembers = Object.keys(watchedMembers).reduce(
@@ -44,20 +40,21 @@ const Results = ({ boardgames }: ResultsProps) => {
       {checkedMembers?.length > 0 ? (
         <Heading fontSize={"2xl"} mb={10}>
           {`Displaying ${results.length} games owned for the following members:`}
-          <UnorderedList>
+          <Box as="ul" listStyleType="none" pl={0}>
             {checkedMembers.map((member, index) => (
               <ListItem key={`${member}_${index}`}>
                 <LinkBox>
                   <LinkOverlay
                     href={`https://boardgamegeek.com/user/${member}`}
-                    isExternal
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <Text color="tomato">{member}</Text>
                   </LinkOverlay>
                 </LinkBox>
               </ListItem>
             ))}
-          </UnorderedList>
+          </Box>
         </Heading>
       ) : (
         <Heading fontSize={"2xl"} mb={10}>
@@ -65,7 +62,7 @@ const Results = ({ boardgames }: ResultsProps) => {
         </Heading>
       )}
       <SortBar />
-      <Wrap align="center" spacing="3">
+      <Wrap align="center" gap="3">
         {results.length > 0 &&
           results.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
             <GameCard
