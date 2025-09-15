@@ -61,9 +61,9 @@ export default function CTA() {
       </Head>
 
       <Container maxW={"6xl"}>
-        <VStack spacing={12} py={{ base: 20, md: 36 }}>
+        <VStack gap={12} py={{ base: 20, md: 36 }}>
           {/* Header Section */}
-          <VStack spacing={6} textAlign="center">
+          <VStack gap={6} textAlign="center">
             <Heading
               fontWeight={600}
               fontSize={{ base: "3xl", sm: "4xl", md: "5xl" }}
@@ -81,7 +81,7 @@ export default function CTA() {
           </VStack>
 
           {/* Username Input */}
-          <VStack spacing={6} w="full" maxW="2xl">
+          <VStack gap={6} w="full" maxW="2xl">
             <UsernameForm
               usernames={usernames}
               onUsernamesChange={setUsernames}

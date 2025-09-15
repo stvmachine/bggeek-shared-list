@@ -6,10 +6,6 @@ import {
   Box,
   Container,
   Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -102,7 +98,7 @@ const Index: NextPage<CollectionPageProps> = () => {
   );
   const methods = useForm({ defaultValues });
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open: isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <FormProvider {...methods}>
@@ -135,28 +131,30 @@ const Index: NextPage<CollectionPageProps> = () => {
         <Footer />
       </Container>
 
-      <Drawer
-        placement="left"
+      <Drawer.Root
+        placement="start"
         onClose={onClose}
-        isOpen={isOpen}
+        open={isOpen}
         autoFocus={false}
       >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Filter</DrawerHeader>
-          <DrawerBody>
-            {data && (
-              <SearchSidebar
-                isOpenDrawer
-                members={members}
-                addMember={addMember}
-                hotSeatError={hotSeatError}
-                collections={data.collections}
-              />
-            )}
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+        <Drawer.Backdrop />
+        <Drawer.Positioner>
+          <Drawer.Content>
+            <Drawer.Header borderBottomWidth="1px">Filter</Drawer.Header>
+            <Drawer.Body>
+              {data && (
+                <SearchSidebar
+                  isOpenDrawer
+                  members={members}
+                  addMember={addMember}
+                  hotSeatError={hotSeatError}
+                  collections={data.collections}
+                />
+              )}
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Positioner>
+      </Drawer.Root>
     </FormProvider>
   );
 };

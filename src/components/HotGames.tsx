@@ -1,16 +1,15 @@
-import React from "react";
 import {
-  Wrap,
-  WrapItem,
-  Image,
   Box,
   Container,
   Heading,
-  Text,
+  Image,
   Stack,
+  Text,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
-import { IHotItem } from "../utils/types";
 import { BggHotResponse } from "bgg-xml-api-client";
+import { IHotItem } from "../utils/types";
 
 type HotGamesProps = {
   collectionData: BggHotResponse;
@@ -18,7 +17,7 @@ type HotGamesProps = {
 
 const HotGames = ({ collectionData }: HotGamesProps) => (
   <Box p={4}>
-    <Stack spacing={4} as={Container} maxW={"3xl"} textAlign={"center"}>
+    <Stack gap={4} as={Container} maxW={"3xl"} textAlign={"center"}>
       <Heading fontSize={"3xl"}>
         Have a shared collection with your friends
       </Heading>

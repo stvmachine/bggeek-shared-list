@@ -1,17 +1,16 @@
-import React from "react";
-import Image from "next/image";
 import {
   Avatar,
   Box,
-  Stack,
+  LinkBox,
+  LinkOverlay,
   Skeleton,
+  Stack,
   Text,
   Wrap,
   WrapItem,
-  useColorModeValue,
-  LinkBox,
-  LinkOverlay,
 } from "@chakra-ui/react";
+import Image from "next/image";
+import React from "react";
 
 type GameCardProps = {
   image?: string;
@@ -34,7 +33,7 @@ const GameCard: React.FC<GameCardProps> = ({
     <WrapItem
       w={["100%", "180px"]}
       h={["125px", "300px"]}
-      bg={useColorModeValue("white", "gray.900")}
+      bg="white"
       boxShadow={"2xl"}
       rounded={"md"}
       p={6}
@@ -44,7 +43,8 @@ const GameCard: React.FC<GameCardProps> = ({
       <LinkBox w={["125px", "180px"]} h={["125px", "180px"]}>
         <LinkOverlay
           href={`https://boardgamegeek.com/boardgame/${objectid}`}
-          isExternal
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <Box
             w={["125px", "180px"]}
@@ -56,7 +56,12 @@ const GameCard: React.FC<GameCardProps> = ({
             pos={"relative"}
           >
             {image ? (
-              <Image src={image} alt={bgName} layout={"fill"} objectFit="contain" />
+              <Image
+                src={image}
+                alt={bgName}
+                layout={"fill"}
+                objectFit="contain"
+              />
             ) : (
               <Skeleton height="100%" width="100%" />
             )}
@@ -82,13 +87,17 @@ const GameCard: React.FC<GameCardProps> = ({
             dangerouslySetInnerHTML={{ __html: bgName }}
           />
         </Stack>
-        <Stack mt="auto" direction={"row"} spacing={2} align={"center"}>
+        <Stack mt="auto" direction={"row"} gap={2} align={"center"}>
           <Wrap>
             {owners && (
               <>
                 {owners.slice(0, 6).map(({ username }, index) => (
                   <WrapItem key={index}>
-                    <Avatar size="xs" name={username} />
+                    <Avatar.Root size="xs">
+                      <Avatar.Fallback>
+                        {username.charAt(0).toUpperCase()}
+                      </Avatar.Fallback>
+                    </Avatar.Root>
                   </WrapItem>
                 ))}
                 {owners.length > 6 && (

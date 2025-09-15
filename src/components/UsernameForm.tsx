@@ -1,15 +1,11 @@
-import { AddIcon, CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Badge,
+  Box,
   Button,
   Flex,
-  FormControl,
-  FormErrorMessage,
   HStack,
   IconButton,
   Input,
-  InputGroup,
-  InputRightElement,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -35,7 +31,9 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   onSearch,
   isValidating,
 }) => {
-  const [usernameToValidate, setUsernameToValidate] = useState<string | null>(null);
+  const [usernameToValidate, setUsernameToValidate] = useState<string | null>(
+    null
+  );
 
   const {
     control,
@@ -51,7 +49,11 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   });
 
   // Use useQuery for username validation
-  const { data: userData, isLoading: isValidatingUsername, error: validationError } = useQuery(
+  const {
+    data: userData,
+    isLoading: isValidatingUsername,
+    error: validationError,
+  } = useQuery(
     ["validateUser", usernameToValidate],
     () => getBggUser({ name: usernameToValidate! }),
     {
@@ -62,7 +64,10 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
           return false;
         }
         // Don't retry if the error suggests user doesn't exist
-        if (error?.message?.includes('not found') || error?.message?.includes('404')) {
+        if (
+          error?.message?.includes("not found") ||
+          error?.message?.includes("404")
+        ) {
           return false;
         }
         // Only retry network errors once
@@ -73,7 +78,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
       cacheTime: 10 * 60 * 1000, // 10 minutes
       onError: (error: any) => {
         // Log the error for debugging
-        console.log('Username validation error:', error);
+        console.log("Username validation error:", error);
       },
     }
   );
@@ -90,15 +95,21 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
         // Handle different types of errors
         const error = validationError as any;
         let errorMessage = `Username "${usernameToValidate}" not found on BoardGameGeek`;
-        
-        if (error?.response?.status === 404 || error?.message?.includes('404')) {
+
+        if (
+          error?.response?.status === 404 ||
+          error?.message?.includes("404")
+        ) {
           errorMessage = `Username "${usernameToValidate}" does not exist on BoardGameGeek`;
-        } else if (error?.code === 'NETWORK_ERROR' || error?.message?.includes('network')) {
+        } else if (
+          error?.code === "NETWORK_ERROR" ||
+          error?.message?.includes("network")
+        ) {
           errorMessage = `Network error. Please check your connection and try again.`;
         } else if (error?.response?.status >= 500) {
           errorMessage = `BoardGameGeek is temporarily unavailable. Please try again later.`;
         }
-        
+
         setError("username", {
           type: "manual",
           message: errorMessage,
@@ -112,7 +123,17 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
       }
       setUsernameToValidate(null);
     }
-  }, [usernameToValidate, isValidatingUsername, userData, validationError, usernames, onUsernamesChange, reset, clearErrors, setError]);
+  }, [
+    usernameToValidate,
+    isValidatingUsername,
+    userData,
+    validationError,
+    usernames,
+    onUsernamesChange,
+    reset,
+    clearErrors,
+    setError,
+  ]);
 
   const onSubmit = (data: FormData) => {
     const trimmedUsername = data.username.trim();
@@ -150,12 +171,12 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   };
 
   return (
-    <VStack spacing={4} w="full" maxW="2xl">
+    <VStack gap={4} w="full" maxW="2xl">
       {/* Username Input Form */}
       <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
-        <VStack spacing={4} w="full">
-          <FormControl isInvalid={!!errors.username} maxW="md">
-            <InputGroup size="lg">
+        <VStack gap={4} w="full">
+          <Box maxW="md">
+            <HStack gap={2}>
               <Controller
                 name="username"
                 control={control}
@@ -176,33 +197,33 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
                       bg: "gray.200",
                       boxShadow: "none",
                     }}
+                    flex={1}
                   />
                 )}
               />
-              <InputRightElement>
-                <IconButton
-                  aria-label="Add Username"
-                  icon={<AddIcon />}
-                  size="sm"
-                  colorScheme="green"
-                  type="submit"
-                  isLoading={isValidatingUsername}
-                  isDisabled={isValidatingUsername}
-                />
-              </InputRightElement>
-            </InputGroup>
+              <IconButton
+                aria-label="Add Username"
+                size="lg"
+                colorPalette="green"
+                type="submit"
+                loading={isValidatingUsername}
+                disabled={isValidatingUsername}
+              >
+                +
+              </IconButton>
+            </HStack>
             {errors.username && (
-              <FormErrorMessage mt={2}>
+              <Box color="red.500" fontSize="sm" mt={2}>
                 {errors.username.message}
-              </FormErrorMessage>
+              </Box>
             )}
-          </FormControl>
+          </Box>
         </VStack>
       </form>
 
       {/* Added Usernames */}
       {usernames.length > 0 && (
-        <VStack spacing={2} w="full">
+        <VStack gap={2} w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
             Added Collectors ({usernames.length}):
           </Text>
@@ -210,22 +231,23 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
             {usernames.map((username) => (
               <Badge
                 key={username}
-                colorScheme="blue"
+                colorPalette="blue"
                 variant="solid"
                 px={3}
                 py={1}
                 borderRadius="full"
               >
-                <HStack spacing={2}>
+                <HStack gap={2}>
                   <Text>{username}</Text>
                   <IconButton
                     aria-label={`Remove ${username}`}
-                    icon={<CloseIcon />}
                     size="xs"
                     variant="ghost"
                     color="white"
                     onClick={() => handleRemoveUsername(username)}
-                  />
+                  >
+                    ✕
+                  </IconButton>
                 </HStack>
               </Badge>
             ))}
@@ -235,15 +257,15 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
 
       {/* Search Button */}
       <Button
-        colorScheme="blue"
+        colorPalette="blue"
         size="lg"
         onClick={handleSearch}
-        isLoading={isValidating}
-        isDisabled={usernames.length === 0}
-        leftIcon={<SearchIcon />}
+        loading={isValidating}
+        disabled={usernames.length === 0}
         maxW="md"
         w="full"
       >
+        🔍{" "}
         {isValidating
           ? "Validating..."
           : `View ${usernames.length > 0 ? usernames.length : ""} Collection${
