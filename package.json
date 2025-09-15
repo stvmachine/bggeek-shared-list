@@ -15,11 +15,9 @@
     "bgg-xml-api-client": "^0.1.5",
     "fuse.js": "^3.6.1",
     "next": "^15.5.3",
-    "nookies": "^2.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.4.2",
-    "react-icons": "^4.2.0",
     "react-query": "^3.16.0",
     "xml2json": "^0.12.0"
   },
