@@ -4,6 +4,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
   Box,
+  Button,
   Container,
   Drawer,
   Stack,
@@ -18,6 +19,8 @@ import SearchSidebar from "../components/SearchSidebar";
 import { ICollection } from "../utils/types";
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
 import { getBggUser } from "bgg-xml-api-client";
+import { useUsernames } from "../hooks/useUsernames";
+import { parseUsernamesFromUrl, generatePermalink, copyToClipboard } from "../utils/permalink";
 
 type CollectionPageProps = {
   initialData?: ICollection[];
@@ -31,22 +34,37 @@ export async function getStaticProps() {
 
 const Index: NextPage<CollectionPageProps> = () => {
   const router = useRouter();
-  const { usernames, username } = router.query;
+  const { usernames: urlUsernames, username } = router.query;
+  const { usernames, setUsernames } = useUsernames();
   
   const [members, setMembers] = useState<string[]>([]);
   const [hotSeatError, setHotSeatError] = useState<string>("");
 
-  // Initialize with usernames from query params
+  // Initialize with usernames from query params and sync with localStorage
   useEffect(() => {
-    if (usernames && typeof usernames === 'string') {
-      // Handle comma-separated usernames
-      const usernameList = usernames.split(',').map(u => u.trim()).filter(u => u);
+    if (urlUsernames) {
+      // Parse usernames from URL using utility function
+      const usernameList = parseUsernamesFromUrl(urlUsernames);
       setMembers(usernameList);
+      setUsernames(usernameList);
     } else if (username && typeof username === 'string') {
       // Handle single username for backward compatibility
       setMembers([username]);
+      setUsernames([username]);
+    } else if (usernames.length > 0) {
+      // Use usernames from localStorage if no URL params
+      setMembers(usernames);
     }
-  }, [usernames, username]);
+  }, [urlUsernames, username, usernames, setUsernames]);
+
+  // Update URL when members change (for permalinks)
+  useEffect(() => {
+    if (members.length > 0) {
+      const permalink = generatePermalink(members);
+      // Update URL without triggering a page reload
+      window.history.replaceState({}, '', permalink);
+    }
+  }, [members]);
 
   const addMember = useCallback(
     async (newMember: string) => {
@@ -54,7 +72,9 @@ const Index: NextPage<CollectionPageProps> = () => {
       if (!members.find((m) => m.toLowerCase() === newMember.toLowerCase())) {
         const user = await getBggUser({ name: newMember });
         if (user?.data?.id) {
-          setMembers([...members, newMember]);
+          const newMembers = [...members, newMember];
+          setMembers(newMembers);
+          setUsernames(newMembers);
         }else{
           setHotSeatError("Username doesn't exist in BGGeek, please try again")
         }
@@ -62,7 +82,7 @@ const Index: NextPage<CollectionPageProps> = () => {
         setHotSeatError("Username already added to the list");
       }
     },
-    [members, setMembers]
+    [members, setMembers, setUsernames]
   );
 
   const results = useQueries(
@@ -100,6 +120,21 @@ const Index: NextPage<CollectionPageProps> = () => {
 
   const { open: isOpen, onOpen, onClose } = useDisclosure();
 
+  const handleShare = async () => {
+    if (members.length === 0) return;
+    
+    const permalink = generatePermalink(members);
+    const fullUrl = `${window.location.origin}${permalink}`;
+    
+    const success = await copyToClipboard(fullUrl);
+    
+    if (success) {
+      alert("Link copied! Share this link with your friends to show your collection.");
+    } else {
+      alert("Copy failed. Please copy the URL manually from the address bar.");
+    }
+  };
+
   return (
     <FormProvider {...methods}>
       <Container height="100vh" maxWidth="100%">
@@ -109,6 +144,20 @@ const Index: NextPage<CollectionPageProps> = () => {
         />
 
         <Box mt={12}>
+          {/* Share Button */}
+          {members.length > 0 && (
+            <Box mb={4} textAlign="center">
+              <Button
+                onClick={handleShare}
+                colorPalette="blue"
+                size="sm"
+                variant="outline"
+              >
+                📤 Share Collection
+              </Button>
+            </Box>
+          )}
+
           <Stack direction={["column", "row"]} alignItems="flex-start">
             {!isLoading && data ? (
               <>

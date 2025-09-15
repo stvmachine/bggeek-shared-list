@@ -11,10 +11,12 @@ import UsernameForm from "./UsernameForm";
 import ExamplesSection from "./ExamplesSection";
 import FeaturesSection from "./FeaturesSection";
 import { getBggUser } from "bgg-xml-api-client";
+import { useUsernames } from "../hooks/useUsernames";
+import { generatePermalink } from "../utils/permalink";
 
 export default function CTA() {
   const router = useRouter();
-  const [usernames, setUsernames] = useState<string[]>([]);
+  const { usernames } = useUsernames();
   const [isValidating, setIsValidating] = useState(false);
 
   const validateUsername = async (username: string): Promise<boolean> => {
@@ -44,9 +46,9 @@ export default function CTA() {
       return;
     }
 
-    // All usernames are valid, redirect
-    const usernameParam = usernames.map(u => encodeURIComponent(u)).join(",");
-    router.push(`/collection?usernames=${usernameParam}`);
+    // All usernames are valid, generate permalink and redirect
+    const permalink = generatePermalink(usernames);
+    router.push(permalink);
     setIsValidating(false);
   };
 
@@ -83,8 +85,6 @@ export default function CTA() {
           {/* Username Input */}
           <VStack gap={6} w="full" maxW="2xl">
             <UsernameForm
-              usernames={usernames}
-              onUsernamesChange={setUsernames}
               onSearch={handleSearch}
               isValidating={isValidating}
             />
