@@ -1,16 +1,19 @@
-import { Box, Flex, HStack, Link } from "@chakra-ui/react";
+import { Box, Flex, HStack, IconButton, Link } from "@chakra-ui/react";
 import Logo from "./Logo";
 
 type NavbarProps = {
   openDrawer?: () => void;
   isOpenDrawer?: boolean;
+  onMobileMenuOpen?: () => void;
+  onMobileMenuClose?: () => void;
+  isMobileMenuOpen?: boolean;
 };
 
-const Navbar: React.FC<NavbarProps> = () => {
+const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
   return (
-    <Box 
-      position="sticky" 
-      top={0} 
+    <Box
+      position="sticky"
+      top={0}
       zIndex={1000}
       width="100%"
       left={0}
@@ -30,25 +33,33 @@ const Navbar: React.FC<NavbarProps> = () => {
         width="100%"
       >
         <Logo />
-        
-        {/* Desktop Navigation */}
-        <HStack 
-          gap={8} 
-          ml="auto" 
-          display={{ base: "none", md: "flex" }}
+
+        {/* Mobile Menu Button */}
+        <IconButton
+          onClick={onMobileMenuOpen}
+          variant="ghost"
+          aria-label="Open mobile menu"
+          size="md"
+          display={{ base: "flex", md: "none" }}
+          ml="auto"
         >
-          <Link 
-            href="/" 
-            fontSize="md" 
+          ☰
+        </IconButton>
+
+        {/* Desktop Navigation */}
+        <HStack gap={8} ml="auto" display={{ base: "none", md: "flex" }}>
+          <Link
+            href="/"
+            fontSize="md"
             fontWeight="medium"
             color="gray.600"
             _hover={{ color: "blue.500" }}
           >
             Home
           </Link>
-          <Link 
-            href="/collection" 
-            fontSize="md" 
+          <Link
+            href="/collection"
+            fontSize="md"
             fontWeight="medium"
             color="gray.600"
             _hover={{ color: "blue.500" }}

@@ -15,6 +15,7 @@ import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import Results from "../components/Results";
 import SearchSidebar from "../components/SearchSidebar";
+import MobileDrawer from "../components/MobileDrawer";
 import { ICollection } from "../utils/types";
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
 import {
@@ -37,6 +38,7 @@ export async function getStaticProps() {
 const Index: NextPage<CollectionPageProps> = () => {
   const router = useRouter();
   const { usernames: urlUsernames, username } = router.query;
+  const { open: isMobileMenuOpen, onOpen: onMobileMenuOpen, onClose: onMobileMenuClose } = useDisclosure();
 
   const [members, setMembers] = useState<string[]>([]);
   const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
@@ -163,7 +165,13 @@ const Index: NextPage<CollectionPageProps> = () => {
   return (
     <MemberProvider usernames={members}>
       <FormProvider {...methods}>
-        <Navbar openDrawer={onOpen} isOpenDrawer={isOpen} />
+        <Navbar 
+          openDrawer={onOpen} 
+          isOpenDrawer={isOpen}
+          onMobileMenuOpen={onMobileMenuOpen}
+          onMobileMenuClose={onMobileMenuClose}
+          isMobileMenuOpen={isMobileMenuOpen}
+        />
         <Container height="100vh" maxWidth="100%">
 
           <Box mt={12}>
@@ -247,6 +255,22 @@ const Index: NextPage<CollectionPageProps> = () => {
               )}
             </Box>
           </Box>
+        )}
+
+        {/* Mobile Drawer */}
+        {!isLoading && data && (
+          <MobileDrawer
+            isOpen={isMobileMenuOpen}
+            onClose={onMobileMenuClose}
+            members={members}
+            collections={data.collections}
+            onSearch={handleSearch}
+            onValidatedUsernames={handleValidatedUsernames}
+            removeMember={removeMember}
+            removeAllMembers={removeAllMembers}
+            isValidating={isValidating}
+            pendingUsernames={pendingUsernames}
+          />
         )}
       </FormProvider>
     </MemberProvider>
