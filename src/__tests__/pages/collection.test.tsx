@@ -79,7 +79,7 @@ describe('Collection Page - Pending Usernames Logic', () => {
   it('should initialize with empty pending usernames and not validating', async () => {
     renderWithProviders(<Collection />);
     
-    // Wait for the component to load
+    // Wait for the component to load and data to be available
     await screen.findByTestId('search-sidebar');
     
     expect(screen.getByTestId('pending-usernames')).toHaveTextContent('0 pending usernames');

@@ -6,6 +6,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useQueries } from "react-query";
 
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
+import { ICollection } from "../utils/types";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import MobileDrawer from "../components/MobileDrawer";
@@ -17,7 +18,6 @@ import {
   generatePermalink,
   parseUsernamesFromUrl,
 } from "../utils/permalink";
-import { ICollection } from "../utils/types";
 
 type CollectionPageProps = {
   initialData?: ICollection[];
@@ -140,6 +140,7 @@ const Index: NextPage<CollectionPageProps> = () => {
   const defaultValues = useMemo(
     () => ({
       orderBy: "name_asc",
+      groupBy: "none",
       members: members.reduce(
         (accum, member) => ({ ...accum, [member]: true }),
         {}
