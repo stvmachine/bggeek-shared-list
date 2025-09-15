@@ -13,24 +13,22 @@ import { getBggUser } from "bgg-xml-api-client";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useQuery } from "react-query";
+import { useUsernames } from "../hooks/useUsernames";
 
 type FormData = {
   username: string;
 };
 
 type UsernameFormProps = {
-  usernames: string[];
-  onUsernamesChange: (usernames: string[]) => void;
   onSearch: () => void;
   isValidating: boolean;
 };
 
 const UsernameForm: React.FC<UsernameFormProps> = ({
-  usernames,
-  onUsernamesChange,
   onSearch,
   isValidating,
 }) => {
+  const { usernames, addUsername, removeUsername } = useUsernames();
   const [usernameToValidate, setUsernameToValidate] = useState<string | null>(
     null
   );
@@ -88,7 +86,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
     if (usernameToValidate && !isValidatingUsername) {
       if (userData?.data?.id) {
         // Username is valid, add it to the list
-        onUsernamesChange([...usernames, usernameToValidate]);
+        addUsername(usernameToValidate);
         reset();
         clearErrors();
       } else if (validationError) {
@@ -128,8 +126,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
     isValidatingUsername,
     userData,
     validationError,
-    usernames,
-    onUsernamesChange,
+    addUsername,
     reset,
     clearErrors,
     setError,
@@ -154,8 +151,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   };
 
   const handleRemoveUsername = (usernameToRemove: string) => {
-    const newUsernames = usernames.filter((u) => u !== usernameToRemove);
-    onUsernamesChange(newUsernames);
+    removeUsername(usernameToRemove);
   };
 
   const handleSearch = () => {
