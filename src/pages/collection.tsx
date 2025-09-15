@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Container,
-  Drawer,
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -181,30 +180,43 @@ const Index: NextPage<CollectionPageProps> = () => {
         <Footer />
       </Container>
 
-      <Drawer.Root
-        placement="start"
-        onClose={onClose}
-        open={isOpen}
-        autoFocus={false}
-      >
-        <Drawer.Backdrop />
-        <Drawer.Positioner>
-          <Drawer.Content>
-            <Drawer.Header borderBottomWidth="1px">Filter</Drawer.Header>
-            <Drawer.Body>
-              {data && (
-                <SearchSidebar
-                  isOpenDrawer
-                  members={members}
-                  addMember={addMember}
-                  hotSeatError={hotSeatError}
-                  collections={data.collections}
-                />
-              )}
-            </Drawer.Body>
-          </Drawer.Content>
-        </Drawer.Positioner>
-      </Drawer.Root>
+      {isOpen && (
+        <Box
+          position="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          zIndex={1000}
+          bg="blackAlpha.600"
+          onClick={onClose}
+        >
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            bottom={0}
+            width="300px"
+            bg="white"
+            shadow="lg"
+            p={4}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Box fontSize="lg" fontWeight="bold" mb={4} borderBottom="1px" borderColor="gray.200" pb={2}>
+              Filter
+            </Box>
+            {data && (
+              <SearchSidebar
+                isOpenDrawer
+                members={members}
+                addMember={addMember}
+                hotSeatError={hotSeatError}
+                collections={data.collections}
+              />
+            )}
+          </Box>
+        </Box>
+      )}
     </FormProvider>
   );
 };
