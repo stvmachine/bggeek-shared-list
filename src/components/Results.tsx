@@ -1,6 +1,5 @@
 import {
   Box,
-  Container,
   Heading,
   HStack,
   LinkBox,
@@ -8,6 +7,8 @@ import {
   Text,
   VStack,
   Wrap,
+  Badge,
+  Flex,
 } from "@chakra-ui/react";
 import React from "react";
 import { useFormContext } from "react-hook-form";
@@ -50,91 +51,178 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
   const groupedResults: GroupedGames = groupGames(sortedResults, groupBy);
 
   return (
-    <Container mt={10} maxWidth={"100%"}>
+    <Box flex="1" p={4}>
       {checkedMembers?.length > 0 ? (
-        <Box mb={10}>
-          <Heading fontSize={"2xl"} mb={4}>
-            {`Displaying ${results.length} games owned for the following members:`}
-          </Heading>
-          <HStack gap={3} flexWrap="wrap">
-            {checkedMembers.map((member, index) => {
-              const memberData = getMemberData(member);
-              if (!memberData) return null;
+        <Box 
+          border="1px solid" 
+          borderColor="gray.200" 
+          borderRadius="lg" 
+          p={4} 
+          mb={6}
+          bg="white"
+        >
+          <VStack gap={4} align="stretch">
+            <Flex align="center" gap={3}>
+              <Heading fontSize="xl" color="gray.700">
+                🎮 Game Collection
+              </Heading>
+              <Badge colorScheme="blue" variant="subtle" fontSize="sm">
+                {results.length} games
+              </Badge>
+            </Flex>
+            
+            <Box>
+              <Text fontSize="sm" color="gray.600" mb={3}>
+                Displaying games owned by:
+              </Text>
+              <Wrap gap={2}>
+                {checkedMembers.map((member, index) => {
+                  const memberData = getMemberData(member);
+                  if (!memberData) return null;
 
-              return (
-                <LinkBox key={`${member}_${index}`}>
-                  <LinkOverlay
-                    href={`https://boardgamegeek.com/user/${member}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <HStack gap={2}>
-                      <Box
-                        width="32px"
-                        height="32px"
-                        borderRadius="full"
-                        bg={memberData.color.bg}
-                        color={memberData.color.color}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        fontSize="sm"
-                        fontWeight="bold"
+                  return (
+                    <LinkBox key={`${member}_${index}`}>
+                      <LinkOverlay
+                        href={`https://boardgamegeek.com/user/${member}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        {memberData.initial}
-                      </Box>
-                      <Text fontWeight="medium">{member}</Text>
-                    </HStack>
-                  </LinkOverlay>
-                </LinkBox>
-              );
-            })}
-          </HStack>
+                        <Box 
+                          border="1px solid" 
+                          borderColor="gray.200" 
+                          borderRadius="lg" 
+                          p={3}
+                          _hover={{ 
+                            borderColor: "blue.300", 
+                            bg: "blue.50",
+                            transform: "translateY(-1px)",
+                            boxShadow: "md"
+                          }}
+                          transition="all 0.2s"
+                          cursor="pointer"
+                        >
+                          <HStack gap={2}>
+                            <Box
+                              width="28px"
+                              height="28px"
+                              borderRadius="full"
+                              bg={memberData.color.bg}
+                              color={memberData.color.color}
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="center"
+                              fontSize="xs"
+                              fontWeight="bold"
+                            >
+                              {memberData.initial}
+                            </Box>
+                            <Text fontWeight="medium" fontSize="sm">
+                              {member}
+                            </Text>
+                          </HStack>
+                        </Box>
+                      </LinkOverlay>
+                    </LinkBox>
+                  );
+                })}
+              </Wrap>
+            </Box>
+          </VStack>
         </Box>
       ) : (
-        <Heading fontSize={"2xl"} mb={10}>
-          Please select at least one member to display their collection.
-        </Heading>
+        <Box 
+          border="1px solid" 
+          borderColor="gray.200" 
+          borderRadius="lg" 
+          p={8} 
+          mb={6}
+          textAlign="center"
+          bg="white"
+        >
+          <Heading fontSize="xl" color="gray.500" mb={2}>
+            👥 Select Members
+          </Heading>
+          <Text color="gray.600">
+            Please select at least one member to display their collection.
+          </Text>
+        </Box>
       )}
+      
       <SortBar />
       
       {groupBy === "none" ? (
-        <Wrap align="center" gap="3">
-          {sortedResults.length > 0 &&
-            sortedResults.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
-              <GameCard
-                image={thumbnail}
-                key={`${objectid}_${index}`}
-                bgName={name.text}
-                owners={owners}
-                objectid={objectid}
-              />
-            ))}
-        </Wrap>
+        <Box>
+          {sortedResults.length > 0 ? (
+            <Wrap gap={4} justify="flex-start">
+              {sortedResults.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
+                <GameCard
+                  image={thumbnail}
+                  key={`${objectid}_${index}`}
+                  bgName={name.text}
+                  owners={owners}
+                  objectid={objectid}
+                />
+              ))}
+            </Wrap>
+          ) : (
+            <Box 
+              border="1px solid" 
+              borderColor="gray.200" 
+              borderRadius="lg" 
+              p={8} 
+              textAlign="center"
+              bg="white"
+            >
+              <Text color="gray.500" fontSize="lg">
+                No games found matching your criteria
+              </Text>
+            </Box>
+          )}
+        </Box>
       ) : (
-        <VStack align="stretch" gap={8}>
+        <VStack align="stretch" gap={6}>
           {Object.entries(groupedResults).map(([groupName, games]) => (
-            <Box key={groupName}>
-              <Heading fontSize="xl" mb={4} color="gray.700">
-                {groupName} ({games.length} {games.length === 1 ? 'Game' : 'Games'})
-              </Heading>
-              <Box height="1px" bg="gray.200" mb={4} />
-              <Wrap align="center" gap="3">
-                {games.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
-                  <GameCard
-                    image={thumbnail}
-                    key={`${objectid}_${index}`}
-                    bgName={name.text}
-                    owners={owners}
-                    objectid={objectid}
-                  />
-                ))}
-              </Wrap>
+            <Box 
+              key={groupName} 
+              border="1px solid" 
+              borderColor="gray.200" 
+              borderRadius="lg" 
+              p={4}
+              bg="white"
+            >
+              <VStack align="stretch" gap={4}>
+                <Flex align="center" gap={3}>
+                  <Heading fontSize="lg" color="gray.700">
+                    {groupName}
+                  </Heading>
+                  <Badge colorScheme="blue" variant="subtle" fontSize="sm">
+                    {games.length} {games.length === 1 ? 'Game' : 'Games'}
+                  </Badge>
+                </Flex>
+                
+                {games.length > 0 ? (
+                  <Wrap gap={4} justify="flex-start">
+                    {games.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
+                      <GameCard
+                        image={thumbnail}
+                        key={`${objectid}_${index}`}
+                        bgName={name.text}
+                        owners={owners}
+                        objectid={objectid}
+                      />
+                    ))}
+                  </Wrap>
+                ) : (
+                  <Text color="gray.500" fontSize="sm" textAlign="center" py={4}>
+                    No games in this group
+                  </Text>
+                )}
+              </VStack>
             </Box>
           ))}
         </VStack>
       )}
-    </Container>
+    </Box>
   );
 });
 

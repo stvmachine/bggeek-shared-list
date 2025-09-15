@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, HStack, Input, Text, VStack, Badge, Flex } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import UsernameManager from "./UsernameManager";
@@ -99,89 +99,153 @@ const SearchSidebar = React.memo(
 
     return (
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <VStack width={isOpenDrawer ? "100%" : "xs"}>
-          <Input
-            {...register("keyword")}
-            placeholder="🔍 Search"
-            width={isOpenDrawer ? "100%" : "xs"}
-          />
-
-          <VStack gap={4} align="stretch">
-            <Box>
-              <Text fontWeight="semibold" mb={3} color="gray.700">
-                Basic filters
+        <VStack 
+          width={isOpenDrawer ? "100%" : "320px"} 
+          gap={4} 
+          align="stretch"
+          p={isOpenDrawer ? 0 : 4}
+        >
+          {/* Search Section */}
+          <Box 
+            border="1px solid" 
+            borderColor="gray.200" 
+            borderRadius="lg" 
+            p={4}
+            bg="white"
+          >
+            <VStack gap={3} align="stretch">
+              <Text fontSize="lg" fontWeight="bold" color="gray.700">
+                🔍 Search Games
               </Text>
-              <Box
-                as="select"
-                {...register("numberOfPlayers")}
-                width="xxs"
-                p={2}
-                border="1px solid"
+              <Input
+                {...register("keyword")}
+                placeholder="Search by game name..."
+                size="md"
+                borderRadius="lg"
                 borderColor="gray.300"
-                borderRadius="md"
-                bg="white"
-              >
-                <option value="">Number of players</option>
-                {numberOfPlayersOptions &&
-                  numberOfPlayersOptions.map((item) => (
-                    <option
-                      value={item.value}
-                      key={`number_of_players_${item.value}`}
+                _focus={{
+                  borderColor: "blue.400",
+                  boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)"
+                }}
+              />
+            </VStack>
+          </Box>
+
+          {/* Filters Section */}
+          <Box 
+            border="1px solid" 
+            borderColor="gray.200" 
+            borderRadius="lg" 
+            p={4}
+            bg="white"
+          >
+            <VStack gap={4} align="stretch">
+                <Text fontSize="lg" fontWeight="bold" color="gray.700" mb={2}>
+                  🎯 Filters
+                </Text>
+                
+                <VStack gap={3} align="stretch">
+                  <Box>
+                    <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={2}>
+                      Number of Players
+                    </Text>
+                    <Box
+                      as="select"
+                      {...register("numberOfPlayers")}
+                      width="100%"
+                      p={3}
+                      border="1px solid"
+                      borderColor="gray.300"
+                      borderRadius="lg"
+                      bg="white"
+                      fontSize="sm"
+                      _focus={{
+                        borderColor: "blue.400",
+                        boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)"
+                      }}
                     >
-                      {item.name}
-                    </option>
-                  ))}
-              </Box>
-              <Box
-                as="select"
-                {...register("playingTime")}
-                width="xxs"
-                p={2}
-                border="1px solid"
-                borderColor="gray.300"
-                borderRadius="md"
-                bg="white"
-                mt={2}
-              >
-                <option value="">Playing time</option>
-                {playingTimeOptions &&
-                  playingTimeOptions.map((item) => (
-                    <option
-                      value={item.value}
-                      key={`playing_time_${item.value}`}
+                      <option value="">Any number of players</option>
+                      {numberOfPlayersOptions &&
+                        numberOfPlayersOptions.map((item) => (
+                          <option
+                            value={item.value}
+                            key={`number_of_players_${item.value}`}
+                          >
+                            {item.name}
+                          </option>
+                        ))}
+                    </Box>
+                  </Box>
+                  
+                  <Box>
+                    <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={2}>
+                      Playing Time
+                    </Text>
+                    <Box
+                      as="select"
+                      {...register("playingTime")}
+                      width="100%"
+                      p={3}
+                      border="1px solid"
+                      borderColor="gray.300"
+                      borderRadius="lg"
+                      bg="white"
+                      fontSize="sm"
+                      _focus={{
+                        borderColor: "blue.400",
+                        boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)"
+                      }}
                     >
-                      {item.name}
-                    </option>
-                  ))}
-              </Box>
+                      <option value="">Any playing time</option>
+                      {playingTimeOptions &&
+                        playingTimeOptions.map((item) => (
+                          <option
+                            value={item.value}
+                            key={`playing_time_${item.value}`}
+                          >
+                            {item.name}
+                          </option>
+                        ))}
+                    </Box>
+                  </Box>
+                </VStack>
+              </VStack>
             </Box>
 
-            <Box height="1px" bg="gray.200" my={4} />
-
-            <Box>
-              <HStack justify="space-between" width="100%" mb={3}>
-                <Text fontWeight="semibold" color="gray.700">
-                  👥 Group Collectors ({members.length})
-                </Text>
-                <Text fontSize="sm" color="gray.500">
-                  {selectedCount}/{members.length} selected
-                </Text>
-              </HStack>
+          {/* Members Section */}
+          <Box 
+            border="1px solid" 
+            borderColor="gray.200" 
+            borderRadius="lg" 
+            p={4}
+            bg="white"
+          >
+            <VStack gap={4} align="stretch">
+                <Flex justify="space-between" align="center" width="100%">
+                  <Text fontSize="lg" fontWeight="bold" color="gray.700">
+                    👥 Group Collectors
+                  </Text>
+                  <Badge colorScheme="blue" variant="subtle" fontSize="sm">
+                    {selectedCount}/{members.length} selected
+                  </Badge>
+                </Flex>
               {members && collections && (
                 <Box>
                   <VStack alignItems={"flex-start"}>
-                    <HStack width="100%" gap={2} flexWrap="wrap" mb={2}>
+                    <HStack width="100%" gap={2} flexWrap="wrap" mb={3}>
                       {members.length > 0 && (
                         <>
                           <Button
                             size="sm"
                             variant="outline"
-                            colorPalette="blue"
+                            colorScheme="blue"
                             onClick={
                               allSelected ? handleDeselectAll : handleSelectAll
                             }
                             flex="1"
                             minWidth="100px"
+                            borderRadius="lg"
+                            fontSize="xs"
                           >
                             {allSelected ? "Deselect All" : "Select All"}
                           </Button>
@@ -189,10 +253,12 @@ const SearchSidebar = React.memo(
                           <Button
                             size="sm"
                             variant="outline"
-                            colorPalette="red"
+                            colorScheme="red"
                             onClick={handleRemoveAllMembers}
                             flex="1"
                             minWidth="100px"
+                            borderRadius="lg"
+                            fontSize="xs"
                           >
                             Remove All
                           </Button>
@@ -211,71 +277,92 @@ const SearchSidebar = React.memo(
                       hidePills={true}
                     />
 
-                    {members.map((member, index) => {
-                      const memberData = getMemberData(member);
-                      if (!memberData) return null;
+                    <VStack gap={2} align="stretch" maxHeight="300px" overflowY="auto" width="100%">
+                      {members.map((member, index) => {
+                        const memberData = getMemberData(member);
+                        if (!memberData) return null;
 
-                      return (
-                        <Box
-                          key={`checkbox-${member}-${
-                            isOpenDrawer ? "-mobile" : ""
-                          }`}
-                          display="flex"
-                          alignItems="center"
-                          gap={3}
-                          py={2}
-                        >
-                          <input
-                            type="checkbox"
-                            onChange={() => {
-                              setValue(
-                                `members[${member}]`,
-                                !getValues(`members[${member}]`)
-                              );
+                        return (
+                          <Box
+                            key={`checkbox-${member}-${
+                              isOpenDrawer ? "-mobile" : ""
+                            }`}
+                            p={3}
+                            borderRadius="lg"
+                            border="1px solid"
+                            borderColor="gray.200"
+                            bg={getValues(`members[${member}]`) ? "blue.50" : "white"}
+                            transition="all 0.2s"
+                            _hover={{
+                              borderColor: "blue.300",
+                              bg: getValues(`members[${member}]`) ? "blue.100" : "gray.50"
                             }}
-                            checked={getValues(`members[${member}]`)}
-                          />
-                          <HStack gap={2} width="100%">
-                            <Box
-                              width="28px"
-                              height="28px"
-                              borderRadius="full"
-                              bg={memberData.color.bg}
-                              color={memberData.color.color}
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                              fontSize="xs"
-                              fontWeight="bold"
-                            >
-                              {memberData.initial}
-                            </Box>
-                            <Box flex="1">
-                              <Box fontWeight="medium">{member}</Box>
-                              <Box fontSize="sm" color="gray.500">
-                                {collections[index]?.totalitems || 0} games
-                              </Box>
-                            </Box>
-                            {removeMember && (
-                              <Button
-                                size="xs"
-                                variant="outline"
-                                colorPalette="red"
-                                onClick={() => handleRemoveMember(member)}
-                                title={`Remove ${member}`}
+                          >
+                            <HStack gap={3} width="100%">
+                              <input
+                                type="checkbox"
+                                onChange={() => {
+                                  setValue(
+                                    `members[${member}]`,
+                                    !getValues(`members[${member}]`)
+                                  );
+                                }}
+                                checked={getValues(`members[${member}]`)}
+                                style={{
+                                  width: "16px",
+                                  height: "16px",
+                                  accentColor: "var(--chakra-colors-blue-500)"
+                                }}
+                              />
+                              <Box
+                                width="32px"
+                                height="32px"
+                                borderRadius="full"
+                                bg={memberData.color.bg}
+                                color={memberData.color.color}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                fontSize="sm"
+                                fontWeight="bold"
+                                flexShrink={0}
                               >
-                                ✕
-                              </Button>
-                            )}
-                          </HStack>
-                        </Box>
-                      );
-                    })}
+                                {memberData.initial}
+                              </Box>
+                              <Box flex="1" minWidth={0}>
+                                <Text fontWeight="medium" fontSize="sm" truncate>
+                                  {member}
+                                </Text>
+                                <Text fontSize="xs" color="gray.500">
+                                  {collections[index]?.totalitems || 0} games
+                                </Text>
+                              </Box>
+                              {removeMember && (
+                                <Button
+                                  size="xs"
+                                  variant="ghost"
+                                  colorScheme="red"
+                                  onClick={() => handleRemoveMember(member)}
+                                  title={`Remove ${member}`}
+                                  borderRadius="full"
+                                  width="24px"
+                                  height="24px"
+                                  minWidth="24px"
+                                  p={0}
+                                >
+                                  ✕
+                                </Button>
+                              )}
+                            </HStack>
+                          </Box>
+                        );
+                      })}
+                    </VStack>
                   </VStack>
                 </Box>
               )}
-            </Box>
-          </VStack>
+            </VStack>
+          </Box>
         </VStack>
       </form>
     );

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Container, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -200,10 +200,15 @@ const Index: NextPage<CollectionPageProps> = () => {
               </Box>
             )}
 
-            <Stack direction={["column", "row"]} alignItems="flex-start">
+            <Stack direction={["column", "row"]} alignItems="flex-start" gap={6}>
               {!isLoading && data ? (
                 <>
-                  <Box display={{ base: "none", md: "flex" }}>
+                  <Box 
+                    display={{ base: "none", md: "flex" }}
+                    position="sticky"
+                    top="20px"
+                    alignSelf="flex-start"
+                  >
                     <SearchSidebar
                       members={members}
                       onSearch={handleSearch}
@@ -217,10 +222,22 @@ const Index: NextPage<CollectionPageProps> = () => {
                     />
                   </Box>
 
-                  <Results boardgames={data?.boardgames} />
+                  <Box flex="1" minWidth={0}>
+                    <Results boardgames={data?.boardgames} />
+                  </Box>
                 </>
               ) : (
-                <div>loading</div>
+                <Box 
+                  flex="1" 
+                  display="flex" 
+                  alignItems="center" 
+                  justifyContent="center" 
+                  minHeight="400px"
+                >
+                  <Text fontSize="lg" color="gray.500">
+                    Loading collections...
+                  </Text>
+                </Box>
               )}
             </Stack>
           </Box>
