@@ -5,8 +5,6 @@ import {
   Heading,
   LinkBox,
   LinkOverlay,
-  List,
-  ListItem,
   Text,
   Wrap,
   HStack,
@@ -43,47 +41,45 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
   return (
     <Container mt={10} maxWidth={"100%"}>
       {checkedMembers?.length > 0 ? (
-        <Heading fontSize={"2xl"} mb={10}>
-          {`Displaying ${results.length} games owned for the following members:`}
-          <List.Root>
-            <HStack gap={3} mt={4} flexWrap="wrap">
-              {checkedMembers.map((member, index) => {
-                const memberData = getMemberData(member);
-                if (!memberData) return null;
-                
-                return (
-                  <ListItem key={`${member}_${index}`}>
-                    <LinkBox>
-                      <LinkOverlay
-                        href={`https://boardgamegeek.com/user/${member}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+        <Box mb={10}>
+          <Heading fontSize={"2xl"} mb={4}>
+            {`Displaying ${results.length} games owned for the following members:`}
+          </Heading>
+          <HStack gap={3} flexWrap="wrap">
+            {checkedMembers.map((member, index) => {
+              const memberData = getMemberData(member);
+              if (!memberData) return null;
+              
+              return (
+                <LinkBox key={`${member}_${index}`}>
+                  <LinkOverlay
+                    href={`https://boardgamegeek.com/user/${member}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <HStack gap={2}>
+                      <Box
+                        width="32px"
+                        height="32px"
+                        borderRadius="full"
+                        bg={memberData.color.bg}
+                        color={memberData.color.color}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        fontSize="sm"
+                        fontWeight="bold"
                       >
-                        <HStack gap={2}>
-                          <Box
-                            width="32px"
-                            height="32px"
-                            borderRadius="full"
-                            bg={memberData.color.bg}
-                            color={memberData.color.color}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            fontSize="sm"
-                            fontWeight="bold"
-                          >
-                            {memberData.initial}
-                          </Box>
-                          <Text fontWeight="medium">{member}</Text>
-                        </HStack>
-                      </LinkOverlay>
-                    </LinkBox>
-                  </ListItem>
-                );
-              })}
-            </HStack>
-          </List.Root>
-        </Heading>
+                        {memberData.initial}
+                      </Box>
+                      <Text fontWeight="medium">{member}</Text>
+                    </HStack>
+                  </LinkOverlay>
+                </LinkBox>
+              );
+            })}
+          </HStack>
+        </Box>
       ) : (
         <Heading fontSize={"2xl"} mb={10}>
           Please select at least one member to display their collection.
