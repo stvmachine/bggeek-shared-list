@@ -60,6 +60,9 @@ const Index: NextPage<CollectionPageProps> = () => {
       const permalink = generatePermalink(members);
       // Update URL without triggering a page reload
       window.history.replaceState({}, "", permalink);
+    } else {
+      // If no members, redirect to home page
+      window.history.replaceState({}, "", "/");
     }
   }, [members]);
 
@@ -86,6 +89,18 @@ const Index: NextPage<CollectionPageProps> = () => {
     },
     [members]
   );
+
+  const removeMember = useCallback(
+    (memberToRemove: string) => {
+      const newMembers = members.filter(member => member !== memberToRemove);
+      setMembers(newMembers);
+    },
+    [members]
+  );
+
+  const removeAllMembers = useCallback(() => {
+    setMembers([]);
+  }, []);
 
   const results = useQueries(
     members.map((member) => ({
@@ -167,6 +182,8 @@ const Index: NextPage<CollectionPageProps> = () => {
                     <SearchSidebar
                       members={members}
                       addMember={addMember}
+                      removeMember={removeMember}
+                      removeAllMembers={removeAllMembers}
                       hotSeatError={hotSeatError}
                       collections={data.collections}
                     />
@@ -212,6 +229,8 @@ const Index: NextPage<CollectionPageProps> = () => {
                   isOpenDrawer
                   members={members}
                   addMember={addMember}
+                  removeMember={removeMember}
+                  removeAllMembers={removeAllMembers}
                   hotSeatError={hotSeatError}
                   collections={data.collections}
                 />
