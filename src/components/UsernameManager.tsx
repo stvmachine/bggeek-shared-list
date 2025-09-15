@@ -21,6 +21,7 @@ type FormData = {
 type UsernameManagerProps = {
   onUsernamesChange: (usernames: string[]) => void;
   onValidatedUsernames?: (usernames: string[]) => void;
+  onValidationError?: () => void;
   initialUsernames?: string[];
   showRemoveAll?: boolean;
   onRemoveAll?: () => void;
@@ -31,6 +32,7 @@ type UsernameManagerProps = {
 const UsernameManager: React.FC<UsernameManagerProps> = ({
   onUsernamesChange,
   onValidatedUsernames,
+  onValidationError,
   initialUsernames = [],
   showRemoveAll = false,
   onRemoveAll,
@@ -88,6 +90,11 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
       cacheTime: 10 * 60 * 1000, // 10 minutes
       onError: (error: any) => {
         console.error("Validation error:", error);
+        // Clear validation queue and notify parent of error
+        setUsernamesToValidate([]);
+        if (onValidationError) {
+          onValidationError();
+        }
       },
       onSuccess: (data) => {
         // Process validation results

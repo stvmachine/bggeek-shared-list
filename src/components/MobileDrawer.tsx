@@ -10,6 +10,7 @@ type MobileDrawerProps = {
   collections: ICollection[];
   onSearch: (usernames: string[]) => void;
   onValidatedUsernames?: (usernames: string[]) => void;
+  onValidationError?: () => void;
   removeMember?: (member: string) => void;
   removeAllMembers?: () => void;
   isValidating?: boolean;
@@ -25,6 +26,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
   collections,
   onSearch,
   onValidatedUsernames,
+  onValidationError,
   removeMember,
   removeAllMembers,
   isValidating,
@@ -74,6 +76,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
             members={members}
             onSearch={onSearch}
             onValidatedUsernames={onValidatedUsernames}
+            onValidationError={onValidationError}
             removeMember={removeMember}
             removeAllMembers={removeAllMembers}
             collections={collections}

@@ -68,7 +68,9 @@ const Index: NextPage<CollectionPageProps> = () => {
 
   const handleSearch = useCallback((usernames: string[]) => {
     // This is called when usernames are submitted for validation
-    // Don't proceed yet - wait for validation
+    // Set them as pending and start validation state
+    setPendingUsernames(usernames);
+    setIsValidating(true);
     console.log(
       "UsernameManager submitted usernames for validation:",
       usernames
@@ -87,9 +89,20 @@ const Index: NextPage<CollectionPageProps> = () => {
       if (validNewMembers.length > 0) {
         setMembers((prev) => [...prev, ...validNewMembers]);
       }
+      
+      // Clear pending state and stop validation
+      setPendingUsernames([]);
+      setIsValidating(false);
     },
     [members]
   );
+
+  const handleValidationError = useCallback(() => {
+    // This is called when validation fails
+    // Clear pending state and stop validation
+    setPendingUsernames([]);
+    setIsValidating(false);
+  }, []);
 
   const removeMember = useCallback(
     (memberToRemove: string) => {
@@ -194,6 +207,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                       members={members}
                       onSearch={handleSearch}
                       onValidatedUsernames={handleValidatedUsernames}
+                      onValidationError={handleValidationError}
                       removeMember={removeMember}
                       removeAllMembers={removeAllMembers}
                       collections={data.collections}
@@ -250,6 +264,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                   members={members}
                   onSearch={handleSearch}
                   onValidatedUsernames={handleValidatedUsernames}
+                  onValidationError={handleValidationError}
                   removeMember={removeMember}
                   removeAllMembers={removeAllMembers}
                   collections={data.collections}
@@ -270,6 +285,7 @@ const Index: NextPage<CollectionPageProps> = () => {
             collections={data.collections}
             onSearch={handleSearch}
             onValidatedUsernames={handleValidatedUsernames}
+            onValidationError={handleValidationError}
             removeMember={removeMember}
             removeAllMembers={removeAllMembers}
             isValidating={isValidating}

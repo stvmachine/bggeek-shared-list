@@ -13,6 +13,7 @@ type SearchSidebarProps = {
   collections: ICollection[];
   onSearch?: (usernames: string[]) => void;
   onValidatedUsernames?: (usernames: string[]) => void;
+  onValidationError?: () => void;
   removeMember?: (member: string) => void;
   removeAllMembers?: () => void;
   isOpenDrawer?: boolean;
@@ -35,6 +36,7 @@ const SearchSidebar = React.memo(
     members,
     onSearch,
     onValidatedUsernames,
+    onValidationError,
     removeMember,
     removeAllMembers,
     collections,
@@ -201,6 +203,7 @@ const SearchSidebar = React.memo(
                     <UsernameManager
                       onUsernamesChange={handleSearch}
                       onValidatedUsernames={onValidatedUsernames}
+                      onValidationError={onValidationError}
                       initialUsernames={members}
                       noForm={true}
                       showRemoveAll={true}
