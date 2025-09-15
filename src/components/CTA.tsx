@@ -11,12 +11,10 @@ import UsernameForm from "./UsernameForm";
 import ExamplesSection from "./ExamplesSection";
 import FeaturesSection from "./FeaturesSection";
 import { getBggUser } from "bgg-xml-api-client";
-import { useUsernames } from "../hooks/useUsernames";
 import { generatePermalink } from "../utils/permalink";
 
 export default function CTA() {
   const router = useRouter();
-  const { usernames } = useUsernames();
   const [isValidating, setIsValidating] = useState(false);
 
   const validateUsername = async (username: string): Promise<boolean> => {
@@ -24,7 +22,7 @@ export default function CTA() {
     return !!user?.data?.id;
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (usernames: string[]) => {
     if (usernames.length === 0) {
       return;
     }
@@ -48,7 +46,13 @@ export default function CTA() {
 
     // All usernames are valid, generate permalink and redirect
     const permalink = generatePermalink(usernames);
-    router.push(permalink);
+    
+    // Use window.location for more reliable navigation
+    if (typeof window !== 'undefined') {
+      window.location.href = permalink;
+    } else {
+      router.push(permalink);
+    }
     setIsValidating(false);
   };
 
@@ -88,6 +92,7 @@ export default function CTA() {
               onSearch={handleSearch}
               isValidating={isValidating}
             />
+            
             
             <ExamplesSection />
           </VStack>
