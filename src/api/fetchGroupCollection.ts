@@ -1,4 +1,4 @@
-import { BggCollectionResponse, getBggCollection } from "bgg-xml-api-client";
+import { getBggCollection } from "bgg-xml-api-client";
 import { ICollection, IItem } from "../utils/types";
 
 export const fetchCollections = async (
@@ -19,10 +19,12 @@ export const fetchCollection = async (
     ...options,
   });
 
+  const data = collectionResponse.data || {};
+  
   return {
-    ...collectionResponse.data,
-    item: collectionResponse?.data?.item
-      ? collectionResponse.data.item.map((item: IItem) => ({
+    ...data,
+    item: (data as any)?.item
+      ? (data as any).item.map((item: IItem) => ({
           yearpublished: item.yearpublished,
           stats: item.stats,
           subtype: item.subtype,
@@ -56,9 +58,9 @@ export const mergeCollections = (
 
   const boardgames = rawData
     .reduce(
-      (accum: any[], collection: BggCollectionResponse) => [
+      (accum: any[], collection: ICollection) => [
         ...accum,
-        ...collection.item,
+        ...(collection.item || []),
       ],
       []
     )

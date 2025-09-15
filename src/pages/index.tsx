@@ -1,13 +1,12 @@
-import React from "react";
+import { BggHotResponse, getBggHot } from "bgg-xml-api-client";
 import { NextPage } from "next";
-import { getBggHot, BggHotResponse } from "bgg-xml-api-client";
 
 import { Container } from "../components/Container";
-import Main from "../components/Layout/Main";
-import Footer from "../components/Layout/Footer";
-import Navbar from "../components/Layout/Navbar";
 import CTA from "../components/CTA";
 import HotGames from "../components/HotGames";
+import Footer from "../components/Layout/Footer";
+import Main from "../components/Layout/Main";
+import Navbar from "../components/Layout/Navbar";
 
 export async function getStaticProps() {
   try {
@@ -27,7 +26,7 @@ export async function getStaticProps() {
     };
   } catch (error) {
     console.error("Error fetching hot games:", error);
-    
+
     // Return empty data structure as fallback
     return {
       props: {

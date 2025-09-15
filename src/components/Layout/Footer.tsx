@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, Text, Link, HStack } from "@chakra-ui/react";
+import { Box, HStack, Link, Stack, Text } from "@chakra-ui/react";
 
 const Footer = () => (
   <Box
@@ -23,20 +23,22 @@ const Footer = () => (
       <Text color="gray.600" fontSize="sm">
         © 2024 SharedGameCollection - Made by stevmachine
       </Text>
-      <HStack spacing={6}>
-        <Link 
-          href="https://boardgamegeek.com" 
-          isExternal 
-          color="blue.500" 
+      <HStack gap={6}>
+        <Link
+          href="https://boardgamegeek.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          color="blue.500"
           fontSize="sm"
           _hover={{ textDecoration: "underline" }}
         >
           BoardGameGeek
         </Link>
-        <Link 
-          href="https://github.com" 
-          isExternal 
-          color="blue.500" 
+        <Link
+          href="https://github.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          color="blue.500"
           fontSize="sm"
           _hover={{ textDecoration: "underline" }}
         >

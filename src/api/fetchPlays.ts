@@ -18,7 +18,7 @@ export const getUniqueBgsFromPlays = async (
         self.indexOf(value) === index
     );
   const uniqueBgs = uniqueBgIds && (await getBggThing({ id: uniqueBgIds }));
-  return uniqueBgs?.data?.item || [];
+  return (uniqueBgs?.data as any)?.item || [];
 };
 
 export const getPlaysAndRelatedBggs = async (
@@ -28,7 +28,7 @@ export const getPlaysAndRelatedBggs = async (
 
   // Boardgames
   const uniqueBgs =
-    rawPlays?.data?.play && (await getUniqueBgsFromPlays(rawPlays.data.play));
+    (rawPlays?.data as any)?.play && (await getUniqueBgsFromPlays((rawPlays.data as any).play));
   const bgs = uniqueBgs
     ? uniqueBgs.reduce(
         (accum: IBgDict, bg: IGame) => ({
@@ -40,7 +40,7 @@ export const getPlaysAndRelatedBggs = async (
     : {};
 
   // Plays
-  let plays = rawPlays?.data?.play || [];
+  let plays = (rawPlays?.data as any)?.play || [];
   plays = plays.map((play: any) => ({
     ...play,
     players: play.players.player,

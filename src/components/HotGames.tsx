@@ -3,14 +3,12 @@ import {
   Container,
   Heading,
   Image,
-  Stack,
   Text,
+  VStack,
   Wrap,
   WrapItem,
-  VStack,
 } from "@chakra-ui/react";
 import { BggHotResponse } from "bgg-xml-api-client";
-import { IHotItem } from "../utils/types";
 
 type HotGamesProps = {
   collectionData: BggHotResponse;
@@ -23,26 +21,28 @@ const HotGames = ({ collectionData }: HotGamesProps) => {
     <Box bgGradient={bgGradient} py={16}>
       <Container maxW="6xl">
         <VStack gap={8} textAlign="center" mb={12}>
-          <Heading 
+          <Heading
             fontSize={{ base: "3xl", md: "4xl" }}
             fontWeight="700"
             color="gray.800"
           >
             Have a shared collection with your friends
           </Heading>
-          <Text 
-            color="gray.600" 
+          <Text
+            color="gray.600"
             fontSize={{ base: "lg", md: "xl" }}
             maxW="2xl"
             lineHeight="1.6"
           >
-            Check easily any game from your community and discover new favorites together.
+            Check easily any game from your community and discover new favorites
+            together.
           </Text>
         </VStack>
 
-        <Wrap spacing={4} justify="center">
-          {collectionData?.item && collectionData.item.length > 0 &&
-            collectionData.item.map(({ thumbnail, id }: IHotItem) => (
+        <Wrap gap={4} justify="center">
+          {collectionData?.item &&
+            collectionData.item.length > 0 &&
+            collectionData.item.map(({ thumbnail, id }: any) => (
               <WrapItem key={id}>
                 {thumbnail?.value && (
                   <Box

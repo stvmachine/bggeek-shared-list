@@ -1,4 +1,4 @@
-import { Heading, SimpleGrid, Text, VStack, Box, Icon } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 
 const FeaturesSection: React.FC = () => {
