@@ -13,14 +13,13 @@ import { getBggUser } from "bgg-xml-api-client";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useQuery } from "react-query";
-import { useUsernames } from "../hooks/useUsernames";
 
 type FormData = {
   username: string;
 };
 
 type UsernameFormProps = {
-  onSearch: () => void;
+  onSearch: (usernames: string[]) => void;
   isValidating: boolean;
 };
 
@@ -28,10 +27,18 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   onSearch,
   isValidating,
 }) => {
-  const { usernames, addUsername, removeUsername } = useUsernames();
-  const [usernameToValidate, setUsernameToValidate] = useState<string | null>(
-    null
-  );
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [usernamesToValidate, setUsernamesToValidate] = useState<string[]>([]);
+
+  const addUsername = (username: string) => {
+    if (!usernames.includes(username)) {
+      setUsernames(prev => [...prev, username]);
+    }
+  };
+
+  const removeUsername = (username: string) => {
+    setUsernames(prev => prev.filter(u => u !== username));
+  };
 
   const {
     control,
@@ -46,16 +53,26 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
     },
   });
 
-  // Use useQuery for username validation
-  const {
-    data: userData,
-    isLoading: isValidatingUsername,
-    error: validationError,
-  } = useQuery(
-    ["validateUser", usernameToValidate],
-    () => getBggUser({ name: usernameToValidate! }),
+  // Use a single query with all usernames to validate
+  const { data: validationData, isLoading: isValidatingAny } = useQuery(
+    ["validateUsers", usernamesToValidate],
+    async () => {
+      if (usernamesToValidate.length === 0) return [];
+
+      // Validate all usernames in parallel
+      const validationPromises = usernamesToValidate.map(async (username) => {
+        try {
+          const userData = await getBggUser({ name: username });
+          return { username, userData, error: null };
+        } catch (error) {
+          return { username, userData: null, error };
+        }
+      });
+
+      return Promise.all(validationPromises);
+    },
     {
-      enabled: !!usernameToValidate,
+      enabled: usernamesToValidate.length > 0,
       retry: (failureCount, error: any) => {
         // Don't retry on 404 or user not found errors
         if (error?.response?.status === 404) {
@@ -81,51 +98,53 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
     }
   );
 
-  // Handle validation result when query completes
+  // Handle validation results for each username
   React.useEffect(() => {
-    if (usernameToValidate && !isValidatingUsername) {
-      if (userData?.data?.id) {
-        // Username is valid, add it to the list
-        addUsername(usernameToValidate);
-        reset();
-        clearErrors();
-      } else if (validationError) {
-        // Handle different types of errors
-        const error = validationError as any;
-        let errorMessage = `Username "${usernameToValidate}" not found on BoardGameGeek`;
+    if (!isValidatingAny && validationData && validationData.length > 0) {
+      validationData.forEach(({ username, userData, error }) => {
+        if (userData?.data?.id) {
+          // Username is valid, add it to the list
+          addUsername(username);
+        } else if (error) {
+          // Handle different types of errors
+          const errorObj = error as any;
+          let errorMessage = `Username "${username}" not found on BoardGameGeek`;
 
-        if (
-          error?.response?.status === 404 ||
-          error?.message?.includes("404")
-        ) {
-          errorMessage = `Username "${usernameToValidate}" does not exist on BoardGameGeek`;
-        } else if (
-          error?.code === "NETWORK_ERROR" ||
-          error?.message?.includes("network")
-        ) {
-          errorMessage = `Network error. Please check your connection and try again.`;
-        } else if (error?.response?.status >= 500) {
-          errorMessage = `BoardGameGeek is temporarily unavailable. Please try again later.`;
+          if (
+            errorObj?.response?.status === 404 ||
+            errorObj?.message?.includes("404")
+          ) {
+            errorMessage = `Username "${username}" does not exist on BoardGameGeek`;
+          } else if (
+            errorObj?.code === "NETWORK_ERROR" ||
+            errorObj?.message?.includes("network")
+          ) {
+            errorMessage = `Network error validating "${username}". Please check your connection and try again.`;
+          } else if (errorObj?.response?.status >= 500) {
+            errorMessage = `BoardGameGeek is temporarily unavailable while validating "${username}". Please try again later.`;
+          }
+
+          setError("username", {
+            type: "manual",
+            message: errorMessage,
+          });
+        } else if (!userData?.data?.id && username) {
+          // No error but also no valid user data - treat as not found
+          setError("username", {
+            type: "manual",
+            message: `Username "${username}" not found on BoardGameGeek`,
+          });
         }
+      });
 
-        setError("username", {
-          type: "manual",
-          message: errorMessage,
-        });
-      } else if (!userData?.data?.id && usernameToValidate) {
-        // No error but also no valid user data - treat as not found
-        setError("username", {
-          type: "manual",
-          message: `Username "${usernameToValidate}" not found on BoardGameGeek`,
-        });
-      }
-      setUsernameToValidate(null);
+      // Clear validation list when all validations are complete
+      setUsernamesToValidate([]);
+      reset();
+      clearErrors();
     }
   }, [
-    usernameToValidate,
-    isValidatingUsername,
-    userData,
-    validationError,
+    isValidatingAny,
+    validationData,
     addUsername,
     reset,
     clearErrors,
@@ -133,37 +152,44 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
   ]);
 
   const onSubmit = (data: FormData) => {
-    const trimmedUsername = data.username.trim();
+    const input = data.username.trim();
+    console.log("Form submitted with input:", input);
 
-    if (!trimmedUsername) return;
+    if (!input) return;
 
-    // Check if username already exists
-    if (usernames.includes(trimmedUsername)) {
+    // Split by comma and clean up each username
+    const usernamesToAdd = input
+      .split(",")
+      .map((username) => username.trim())
+      .filter((username) => username.length > 0);
+
+    if (usernamesToAdd.length === 0) {
       setError("username", {
         type: "manual",
-        message: "Username already added to the list",
+        message: "Please enter at least one valid username",
       });
       return;
     }
 
+    // Check for duplicates
+    const duplicates = usernamesToAdd.filter((username) =>
+      usernames.includes(username)
+    );
+    if (duplicates.length > 0) {
+      setError("username", {
+        type: "manual",
+        message: `Username(s) already added: ${duplicates.join(", ")}`,
+      });
+      return;
+    }
+
+    // Start validation for all usernames
     clearErrors("username");
-    setUsernameToValidate(trimmedUsername);
+    setUsernamesToValidate(usernamesToAdd);
   };
 
   const handleRemoveUsername = (usernameToRemove: string) => {
     removeUsername(usernameToRemove);
-  };
-
-  const handleSearch = () => {
-    if (usernames.length === 0) {
-      setError("username", {
-        type: "manual",
-        message: "Please add at least one username before searching",
-      });
-      return;
-    }
-    clearErrors();
-    onSearch();
   };
 
   return (
@@ -186,7 +212,7 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
                 render={({ field }) => (
                   <Input
                     {...field}
-                    placeholder="Enter BoardGameGeek username"
+                    placeholder="Enter BoardGameGeek username(s) - separate multiple with commas"
                     bg="gray.100"
                     border="none"
                     _focus={{
@@ -202,8 +228,8 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
                 size="lg"
                 colorPalette="green"
                 type="submit"
-                loading={isValidatingUsername}
-                disabled={isValidatingUsername}
+                loading={isValidatingAny}
+                disabled={isValidatingAny}
               >
                 +
               </IconButton>
@@ -251,18 +277,73 @@ const UsernameForm: React.FC<UsernameFormProps> = ({
         </VStack>
       )}
 
+      {/* Validation Loading States */}
+      {usernamesToValidate.length > 0 && (
+        <VStack gap={2} w="full">
+          <Text fontSize="sm" color="gray.600" fontWeight="bold">
+            Validating usernames:
+          </Text>
+          <Flex wrap="wrap" gap={2}>
+            {usernamesToValidate.map((username) => {
+              const result = validationData?.find(
+                (r) => r.username === username
+              );
+              const isValidating = isValidatingAny;
+              const validationError = result?.error;
+              const isValid = result?.userData?.data?.id;
+
+              return (
+                <Badge
+                  key={username}
+                  colorPalette={
+                    validationError
+                      ? "red"
+                      : isValid
+                      ? "green"
+                      : isValidating
+                      ? "yellow"
+                      : "gray"
+                  }
+                  variant="solid"
+                  px={3}
+                  py={1}
+                  borderRadius="full"
+                >
+                  <HStack gap={2}>
+                    <Text>{username}</Text>
+                    {isValidating && <Text>⏳</Text>}
+                    {validationError && <Text>❌</Text>}
+                    {!isValidating && isValid && <Text>✅</Text>}
+                  </HStack>
+                </Badge>
+              );
+            })}
+          </Flex>
+        </VStack>
+      )}
+
       {/* Search Button */}
       <Button
         colorPalette="blue"
         size="lg"
-        onClick={handleSearch}
-        loading={isValidating}
-        disabled={usernames.length === 0}
+        onClick={() => {
+          if (usernames.length === 0) {
+            setError("username", {
+              type: "manual",
+              message: "Please add at least one username before searching",
+            });
+            return;
+          }
+          clearErrors();
+          onSearch(usernames);
+        }}
+        loading={isValidating || isValidatingAny}
+        disabled={usernames.length === 0 || isValidatingAny}
         maxW="md"
         w="full"
       >
         🔍{" "}
-        {isValidating
+        {isValidating || isValidatingAny
           ? "Validating..."
           : `View ${usernames.length > 0 ? usernames.length : ""} Collection${
               usernames.length !== 1 ? "s" : ""

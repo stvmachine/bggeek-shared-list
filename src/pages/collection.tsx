@@ -19,8 +19,11 @@ import SearchSidebar from "../components/SearchSidebar";
 import { ICollection } from "../utils/types";
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
 import { getBggUser } from "bgg-xml-api-client";
-import { useUsernames } from "../hooks/useUsernames";
-import { parseUsernamesFromUrl, generatePermalink, copyToClipboard } from "../utils/permalink";
+import {
+  parseUsernamesFromUrl,
+  generatePermalink,
+  copyToClipboard,
+} from "../utils/permalink";
 
 type CollectionPageProps = {
   initialData?: ICollection[];
@@ -35,34 +38,28 @@ export async function getStaticProps() {
 const Index: NextPage<CollectionPageProps> = () => {
   const router = useRouter();
   const { usernames: urlUsernames, username } = router.query;
-  const { usernames, setUsernames } = useUsernames();
-  
+
   const [members, setMembers] = useState<string[]>([]);
   const [hotSeatError, setHotSeatError] = useState<string>("");
 
-  // Initialize with usernames from query params and sync with localStorage
+  // Initialize with usernames from query params
   useEffect(() => {
     if (urlUsernames) {
       // Parse usernames from URL using utility function
       const usernameList = parseUsernamesFromUrl(urlUsernames);
       setMembers(usernameList);
-      setUsernames(usernameList);
-    } else if (username && typeof username === 'string') {
+    } else if (username && typeof username === "string") {
       // Handle single username for backward compatibility
       setMembers([username]);
-      setUsernames([username]);
-    } else if (usernames.length > 0) {
-      // Use usernames from localStorage if no URL params
-      setMembers(usernames);
     }
-  }, [urlUsernames, username, usernames, setUsernames]);
+  }, [urlUsernames, username]);
 
   // Update URL when members change (for permalinks)
   useEffect(() => {
     if (members.length > 0) {
       const permalink = generatePermalink(members);
       // Update URL without triggering a page reload
-      window.history.replaceState({}, '', permalink);
+      window.history.replaceState({}, "", permalink);
     }
   }, [members]);
 
@@ -70,19 +67,24 @@ const Index: NextPage<CollectionPageProps> = () => {
     async (newMember: string) => {
       setHotSeatError("");
       if (!members.find((m) => m.toLowerCase() === newMember.toLowerCase())) {
-        const user = await getBggUser({ name: newMember });
-        if (user?.data?.id) {
-          const newMembers = [...members, newMember];
-          setMembers(newMembers);
-          setUsernames(newMembers);
-        }else{
-          setHotSeatError("Username doesn't exist in BGGeek, please try again")
+        try {
+          const user = await getBggUser({ name: newMember });
+          if (user?.data?.id) {
+            const newMembers = [...members, newMember];
+            setMembers(newMembers);
+          } else {
+            setHotSeatError(
+              "Username doesn't exist in BGGeek, please try again"
+            );
+          }
+        } catch (error) {
+          setHotSeatError("Error validating username, please try again");
         }
       } else {
         setHotSeatError("Username already added to the list");
       }
     },
-    [members, setMembers, setUsernames]
+    [members]
   );
 
   const results = useQueries(
@@ -103,7 +105,7 @@ const Index: NextPage<CollectionPageProps> = () => {
       !isLoading
         ? mergeCollections(results.map((result: any) => result?.data))
         : undefined,
-    [isLoading]
+    [isLoading, results]
   );
 
   const defaultValues = useMemo(
@@ -122,14 +124,16 @@ const Index: NextPage<CollectionPageProps> = () => {
 
   const handleShare = async () => {
     if (members.length === 0) return;
-    
+
     const permalink = generatePermalink(members);
     const fullUrl = `${window.location.origin}${permalink}`;
-    
+
     const success = await copyToClipboard(fullUrl);
-    
+
     if (success) {
-      alert("Link copied! Share this link with your friends to show your collection.");
+      alert(
+        "Link copied! Share this link with your friends to show your collection."
+      );
     } else {
       alert("Copy failed. Please copy the URL manually from the address bar.");
     }
@@ -138,10 +142,7 @@ const Index: NextPage<CollectionPageProps> = () => {
   return (
     <FormProvider {...methods}>
       <Container height="100vh" maxWidth="100%">
-        <Navbar
-          openDrawer={onOpen}
-          isOpenDrawer={isOpen}
-        />
+        <Navbar openDrawer={onOpen} isOpenDrawer={isOpen} />
 
         <Box mt={12}>
           {/* Share Button */}

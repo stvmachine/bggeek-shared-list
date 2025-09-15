@@ -12,8 +12,7 @@ const ExamplesSection: React.FC = () => {
           <Text as="span" fontWeight="bold">
             Gaming Group:
           </Text>{" "}
-          Add multiple usernames like <Code>alex_gamer</Code>,{" "}
-          <Code>sarah_boardgames</Code>, <Code>mike_collector</Code>
+          Add multiple usernames like <Code>alex_gamer, sarah_boardgames, mike_collector</Code>
         </Text>
         <Text textAlign="center">
           <Text as="span" fontWeight="bold">

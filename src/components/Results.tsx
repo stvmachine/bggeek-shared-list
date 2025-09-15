@@ -1,9 +1,10 @@
+import React from "react";
 import {
-  Box,
   Container,
   Heading,
   LinkBox,
   LinkOverlay,
+  List,
   ListItem,
   Text,
   Wrap,
@@ -19,7 +20,7 @@ type ResultsProps = {
   boardgames?: IItem[];
 };
 
-const Results = ({ boardgames }: ResultsProps) => {
+const Results = React.memo(({ boardgames }: ResultsProps) => {
   const { results } = useSearch<IItem>(boardgames || [], {
     keys: ["name.text"],
   });
@@ -40,7 +41,7 @@ const Results = ({ boardgames }: ResultsProps) => {
       {checkedMembers?.length > 0 ? (
         <Heading fontSize={"2xl"} mb={10}>
           {`Displaying ${results.length} games owned for the following members:`}
-          <Box as="ul" listStyleType="none" pl={0}>
+          <List.Root>
             {checkedMembers.map((member, index) => (
               <ListItem key={`${member}_${index}`}>
                 <LinkBox>
@@ -54,7 +55,7 @@ const Results = ({ boardgames }: ResultsProps) => {
                 </LinkBox>
               </ListItem>
             ))}
-          </Box>
+          </List.Root>
         </Heading>
       ) : (
         <Heading fontSize={"2xl"} mb={10}>
@@ -76,6 +77,8 @@ const Results = ({ boardgames }: ResultsProps) => {
       </Wrap>
     </Container>
   );
-};
+});
+
+Results.displayName = 'Results';
 
 export default Results;

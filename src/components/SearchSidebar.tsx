@@ -1,5 +1,5 @@
 import { Accordion, Box, Button, Input, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import useKeydown from "../hooks/useKeydown";
@@ -24,7 +24,7 @@ const hideVirtualKeyboard = (): void => {
   }
 };
 
-const SearchSidebar = ({
+const SearchSidebar = React.memo(({
   members,
   addMember,
   hotSeatError,
@@ -182,6 +182,8 @@ const SearchSidebar = ({
       </VStack>
     </form>
   );
-};
+});
+
+SearchSidebar.displayName = 'SearchSidebar';
 
 export default SearchSidebar;
