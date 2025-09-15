@@ -8,7 +8,14 @@ type NavbarProps = {
 
 const Navbar: React.FC<NavbarProps> = () => {
   return (
-    <Box width={"100%"} position="sticky" top={0} zIndex={1000}>
+    <Box 
+      position="sticky" 
+      top={0} 
+      zIndex={1000}
+      width="100%"
+      left={0}
+      right={0}
+    >
       <Flex
         bg="white"
         color="gray.600"
@@ -20,6 +27,7 @@ const Navbar: React.FC<NavbarProps> = () => {
         borderColor="gray.200"
         align={"center"}
         boxShadow="sm"
+        width="100%"
       >
         <Logo />
         

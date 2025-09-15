@@ -163,8 +163,8 @@ const Index: NextPage<CollectionPageProps> = () => {
   return (
     <MemberProvider usernames={members}>
       <FormProvider {...methods}>
+        <Navbar openDrawer={onOpen} isOpenDrawer={isOpen} />
         <Container height="100vh" maxWidth="100%">
-          <Navbar openDrawer={onOpen} isOpenDrawer={isOpen} />
 
           <Box mt={12}>
             {/* Share Button */}

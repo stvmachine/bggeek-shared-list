@@ -46,15 +46,16 @@ type IndexPageProps = {
 
 const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
   return (
-    <Container height="100vh">
+    <>
       <Navbar />
-      <Main>
-        <CTA />
-        <HotGames collectionData={collectionData} />
-      </Main>
-
-      <Footer />
-    </Container>
+      <Container height="100vh">
+        <Main>
+          <CTA />
+          <HotGames collectionData={collectionData} />
+        </Main>
+        <Footer />
+      </Container>
+    </>
   );
 };
 
