@@ -1,5 +1,4 @@
 import {
-  Accordion,
   Box,
   Button,
   HStack,
@@ -112,15 +111,11 @@ const SearchSidebar = React.memo(
             width={isOpenDrawer ? "100%" : "xs"}
           />
 
-          <Accordion.Root defaultValue={["0", "1"]} multiple>
-            <Accordion.Item value="0" width="xs">
-              <Accordion.ItemTrigger>
-                <Box flex="1" textAlign="left">
-                  Basic filters
-                </Box>
-                <Accordion.ItemIndicator />
-              </Accordion.ItemTrigger>
-              <Accordion.ItemContent pb={4}>
+          <VStack gap={4} align="stretch">
+            <Box>
+              <Text fontWeight="semibold" mb={3} color="gray.700">
+                Basic filters
+              </Text>
                 <Box
                   as="select"
                   {...register("numberOfPlayers")}
@@ -164,22 +159,19 @@ const SearchSidebar = React.memo(
                       </option>
                     ))}
                 </Box>
-              </Accordion.ItemContent>
-            </Accordion.Item>
+            </Box>
 
-            <Accordion.Item value="1" width="xs">
-              <Accordion.ItemTrigger>
-                <Box flex="1" textAlign="left">
-                  <HStack justify="space-between" width="100%">
-                    <Text>👥 Group Collectors ({members.length})</Text>
-                    <Text fontSize="sm" color="gray.500">
-                      {selectedCount}/{members.length} selected
-                    </Text>
-                  </HStack>
-                </Box>
-                <Accordion.ItemIndicator />
-              </Accordion.ItemTrigger>
-              <Accordion.ItemContent pb={4}>
+            <Box height="1px" bg="gray.200" my={4} />
+
+            <Box>
+              <HStack justify="space-between" width="100%" mb={3}>
+                <Text fontWeight="semibold" color="gray.700">
+                  👥 Group Collectors ({members.length})
+                </Text>
+                <Text fontSize="sm" color="gray.500">
+                  {selectedCount}/{members.length} selected
+                </Text>
+              </HStack>
                 {members && collections && (
                   <Box>
                     <VStack alignItems={"flex-start"}>
@@ -288,9 +280,8 @@ const SearchSidebar = React.memo(
                     </VStack>
                   </Box>
                 )}
-              </Accordion.ItemContent>
-            </Accordion.Item>
-          </Accordion.Root>
+            </Box>
+          </VStack>
         </VStack>
       </form>
     );
