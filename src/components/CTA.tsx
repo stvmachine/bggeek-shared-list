@@ -6,6 +6,7 @@ import {
   Container,
   Text,
   VStack,
+  Box,
 } from "@chakra-ui/react";
 import UsernameForm from "./UsernameForm";
 import ExamplesSection from "./ExamplesSection";
@@ -45,6 +46,8 @@ export default function CTA() {
   };
 
 
+  const bgGradient = "linear(to-br, blue.50, purple.50)";
+
   return (
     <>
       <Head>
@@ -54,41 +57,54 @@ export default function CTA() {
         />
       </Head>
 
-      <Container maxW={"6xl"}>
-        <VStack gap={12} py={{ base: 20, md: 36 }}>
-          {/* Header Section */}
-          <VStack gap={6} textAlign="center">
-            <Heading
-              fontWeight={600}
-              fontSize={{ base: "3xl", sm: "4xl", md: "5xl" }}
-              lineHeight={"110%"}
-            >
-              SharedGameCollection
-            </Heading>
-            <Text color={"gray.500"} fontSize="lg" maxW="2xl">
-              Organize and explore your group's board game collections from{" "}
-              <Text as="span" color="blue.500" textDecoration="underline">
-                BoardGameGeek.com
+      <Box
+        bgGradient={bgGradient}
+        minH="100vh"
+        display="flex"
+        flexDirection="column"
+      >
+        <Container maxW="6xl" flex="1" display="flex" flexDirection="column">
+          <VStack gap={12} py={{ base: 20, md: 36 }} flex="1">
+            {/* Header Section */}
+            <VStack gap={6} textAlign="center">
+              <Heading
+                fontWeight={700}
+                fontSize={{ base: "4xl", sm: "5xl", md: "6xl" }}
+                lineHeight="110%"
+                bgGradient="linear(to-r, blue.600, purple.600)"
+                bgClip="text"
+              >
+                SharedGameCollection
+              </Heading>
+              <Text 
+                color="gray.600" 
+                fontSize={{ base: "lg", md: "xl" }} 
+                maxW="3xl"
+                lineHeight="1.6"
+              >
+                Organize and explore your group's board game collections from{" "}
+                <Text as="span" color="blue.500" fontWeight="semibold">
+                  BoardGameGeek.com
+                </Text>
+                . Perfect for gaming groups with multiple collectors. Enter a username to get started!
               </Text>
-              . Perfect for gaming groups with multiple collectors. Enter a username to get started!
-            </Text>
-          </VStack>
+            </VStack>
 
-          {/* Username Input */}
-          <VStack gap={6} w="full" maxW="2xl">
-            <UsernameForm
-              onSearch={handleSearch}
-              onValidatedUsernames={handleValidatedUsernames}
-              isValidating={isValidating}
-            />
-            
-            
-            <ExamplesSection />
-          </VStack>
+            {/* Username Input */}
+            <VStack gap={8} w="full" maxW="2xl">
+              <UsernameForm
+                onSearch={handleSearch}
+                onValidatedUsernames={handleValidatedUsernames}
+                isValidating={isValidating}
+              />
+              
+              <ExamplesSection />
+            </VStack>
 
-          <FeaturesSection />
-        </VStack>
-      </Container>
+            <FeaturesSection />
+          </VStack>
+        </Container>
+      </Box>
     </>
   );
 }

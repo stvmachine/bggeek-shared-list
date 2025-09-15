@@ -1,4 +1,4 @@
-import { Heading, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import { Heading, SimpleGrid, Text, VStack, Box, Icon } from "@chakra-ui/react";
 import React from "react";
 
 const FeaturesSection: React.FC = () => {
@@ -41,19 +41,49 @@ const FeaturesSection: React.FC = () => {
   ];
 
   return (
-    <VStack gap={8} w="full">
-      <Heading size="lg" textAlign="center">
+    <VStack gap={12} w="full" py={8}>
+      <Heading size="xl" textAlign="center" color="gray.700">
         Features
       </Heading>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8} w="full">
         {features.map((feature, index) => (
-          <VStack key={index} gap={3} textAlign="center">
-            <Text fontSize="3xl">{feature.icon}</Text>
-            <Heading size="md">{feature.title}</Heading>
-            <Text color="gray.600" fontSize="sm">
-              {feature.description}
-            </Text>
-          </VStack>
+          <Box
+            key={index}
+            bg="white"
+            p={6}
+            borderRadius="xl"
+            boxShadow="lg"
+            border="1px"
+            borderColor="gray.200"
+            _hover={{
+              transform: "translateY(-2px)",
+              boxShadow: "xl",
+              transition: "all 0.2s",
+            }}
+            transition="all 0.2s"
+          >
+            <VStack gap={4} textAlign="center" h="full">
+              <Box
+                fontSize="4xl"
+                p={3}
+                bg="blue.50"
+                borderRadius="full"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                w="80px"
+                h="80px"
+              >
+                {feature.icon}
+              </Box>
+              <Heading size="md" color="gray.800">
+                {feature.title}
+              </Heading>
+              <Text color="gray.600" fontSize="sm" lineHeight="1.6">
+                {feature.description}
+              </Text>
+            </VStack>
+          </Box>
         ))}
       </SimpleGrid>
     </VStack>

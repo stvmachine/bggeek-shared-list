@@ -1,12 +1,11 @@
-import { Stack, StackProps } from "@chakra-ui/react";
+import { Box, BoxProps } from "@chakra-ui/react";
 
-const Main = (props: StackProps) => (
-  <Stack
-    gap="1.5rem"
+const Main = (props: BoxProps) => (
+  <Box
+    as="main"
+    flex="1"
     width="100%"
-    maxWidth="48rem"
-    pt="2rem"
-    px="1rem"
+    minH="calc(100vh - 140px)"
     {...props}
   />
 );

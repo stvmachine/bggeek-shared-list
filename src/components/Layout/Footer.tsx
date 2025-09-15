@@ -1,32 +1,50 @@
-// import { ReactNode } from "react";
-import { Box, Flex, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Stack, Text, Link, HStack } from "@chakra-ui/react";
 
 const Footer = () => (
-  <Flex
+  <Box
     as="footer"
-    marginTop="8rem"
+    mt="auto"
     width="100%"
-    display="column"
-    alignItems="center"
-    justifyContent="space-between"
-    bg="gray.50"
-    color="gray.700"
+    bg="white"
+    borderTopWidth={1}
+    borderStyle="solid"
+    borderColor="gray.200"
   >
-    <Box borderTopWidth={1} borderStyle={"solid"} borderColor="gray.200">
-      <Stack
-        maxW={"6xl"}
-        py={4}
-        direction={{ base: "column", md: "row" }}
-        gap={4}
-        justify={{ md: "space-between" }}
-        align={{ md: "center" }}
-        mx="auto"
-        px={4}
-      >
-        <Text>© 2020 Made by stevmachine</Text>
-      </Stack>
-    </Box>
-  </Flex>
+    <Stack
+      maxW="6xl"
+      py={8}
+      direction={{ base: "column", md: "row" }}
+      gap={4}
+      justify={{ md: "space-between" }}
+      align={{ md: "center" }}
+      mx="auto"
+      px={4}
+    >
+      <Text color="gray.600" fontSize="sm">
+        © 2024 SharedGameCollection - Made by stevmachine
+      </Text>
+      <HStack spacing={6}>
+        <Link 
+          href="https://boardgamegeek.com" 
+          isExternal 
+          color="blue.500" 
+          fontSize="sm"
+          _hover={{ textDecoration: "underline" }}
+        >
+          BoardGameGeek
+        </Link>
+        <Link 
+          href="https://github.com" 
+          isExternal 
+          color="blue.500" 
+          fontSize="sm"
+          _hover={{ textDecoration: "underline" }}
+        >
+          GitHub
+        </Link>
+      </HStack>
+    </Stack>
+  </Box>
 );
 
 export default Footer;
