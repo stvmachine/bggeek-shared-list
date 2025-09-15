@@ -5,6 +5,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "commit": "cz"
   },
   "dependencies": {
@@ -22,12 +24,17 @@
     "xml2json": "^0.12.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.2",
+    "@types/jest": "^29.5.8",
     "@types/node": "^20.17.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@types/xml2json": "^0.11.3",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "3.3.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "madr": "^2.1.2",
     "typescript": "^5.7.0"
   },
