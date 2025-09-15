@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   LinkBox,
   LinkOverlay,
@@ -11,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
+import { useMembers } from "../contexts/MemberContext";
 
 type GameCardProps = {
   image?: string;
@@ -29,6 +29,7 @@ const GameCard: React.FC<GameCardProps> = ({
   bgName,
   owners,
 }) => {
+  const { getMemberData } = useMembers();
   return (
     <WrapItem
       w={["100%", "180px"]}
@@ -91,17 +92,47 @@ const GameCard: React.FC<GameCardProps> = ({
           <Wrap>
             {owners && (
               <>
-                {owners.slice(0, 6).map(({ username }, index) => (
-                  <WrapItem key={index}>
-                    <Avatar.Root size="xs">
-                      <Avatar.Fallback>
-                        {username.charAt(0).toUpperCase()}
-                      </Avatar.Fallback>
-                    </Avatar.Root>
-                  </WrapItem>
-                ))}
+                {owners.slice(0, 6).map(({ username }, index) => {
+                  const memberData = getMemberData(username);
+                  if (!memberData) return null;
+                  
+                  return (
+                    <WrapItem key={index}>
+                      <Box
+                        width="24px"
+                        height="24px"
+                        borderRadius="full"
+                        bg={memberData.color.bg}
+                        color={memberData.color.color}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        fontSize="xs"
+                        fontWeight="bold"
+                        title={username}
+                      >
+                        {memberData.initial}
+                      </Box>
+                    </WrapItem>
+                  );
+                })}
                 {owners.length > 6 && (
-                  <WrapItem>+{`${owners.length - 6}`}</WrapItem>
+                  <WrapItem>
+                    <Box
+                      width="24px"
+                      height="24px"
+                      borderRadius="full"
+                      bg="gray.500"
+                      color="white"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      fontSize="xs"
+                      fontWeight="bold"
+                    >
+                      +{owners.length - 6}
+                    </Box>
+                  </WrapItem>
                 )}
               </>
             )}

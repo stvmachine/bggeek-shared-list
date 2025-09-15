@@ -1,10 +1,11 @@
-import { Accordion, Box, Button, Input, VStack } from "@chakra-ui/react";
+import { Accordion, Box, Button, Input, VStack, HStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import useKeydown from "../hooks/useKeydown";
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
 import { ICollection } from "../utils/types";
+import { useMembers } from "../contexts/MemberContext";
 
 type SearchSidebarProps = {
   members: string[];
@@ -34,6 +35,7 @@ const SearchSidebar = React.memo(({
   const [showHotSeat, displayHotSeat] = useState(false);
   const [hotSeatMember, setHotSeatMember] = useState("");
   const { register, handleSubmit, setValue, getValues } = useFormContext();
+  const { getMemberData } = useMembers();
   const onSubmit = (_: any, event: any) => {
     event.preventDefault();
     hideVirtualKeyboard();
@@ -149,30 +151,55 @@ const SearchSidebar = React.memo(({
                       </Box>
                     )}
 
-                    {members.map((member, index) => (
-                      <Box
-                        key={`checkbox-${member}-${
-                          isOpenDrawer ? "-mobile" : ""
-                        }`}
-                        display="flex"
-                        alignItems="center"
-                        gap={2}
-                      >
-                        <input
-                          type="checkbox"
-                          onChange={() => {
-                            setValue(
-                              `members[${member}]`,
-                              !getValues(`members[${member}]`)
-                            );
-                          }}
-                          checked={getValues(`members[${member}]`)}
-                        />
-                        <Box>{`${member} (${
-                          collections[index]?.totalitems || 0
-                        } games)`}</Box>
-                      </Box>
-                    ))}
+                    {members.map((member, index) => {
+                      const memberData = getMemberData(member);
+                      if (!memberData) return null;
+                      
+                      return (
+                        <Box
+                          key={`checkbox-${member}-${
+                            isOpenDrawer ? "-mobile" : ""
+                          }`}
+                          display="flex"
+                          alignItems="center"
+                          gap={3}
+                          py={2}
+                        >
+                          <input
+                            type="checkbox"
+                            onChange={() => {
+                              setValue(
+                                `members[${member}]`,
+                                !getValues(`members[${member}]`)
+                              );
+                            }}
+                            checked={getValues(`members[${member}]`)}
+                          />
+                          <HStack gap={2}>
+                            <Box
+                              width="28px"
+                              height="28px"
+                              borderRadius="full"
+                              bg={memberData.color.bg}
+                              color={memberData.color.color}
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="center"
+                              fontSize="xs"
+                              fontWeight="bold"
+                            >
+                              {memberData.initial}
+                            </Box>
+                            <Box>
+                              <Box fontWeight="medium">{member}</Box>
+                              <Box fontSize="sm" color="gray.500">
+                                {collections[index]?.totalitems || 0} games
+                              </Box>
+                            </Box>
+                          </HStack>
+                        </Box>
+                      );
+                    })}
                   </VStack>
                 </Box>
               )}
