@@ -1,5 +1,5 @@
-import { Accordion, Box, Button, Input, VStack, HStack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Accordion, Box, Button, Input, VStack, HStack, Text } from "@chakra-ui/react";
+import React, { useState, useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 
 import useKeydown from "../hooks/useKeydown";
@@ -11,6 +11,8 @@ type SearchSidebarProps = {
   members: string[];
   collections: ICollection[];
   addMember?: (members: string) => void;
+  removeMember?: (member: string) => void;
+  removeAllMembers?: () => void;
   isOpenDrawer?: boolean;
   hotSeatError?: string;
 };
@@ -28,6 +30,8 @@ const hideVirtualKeyboard = (): void => {
 const SearchSidebar = React.memo(({
   members,
   addMember,
+  removeMember,
+  removeAllMembers,
   hotSeatError,
   collections,
   isOpenDrawer,
@@ -36,11 +40,42 @@ const SearchSidebar = React.memo(({
   const [hotSeatMember, setHotSeatMember] = useState("");
   const { register, handleSubmit, setValue, getValues } = useFormContext();
   const { getMemberData } = useMembers();
+  
+  
   const onSubmit = (_: any, event: any) => {
     event.preventDefault();
     hideVirtualKeyboard();
   };
   const onError = () => {};
+
+  // Member management functions
+  const handleSelectAll = useCallback(() => {
+    members.forEach(member => {
+      setValue(`members[${member}]`, true);
+    });
+  }, [members, setValue]);
+
+  const handleDeselectAll = useCallback(() => {
+    members.forEach(member => {
+      setValue(`members[${member}]`, false);
+    });
+  }, [members, setValue]);
+
+  const handleRemoveMember = useCallback((member: string) => {
+    if (removeMember) {
+      removeMember(member);
+    }
+  }, [removeMember]);
+
+  const handleRemoveAllMembers = useCallback(() => {
+    if (removeAllMembers) {
+      removeAllMembers();
+    }
+  }, [removeAllMembers]);
+
+  const watchedMembers = getValues("members") || {};
+  const selectedCount = Object.values(watchedMembers).filter(Boolean).length;
+  const allSelected = members.length > 0 && selectedCount === members.length;
 
   useKeydown(hideVirtualKeyboard);
 
@@ -112,7 +147,12 @@ const SearchSidebar = React.memo(({
           <Accordion.Item value="1" width="xs">
             <Accordion.ItemTrigger>
               <Box flex="1" textAlign="left">
-                👥 Group Collectors ({members.length})
+                <HStack justify="space-between" width="100%">
+                  <Text>👥 Group Collectors ({members.length})</Text>
+                  <Text fontSize="sm" color="gray.500">
+                    {selectedCount}/{members.length} selected
+                  </Text>
+                </HStack>
               </Box>
               <Accordion.ItemIndicator />
             </Accordion.ItemTrigger>
@@ -120,15 +160,44 @@ const SearchSidebar = React.memo(({
               {members && collections && (
                 <Box>
                   <VStack alignItems={"flex-start"}>
-                    <Button
-                      onClick={() => displayHotSeat(!showHotSeat)}
-                      colorPalette="blue"
-                      type="button"
-                      alignSelf="flex-end"
-                      size="sm"
-                    >
-                      {!showHotSeat ? "Add Collector" : "Hide"}
-                    </Button>
+                    <HStack width="100%" gap={2} flexWrap="wrap" mb={2}>
+                      <Button
+                        onClick={() => displayHotSeat(!showHotSeat)}
+                        colorPalette="blue"
+                        type="button"
+                        size="sm"
+                        flex="1"
+                        minWidth="120px"
+                      >
+                        {!showHotSeat ? "Add Collector" : "Hide"}
+                      </Button>
+                      
+                      {members.length > 0 && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            colorPalette="blue"
+                            onClick={allSelected ? handleDeselectAll : handleSelectAll}
+                            flex="1"
+                            minWidth="100px"
+                          >
+                            {allSelected ? "Deselect All" : "Select All"}
+                          </Button>
+                          
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            colorPalette="red"
+                            onClick={handleRemoveAllMembers}
+                            flex="1"
+                            minWidth="100px"
+                          >
+                            Remove All
+                          </Button>
+                        </>
+                      )}
+                    </HStack>
 
                     {showHotSeat && addMember && (
                       <Box id="hot-seat-member" py={3}>
@@ -175,7 +244,7 @@ const SearchSidebar = React.memo(({
                             }}
                             checked={getValues(`members[${member}]`)}
                           />
-                          <HStack gap={2}>
+                          <HStack gap={2} width="100%">
                             <Box
                               width="28px"
                               height="28px"
@@ -190,12 +259,23 @@ const SearchSidebar = React.memo(({
                             >
                               {memberData.initial}
                             </Box>
-                            <Box>
+                            <Box flex="1">
                               <Box fontWeight="medium">{member}</Box>
                               <Box fontSize="sm" color="gray.500">
                                 {collections[index]?.totalitems || 0} games
                               </Box>
                             </Box>
+                            {removeMember && (
+                              <Button
+                                size="xs"
+                                variant="outline"
+                                colorPalette="red"
+                                onClick={() => handleRemoveMember(member)}
+                                title={`Remove ${member}`}
+                              >
+                                ✕
+                              </Button>
+                            )}
                           </HStack>
                         </Box>
                       );
