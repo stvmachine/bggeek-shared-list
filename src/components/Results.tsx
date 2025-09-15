@@ -1,19 +1,19 @@
-import React from "react";
 import {
   Box,
   Container,
   Heading,
+  HStack,
   LinkBox,
   LinkOverlay,
   Text,
   Wrap,
-  HStack,
 } from "@chakra-ui/react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 import SortBar from "../components/SortBar";
+import { useMembers } from "../contexts/MemberContext";
 import { useSearch } from "../hooks/useSearch";
 import { IItem } from "../utils/types";
-import { useMembers } from "../contexts/MemberContext";
 
 import GameCard from "./GameCard";
 
@@ -49,7 +49,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
             {checkedMembers.map((member, index) => {
               const memberData = getMemberData(member);
               if (!memberData) return null;
-              
+
               return (
                 <LinkBox key={`${member}_${index}`}>
                   <LinkOverlay
@@ -102,6 +102,6 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
   );
 });
 
-Results.displayName = 'Results';
+Results.displayName = "Results";
 
 export default Results;

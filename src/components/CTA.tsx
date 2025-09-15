@@ -1,17 +1,11 @@
+import { Box, Container, Heading, Text, VStack } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import {
-  Heading,
-  Container,
-  Text,
-  VStack,
-  Box,
-} from "@chakra-ui/react";
-import UsernameForm from "./UsernameForm";
+import { generatePermalink } from "../utils/permalink";
 import ExamplesSection from "./ExamplesSection";
 import FeaturesSection from "./FeaturesSection";
-import { generatePermalink } from "../utils/permalink";
+import UsernameForm from "./UsernameForm";
 
 export default function CTA() {
   const router = useRouter();
@@ -20,7 +14,7 @@ export default function CTA() {
   const handleSearch = async (usernames: string[]) => {
     // This is called when usernames are submitted for validation
     // Don't proceed yet - wait for validation
-    console.log('UsernameForm submitted usernames for validation:', usernames);
+    console.log("UsernameForm submitted usernames for validation:", usernames);
   };
 
   const handleValidatedUsernames = async (usernames: string[]) => {
@@ -30,12 +24,12 @@ export default function CTA() {
 
     // Usernames are now validated, so we can proceed
     setIsValidating(true);
-    
+
     try {
       const permalink = generatePermalink(usernames);
-      
+
       // Use window.location for more reliable navigation
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         window.location.href = permalink;
       } else {
         router.push(permalink);
@@ -44,7 +38,6 @@ export default function CTA() {
       setIsValidating(false);
     }
   };
-
 
   const bgGradient = "linear(to-br, blue.50, purple.50)";
 
@@ -76,9 +69,9 @@ export default function CTA() {
               >
                 SharedGameCollection
               </Heading>
-              <Text 
-                color="gray.600" 
-                fontSize={{ base: "lg", md: "xl" }} 
+              <Text
+                color="gray.600"
+                fontSize={{ base: "lg", md: "xl" }}
                 maxW="3xl"
                 lineHeight="1.6"
               >
@@ -86,7 +79,8 @@ export default function CTA() {
                 <Text as="span" color="blue.500" fontWeight="semibold">
                   BoardGameGeek.com
                 </Text>
-                . Perfect for gaming groups with multiple collectors. Enter a username to get started!
+                . Perfect for gaming groups with multiple collectors. Enter a
+                username to get started!
               </Text>
             </VStack>
 
@@ -97,7 +91,7 @@ export default function CTA() {
                 onValidatedUsernames={handleValidatedUsernames}
                 isValidating={isValidating}
               />
-              
+
               <ExamplesSection />
             </VStack>
 
@@ -108,4 +102,3 @@ export default function CTA() {
     </>
   );
 }
-

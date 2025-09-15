@@ -1,4 +1,4 @@
-import { Code, Text, VStack, Box, Badge, HStack } from "@chakra-ui/react";
+import { Badge, Box, Code, HStack, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 
 const ExamplesSection: React.FC = () => {
@@ -13,7 +13,12 @@ const ExamplesSection: React.FC = () => {
       w="full"
     >
       <VStack gap={4} w="full">
-        <Text fontSize="md" color="gray.700" textAlign="center" fontWeight="semibold">
+        <Text
+          fontSize="md"
+          color="gray.700"
+          textAlign="center"
+          fontWeight="semibold"
+        >
           How to get started:
         </Text>
         <VStack gap={3} fontSize="sm" color="gray.600" w="full">
@@ -32,9 +37,7 @@ const ExamplesSection: React.FC = () => {
             <Badge colorScheme="green" variant="subtle" minW="fit-content">
               Solo
             </Badge>
-            <Text>
-              Just add your own username to explore your collection
-            </Text>
+            <Text>Just add your own username to explore your collection</Text>
           </HStack>
         </VStack>
       </VStack>

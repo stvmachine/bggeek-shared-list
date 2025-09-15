@@ -1,29 +1,23 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { Box, Button, Container, Stack, useDisclosure } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import {
-  Box,
-  Button,
-  Container,
-  Stack,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { useQueries } from "react-query";
 
+import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
+import MobileDrawer from "../components/MobileDrawer";
 import Results from "../components/Results";
 import SearchSidebar from "../components/SearchSidebar";
-import MobileDrawer from "../components/MobileDrawer";
-import { ICollection } from "../utils/types";
-import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
-import {
-  parseUsernamesFromUrl,
-  generatePermalink,
-  copyToClipboard,
-} from "../utils/permalink";
 import { MemberProvider } from "../contexts/MemberContext";
+import {
+  copyToClipboard,
+  generatePermalink,
+  parseUsernamesFromUrl,
+} from "../utils/permalink";
+import { ICollection } from "../utils/types";
 
 type CollectionPageProps = {
   initialData?: ICollection[];
@@ -38,7 +32,11 @@ export async function getStaticProps() {
 const Index: NextPage<CollectionPageProps> = () => {
   const router = useRouter();
   const { usernames: urlUsernames, username } = router.query;
-  const { open: isMobileMenuOpen, onOpen: onMobileMenuOpen, onClose: onMobileMenuClose } = useDisclosure();
+  const {
+    open: isMobileMenuOpen,
+    onOpen: onMobileMenuOpen,
+    onClose: onMobileMenuClose,
+  } = useDisclosure();
 
   const [members, setMembers] = useState<string[]>([]);
   const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
@@ -68,26 +66,26 @@ const Index: NextPage<CollectionPageProps> = () => {
     }
   }, [members]);
 
-  const handleSearch = useCallback(
-    (usernames: string[]) => {
-      // This is called when usernames are submitted for validation
-      // Don't proceed yet - wait for validation
-      console.log('UsernameManager submitted usernames for validation:', usernames);
-    },
-    []
-  );
+  const handleSearch = useCallback((usernames: string[]) => {
+    // This is called when usernames are submitted for validation
+    // Don't proceed yet - wait for validation
+    console.log(
+      "UsernameManager submitted usernames for validation:",
+      usernames
+    );
+  }, []);
 
   const handleValidatedUsernames = useCallback(
     (validatedUsernames: string[]) => {
       // This is called when usernames are successfully validated
       const validNewMembers = validatedUsernames.filter(
-        (member) => 
-          member.trim() && 
+        (member) =>
+          member.trim() &&
           !members.find((m) => m.toLowerCase() === member.toLowerCase())
       );
-      
+
       if (validNewMembers.length > 0) {
-        setMembers(prev => [...prev, ...validNewMembers]);
+        setMembers((prev) => [...prev, ...validNewMembers]);
       }
     },
     [members]
@@ -95,7 +93,7 @@ const Index: NextPage<CollectionPageProps> = () => {
 
   const removeMember = useCallback(
     (memberToRemove: string) => {
-      const newMembers = members.filter(member => member !== memberToRemove);
+      const newMembers = members.filter((member) => member !== memberToRemove);
       setMembers(newMembers);
     },
     [members]
@@ -165,15 +163,14 @@ const Index: NextPage<CollectionPageProps> = () => {
   return (
     <MemberProvider usernames={members}>
       <FormProvider {...methods}>
-        <Navbar 
-          openDrawer={onOpen} 
+        <Navbar
+          openDrawer={onOpen}
           isOpenDrawer={isOpen}
           onMobileMenuOpen={onMobileMenuOpen}
           onMobileMenuClose={onMobileMenuClose}
           isMobileMenuOpen={isMobileMenuOpen}
         />
         <Container height="100vh" maxWidth="100%">
-
           <Box mt={12}>
             {/* Share Button */}
             {members.length > 0 && (
@@ -237,7 +234,14 @@ const Index: NextPage<CollectionPageProps> = () => {
               p={4}
               onClick={(e) => e.stopPropagation()}
             >
-              <Box fontSize="lg" fontWeight="bold" mb={4} borderBottom="1px" borderColor="gray.200" pb={2}>
+              <Box
+                fontSize="lg"
+                fontWeight="bold"
+                mb={4}
+                borderBottom="1px"
+                borderColor="gray.200"
+                pb={2}
+              >
                 Filter
               </Box>
               {data && (

@@ -46,12 +46,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
     },
   });
 
-  const {
-    handleSubmit,
-    setError,
-    clearErrors,
-    reset,
-  } = methods;
+  const { handleSubmit, setError, clearErrors, reset } = methods;
 
   // Use a single query with all usernames to validate
   const { data: validationData, isLoading: isValidatingAny } = useQuery(
@@ -149,7 +144,10 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
 
     // Check for duplicates against already added usernames
     const duplicates = inputUsernames.filter((username) =>
-      usernames.some(existingUsername => existingUsername.toLowerCase() === username.toLowerCase())
+      usernames.some(
+        (existingUsername) =>
+          existingUsername.toLowerCase() === username.toLowerCase()
+      )
     );
     if (duplicates.length > 0) {
       setError("username", {
@@ -165,7 +163,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
 
   const handleRemoveUsername = useCallback(
     (usernameToRemove: string) => {
-      const newUsernames = usernames.filter(u => u !== usernameToRemove);
+      const newUsernames = usernames.filter((u) => u !== usernameToRemove);
       setUsernames(newUsernames);
       onUsernamesChange(newUsernames);
     },
@@ -210,7 +208,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                 }}
                 flex={1}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && noForm) {
+                  if (e.key === "Enter" && noForm) {
                     e.preventDefault();
                     handleFormSubmit();
                   }

@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Input,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import UsernameManager from "./UsernameManager";
@@ -116,49 +109,49 @@ const SearchSidebar = React.memo(
               <Text fontWeight="semibold" mb={3} color="gray.700">
                 Basic filters
               </Text>
-                <Box
-                  as="select"
-                  {...register("numberOfPlayers")}
-                  width="xxs"
-                  p={2}
-                  border="1px solid"
-                  borderColor="gray.300"
-                  borderRadius="md"
-                  bg="white"
-                >
-                  <option value="">Number of players</option>
-                  {numberOfPlayersOptions &&
-                    numberOfPlayersOptions.map((item) => (
-                      <option
-                        value={item.value}
-                        key={`number_of_players_${item.value}`}
-                      >
-                        {item.name}
-                      </option>
-                    ))}
-                </Box>
-                <Box
-                  as="select"
-                  {...register("playingTime")}
-                  width="xxs"
-                  p={2}
-                  border="1px solid"
-                  borderColor="gray.300"
-                  borderRadius="md"
-                  bg="white"
-                  mt={2}
-                >
-                  <option value="">Playing time</option>
-                  {playingTimeOptions &&
-                    playingTimeOptions.map((item) => (
-                      <option
-                        value={item.value}
-                        key={`playing_time_${item.value}`}
-                      >
-                        {item.name}
-                      </option>
-                    ))}
-                </Box>
+              <Box
+                as="select"
+                {...register("numberOfPlayers")}
+                width="xxs"
+                p={2}
+                border="1px solid"
+                borderColor="gray.300"
+                borderRadius="md"
+                bg="white"
+              >
+                <option value="">Number of players</option>
+                {numberOfPlayersOptions &&
+                  numberOfPlayersOptions.map((item) => (
+                    <option
+                      value={item.value}
+                      key={`number_of_players_${item.value}`}
+                    >
+                      {item.name}
+                    </option>
+                  ))}
+              </Box>
+              <Box
+                as="select"
+                {...register("playingTime")}
+                width="xxs"
+                p={2}
+                border="1px solid"
+                borderColor="gray.300"
+                borderRadius="md"
+                bg="white"
+                mt={2}
+              >
+                <option value="">Playing time</option>
+                {playingTimeOptions &&
+                  playingTimeOptions.map((item) => (
+                    <option
+                      value={item.value}
+                      key={`playing_time_${item.value}`}
+                    >
+                      {item.name}
+                    </option>
+                  ))}
+              </Box>
             </Box>
 
             <Box height="1px" bg="gray.200" my={4} />
@@ -172,114 +165,112 @@ const SearchSidebar = React.memo(
                   {selectedCount}/{members.length} selected
                 </Text>
               </HStack>
-                {members && collections && (
-                  <Box>
-                    <VStack alignItems={"flex-start"}>
-                      <HStack width="100%" gap={2} flexWrap="wrap" mb={2}>
-                        {members.length > 0 && (
-                          <>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              colorPalette="blue"
-                              onClick={
-                                allSelected
-                                  ? handleDeselectAll
-                                  : handleSelectAll
-                              }
-                              flex="1"
-                              minWidth="100px"
-                            >
-                              {allSelected ? "Deselect All" : "Select All"}
-                            </Button>
-
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              colorPalette="red"
-                              onClick={handleRemoveAllMembers}
-                              flex="1"
-                              minWidth="100px"
-                            >
-                              Remove All
-                            </Button>
-                          </>
-                        )}
-                      </HStack>
-
-                       <UsernameManager
-                         onUsernamesChange={handleSearch}
-                         onValidatedUsernames={onValidatedUsernames}
-                         initialUsernames={members}
-                         noForm={true}
-                         showRemoveAll={true}
-                         onRemoveAll={handleRemoveAllMembers}
-                         hidePills={true}
-                       />
-
-                      {members.map((member, index) => {
-                        const memberData = getMemberData(member);
-                        if (!memberData) return null;
-
-                        return (
-                          <Box
-                            key={`checkbox-${member}-${
-                              isOpenDrawer ? "-mobile" : ""
-                            }`}
-                            display="flex"
-                            alignItems="center"
-                            gap={3}
-                            py={2}
+              {members && collections && (
+                <Box>
+                  <VStack alignItems={"flex-start"}>
+                    <HStack width="100%" gap={2} flexWrap="wrap" mb={2}>
+                      {members.length > 0 && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            colorPalette="blue"
+                            onClick={
+                              allSelected ? handleDeselectAll : handleSelectAll
+                            }
+                            flex="1"
+                            minWidth="100px"
                           >
-                            <input
-                              type="checkbox"
-                              onChange={() => {
-                                setValue(
-                                  `members[${member}]`,
-                                  !getValues(`members[${member}]`)
-                                );
-                              }}
-                              checked={getValues(`members[${member}]`)}
-                            />
-                            <HStack gap={2} width="100%">
-                              <Box
-                                width="28px"
-                                height="28px"
-                                borderRadius="full"
-                                bg={memberData.color.bg}
-                                color={memberData.color.color}
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                                fontSize="xs"
-                                fontWeight="bold"
+                            {allSelected ? "Deselect All" : "Select All"}
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            colorPalette="red"
+                            onClick={handleRemoveAllMembers}
+                            flex="1"
+                            minWidth="100px"
+                          >
+                            Remove All
+                          </Button>
+                        </>
+                      )}
+                    </HStack>
+
+                    <UsernameManager
+                      onUsernamesChange={handleSearch}
+                      onValidatedUsernames={onValidatedUsernames}
+                      initialUsernames={members}
+                      noForm={true}
+                      showRemoveAll={true}
+                      onRemoveAll={handleRemoveAllMembers}
+                      hidePills={true}
+                    />
+
+                    {members.map((member, index) => {
+                      const memberData = getMemberData(member);
+                      if (!memberData) return null;
+
+                      return (
+                        <Box
+                          key={`checkbox-${member}-${
+                            isOpenDrawer ? "-mobile" : ""
+                          }`}
+                          display="flex"
+                          alignItems="center"
+                          gap={3}
+                          py={2}
+                        >
+                          <input
+                            type="checkbox"
+                            onChange={() => {
+                              setValue(
+                                `members[${member}]`,
+                                !getValues(`members[${member}]`)
+                              );
+                            }}
+                            checked={getValues(`members[${member}]`)}
+                          />
+                          <HStack gap={2} width="100%">
+                            <Box
+                              width="28px"
+                              height="28px"
+                              borderRadius="full"
+                              bg={memberData.color.bg}
+                              color={memberData.color.color}
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="center"
+                              fontSize="xs"
+                              fontWeight="bold"
+                            >
+                              {memberData.initial}
+                            </Box>
+                            <Box flex="1">
+                              <Box fontWeight="medium">{member}</Box>
+                              <Box fontSize="sm" color="gray.500">
+                                {collections[index]?.totalitems || 0} games
+                              </Box>
+                            </Box>
+                            {removeMember && (
+                              <Button
+                                size="xs"
+                                variant="outline"
+                                colorPalette="red"
+                                onClick={() => handleRemoveMember(member)}
+                                title={`Remove ${member}`}
                               >
-                                {memberData.initial}
-                              </Box>
-                              <Box flex="1">
-                                <Box fontWeight="medium">{member}</Box>
-                                <Box fontSize="sm" color="gray.500">
-                                  {collections[index]?.totalitems || 0} games
-                                </Box>
-                              </Box>
-                              {removeMember && (
-                                <Button
-                                  size="xs"
-                                  variant="outline"
-                                  colorPalette="red"
-                                  onClick={() => handleRemoveMember(member)}
-                                  title={`Remove ${member}`}
-                                >
-                                  ✕
-                                </Button>
-                              )}
-                            </HStack>
-                          </Box>
-                        );
-                      })}
-                    </VStack>
-                  </Box>
-                )}
+                                ✕
+                              </Button>
+                            )}
+                          </HStack>
+                        </Box>
+                      );
+                    })}
+                  </VStack>
+                </Box>
+              )}
             </Box>
           </VStack>
         </VStack>
