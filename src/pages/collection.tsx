@@ -23,6 +23,7 @@ import {
   generatePermalink,
   copyToClipboard,
 } from "../utils/permalink";
+import { MemberProvider } from "../contexts/MemberContext";
 
 type CollectionPageProps = {
   initialData?: ICollection[];
@@ -139,85 +140,87 @@ const Index: NextPage<CollectionPageProps> = () => {
   };
 
   return (
-    <FormProvider {...methods}>
-      <Container height="100vh" maxWidth="100%">
-        <Navbar openDrawer={onOpen} isOpenDrawer={isOpen} />
+    <MemberProvider usernames={members}>
+      <FormProvider {...methods}>
+        <Container height="100vh" maxWidth="100%">
+          <Navbar openDrawer={onOpen} isOpenDrawer={isOpen} />
 
-        <Box mt={12}>
-          {/* Share Button */}
-          {members.length > 0 && (
-            <Box mb={4} textAlign="center">
-              <Button
-                onClick={handleShare}
-                colorPalette="blue"
-                size="sm"
-                variant="outline"
-              >
-                📤 Share Collection
-              </Button>
-            </Box>
-          )}
-
-          <Stack direction={["column", "row"]} alignItems="flex-start">
-            {!isLoading && data ? (
-              <>
-                <Box display={{ base: "none", md: "flex" }}>
-                  <SearchSidebar
-                    members={members}
-                    addMember={addMember}
-                    hotSeatError={hotSeatError}
-                    collections={data.collections}
-                  />
-                </Box>
-
-                <Results boardgames={data?.boardgames} />
-              </>
-            ) : (
-              <div>loading</div>
+          <Box mt={12}>
+            {/* Share Button */}
+            {members.length > 0 && (
+              <Box mb={4} textAlign="center">
+                <Button
+                  onClick={handleShare}
+                  colorPalette="blue"
+                  size="sm"
+                  variant="outline"
+                >
+                  📤 Share Collection
+                </Button>
+              </Box>
             )}
-          </Stack>
-        </Box>
-        <Footer />
-      </Container>
 
-      {isOpen && (
-        <Box
-          position="fixed"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          zIndex={1000}
-          bg="blackAlpha.600"
-          onClick={onClose}
-        >
+            <Stack direction={["column", "row"]} alignItems="flex-start">
+              {!isLoading && data ? (
+                <>
+                  <Box display={{ base: "none", md: "flex" }}>
+                    <SearchSidebar
+                      members={members}
+                      addMember={addMember}
+                      hotSeatError={hotSeatError}
+                      collections={data.collections}
+                    />
+                  </Box>
+
+                  <Results boardgames={data?.boardgames} />
+                </>
+              ) : (
+                <div>loading</div>
+              )}
+            </Stack>
+          </Box>
+          <Footer />
+        </Container>
+
+        {isOpen && (
           <Box
-            position="absolute"
+            position="fixed"
             top={0}
             left={0}
+            right={0}
             bottom={0}
-            width="300px"
-            bg="white"
-            shadow="lg"
-            p={4}
-            onClick={(e) => e.stopPropagation()}
+            zIndex={1000}
+            bg="blackAlpha.600"
+            onClick={onClose}
           >
-            <Box fontSize="lg" fontWeight="bold" mb={4} borderBottom="1px" borderColor="gray.200" pb={2}>
-              Filter
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              bottom={0}
+              width="300px"
+              bg="white"
+              shadow="lg"
+              p={4}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Box fontSize="lg" fontWeight="bold" mb={4} borderBottom="1px" borderColor="gray.200" pb={2}>
+                Filter
+              </Box>
+              {data && (
+                <SearchSidebar
+                  isOpenDrawer
+                  members={members}
+                  addMember={addMember}
+                  hotSeatError={hotSeatError}
+                  collections={data.collections}
+                />
+              )}
             </Box>
-            {data && (
-              <SearchSidebar
-                isOpenDrawer
-                members={members}
-                addMember={addMember}
-                hotSeatError={hotSeatError}
-                collections={data.collections}
-              />
-            )}
           </Box>
-        </Box>
-      )}
-    </FormProvider>
+        )}
+      </FormProvider>
+    </MemberProvider>
   );
 };
 
