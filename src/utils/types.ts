@@ -69,6 +69,10 @@ export type IItem = {
     status: any;
     collid: string;
   }[];
+  primaryFamily?: {
+    id: string;
+    name: string;
+  };
 };
 
 export type IGame = {

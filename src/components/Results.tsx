@@ -6,6 +6,7 @@ import {
   LinkBox,
   LinkOverlay,
   Text,
+  VStack,
   Wrap,
 } from "@chakra-ui/react";
 import React from "react";
@@ -14,6 +15,8 @@ import SortBar from "../components/SortBar";
 import { useMembers } from "../contexts/MemberContext";
 import { useSearch } from "../hooks/useSearch";
 import { IItem } from "../utils/types";
+import { groupGames, GroupedGames } from "../utils/grouping";
+import { sortGames, SortOption } from "../utils/sorting";
 
 import GameCard from "./GameCard";
 
@@ -28,6 +31,8 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
   const { watch } = useFormContext();
   const { getMemberData } = useMembers();
   const watchedMembers = watch("members");
+  const groupBy = watch("groupBy") || "none";
+  const orderBy = watch("orderBy") || "name_asc";
   const checkedMembers = Object.keys(watchedMembers).reduce(
     (accum: string[], key: string) => {
       if (watchedMembers[key]) {
@@ -37,6 +42,12 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
     },
     []
   );
+
+  // Sort the results first
+  const sortedResults = sortGames(results, orderBy as SortOption);
+
+  // Group the sorted results based on the selected grouping option
+  const groupedResults: GroupedGames = groupGames(sortedResults, groupBy);
 
   return (
     <Container mt={10} maxWidth={"100%"}>
@@ -86,18 +97,43 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
         </Heading>
       )}
       <SortBar />
-      <Wrap align="center" gap="3">
-        {results.length > 0 &&
-          results.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
-            <GameCard
-              image={thumbnail}
-              key={`${objectid}_${index}`}
-              bgName={name.text}
-              owners={owners}
-              objectid={objectid}
-            />
+      
+      {groupBy === "none" ? (
+        <Wrap align="center" gap="3">
+          {sortedResults.length > 0 &&
+            sortedResults.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
+              <GameCard
+                image={thumbnail}
+                key={`${objectid}_${index}`}
+                bgName={name.text}
+                owners={owners}
+                objectid={objectid}
+              />
+            ))}
+        </Wrap>
+      ) : (
+        <VStack align="stretch" gap={8}>
+          {Object.entries(groupedResults).map(([groupName, games]) => (
+            <Box key={groupName}>
+              <Heading fontSize="xl" mb={4} color="gray.700">
+                {groupName} ({games.length} {games.length === 1 ? 'Game' : 'Games'})
+              </Heading>
+              <Box height="1px" bg="gray.200" mb={4} />
+              <Wrap align="center" gap="3">
+                {games.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
+                  <GameCard
+                    image={thumbnail}
+                    key={`${objectid}_${index}`}
+                    bgName={name.text}
+                    owners={owners}
+                    objectid={objectid}
+                  />
+                ))}
+              </Wrap>
+            </Box>
           ))}
-      </Wrap>
+        </VStack>
+      )}
     </Container>
   );
 });
