@@ -1,6 +1,8 @@
 import { Box, Button } from "@chakra-ui/react";
 import React from "react";
+
 import { ICollection } from "../utils/types";
+
 import SearchSidebar from "./SearchSidebar";
 
 type MobileDrawerProps = {
@@ -8,10 +10,10 @@ type MobileDrawerProps = {
   onClose: () => void;
   members: string[];
   collections: ICollection[];
-  onSearch: (usernames: string[]) => void;
-  onValidatedUsernames?: (usernames: string[]) => void;
+  onSearch: (_usernames: string[]) => void;
+  onValidatedUsernames?: (_usernames: string[]) => void;
   onValidationError?: () => void;
-  removeMember?: (member: string) => void;
+  removeMember?: (_member: string) => void;
   removeAllMembers?: () => void;
   isValidating?: boolean;
   pendingUsernames?: string[];
@@ -55,7 +57,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
         width={width}
         bg="white"
         shadow="xl"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <Box p={4} borderBottom="1px" borderColor="gray.200">
           <Box

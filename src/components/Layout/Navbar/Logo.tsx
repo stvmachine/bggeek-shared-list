@@ -3,11 +3,7 @@ import { Flex, Image, Text, HStack } from "@chakra-ui/react";
 const Logo = () => (
   <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
     <HStack gap={3}>
-      <Image 
-        src="/img/dice-logo-red.png" 
-        boxSize="35px" 
-        alt="Dice Logo"
-      />
+      <Image src="/img/dice-logo-red.png" boxSize="35px" alt="Dice Logo" />
       <Text
         fontSize="lg"
         fontWeight="bold"

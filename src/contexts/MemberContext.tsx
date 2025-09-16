@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useContext, useMemo } from "react";
+
 import { getMemberColor, getMemberInitial } from "../utils/memberColors";
 
 export interface MemberData {
@@ -12,7 +13,7 @@ export interface MemberData {
 
 interface MemberContextType {
   members: MemberData[];
-  getMemberData: (username: string) => MemberData | undefined;
+  getMemberData: (_username: string) => MemberData | undefined;
 }
 
 const MemberContext = createContext<MemberContextType | undefined>(undefined);
@@ -24,7 +25,7 @@ interface MemberProviderProps {
 
 export function MemberProvider({ children, usernames }: MemberProviderProps) {
   const members = useMemo(() => {
-    return usernames.map((username) => ({
+    return usernames.map(username => ({
       username,
       color: getMemberColor(username),
       initial: getMemberInitial(username),
@@ -32,7 +33,7 @@ export function MemberProvider({ children, usernames }: MemberProviderProps) {
   }, [usernames]);
 
   const getMemberData = (username: string): MemberData | undefined => {
-    return members.find((member) => member.username === username);
+    return members.find(member => member.username === username);
   };
 
   const value = useMemo(

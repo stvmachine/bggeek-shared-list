@@ -1,4 +1,5 @@
 import { Box, Flex, HStack, IconButton, Link } from "@chakra-ui/react";
+
 import Logo from "./Logo";
 
 type NavbarProps = {

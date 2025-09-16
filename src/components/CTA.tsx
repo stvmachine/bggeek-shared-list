@@ -2,7 +2,9 @@ import { Box, Container, Heading, Text, VStack } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
+
 import { generatePermalink } from "../utils/permalink";
+
 import ExamplesSection from "./ExamplesSection";
 import FeaturesSection from "./FeaturesSection";
 import UsernameForm from "./UsernameForm";

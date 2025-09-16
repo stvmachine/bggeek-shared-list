@@ -18,8 +18,8 @@ type FormData = {
 };
 
 type UsernameManagerProps = {
-  onUsernamesChange: (usernames: string[]) => void;
-  onValidatedUsernames?: (usernames: string[]) => void;
+  onUsernamesChange: (_usernames: string[]) => void;
+  onValidatedUsernames?: (_usernames: string[]) => void;
   onValidationError?: () => void;
   initialUsernames?: string[];
   showRemoveAll?: boolean;
@@ -56,7 +56,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
       if (usernamesToValidate.length === 0) return [];
 
       // Validate all usernames in parallel using the API route
-      const validationPromises = usernamesToValidate.map(async (username) => {
+      const validationPromises = usernamesToValidate.map(async username => {
         try {
           const response = await fetch(
             `/api/user?username=${encodeURIComponent(username)}`
@@ -101,12 +101,12 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
           onValidationError();
         }
       },
-      onSuccess: (data) => {
+      onSuccess: data => {
         // Process validation results
         const validUsernames: string[] = [];
         const invalidUsernames: string[] = [];
 
-        data.forEach((result) => {
+        data.forEach(result => {
           if (result.userData?.id) {
             validUsernames.push(result.username);
           } else {
@@ -143,8 +143,8 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
     clearErrors();
     const inputUsernames = data.username
       .split(",")
-      .map((name) => name.trim())
-      .filter((name) => name.length > 0);
+      .map(name => name.trim())
+      .filter(name => name.length > 0);
 
     if (inputUsernames.length === 0) {
       setError("username", {
@@ -155,9 +155,9 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
     }
 
     // Check for duplicates against already added usernames
-    const duplicates = inputUsernames.filter((username) =>
+    const duplicates = inputUsernames.filter(username =>
       usernames.some(
-        (existingUsername) =>
+        existingUsername =>
           existingUsername.toLowerCase() === username.toLowerCase()
       )
     );
@@ -175,7 +175,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
 
   const handleRemoveUsername = useCallback(
     (usernameToRemove: string) => {
-      const newUsernames = usernames.filter((u) => u !== usernameToRemove);
+      const newUsernames = usernames.filter(u => u !== usernameToRemove);
       setUsernames(newUsernames);
       onUsernamesChange(newUsernames);
     },
@@ -219,7 +219,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                   boxShadow: "none",
                 }}
                 flex={1}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key === "Enter" && noForm) {
                     e.preventDefault();
                     handleFormSubmit();
@@ -280,7 +280,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
               )}
             </HStack>
             <Flex wrap="wrap" gap={2} justify="center">
-              {usernames.map((username) => (
+              {usernames.map(username => (
                 <Badge
                   key={username}
                   colorPalette="blue"
@@ -314,9 +314,9 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
               Validating usernames:
             </Text>
             <Flex wrap="wrap" gap={2}>
-              {usernamesToValidate.map((username) => {
+              {usernamesToValidate.map(username => {
                 const result = validationData?.find(
-                  (r) => r.username === username
+                  r => r.username === username
                 );
                 const isValidating = isValidatingAny;
                 const validationError = result?.error as Error | null;
@@ -329,10 +329,10 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                       validationError
                         ? "red"
                         : isValid
-                        ? "green"
-                        : isValidating
-                        ? "yellow"
-                        : "gray"
+                          ? "green"
+                          : isValidating
+                            ? "yellow"
+                            : "gray"
                     }
                     variant="solid"
                     px={3}

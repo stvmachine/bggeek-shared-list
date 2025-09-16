@@ -10,20 +10,21 @@ import {
 } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
-import UsernameManager from "./UsernameManager";
 
 import { useMembers } from "../contexts/MemberContext";
 import useKeydown from "../hooks/useKeydown";
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
 import { ICollection } from "../utils/types";
 
+import UsernameManager from "./UsernameManager";
+
 type SearchSidebarProps = {
   members: string[];
   collections: ICollection[];
-  onSearch?: (usernames: string[]) => void;
-  onValidatedUsernames?: (usernames: string[]) => void;
+  onSearch?: (_usernames: string[]) => void;
+  onValidatedUsernames?: (_usernames: string[]) => void;
   onValidationError?: () => void;
-  removeMember?: (member: string) => void;
+  removeMember?: (_member: string) => void;
   removeAllMembers?: () => void;
   isOpenDrawer?: boolean;
   isValidating?: boolean;
@@ -62,13 +63,13 @@ const SearchSidebar = React.memo(
 
     // Member management functions
     const handleSelectAll = useCallback(() => {
-      members.forEach((member) => {
+      members.forEach(member => {
         setValue(`members[${member}]`, true);
       });
     }, [members, setValue]);
 
     const handleDeselectAll = useCallback(() => {
-      members.forEach((member) => {
+      members.forEach(member => {
         setValue(`members[${member}]`, false);
       });
     }, [members, setValue]);
@@ -100,7 +101,7 @@ const SearchSidebar = React.memo(
     const watchedMembers = getValues("members") || {};
     // Only count members that actually exist in the current members array
     const selectedCount = members.filter(
-      (member) => watchedMembers[member]
+      member => watchedMembers[member]
     ).length;
     const allSelected = members.length > 0 && selectedCount === members.length;
 
@@ -180,7 +181,7 @@ const SearchSidebar = React.memo(
                   >
                     <option value="">Any number of players</option>
                     {numberOfPlayersOptions &&
-                      numberOfPlayersOptions.map((item) => (
+                      numberOfPlayersOptions.map(item => (
                         <option
                           value={item.value}
                           key={`number_of_players_${item.value}`}
@@ -217,7 +218,7 @@ const SearchSidebar = React.memo(
                   >
                     <option value="">Any playing time</option>
                     {playingTimeOptions &&
-                      playingTimeOptions.map((item) => (
+                      playingTimeOptions.map(item => (
                         <option
                           value={item.value}
                           key={`playing_time_${item.value}`}

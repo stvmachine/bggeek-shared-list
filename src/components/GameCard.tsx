@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 import React from "react";
+
 import { useMembers } from "../contexts/MemberContext";
 
 type GameCardProps = {

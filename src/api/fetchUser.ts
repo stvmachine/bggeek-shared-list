@@ -4,7 +4,7 @@ export const fetchUsers = async (
   usernames: string[],
   options?: Partial<BggUserParams>
 ): Promise<BggUserResponse[]> =>
-  Promise.all(usernames.map((username) => fetchUser(username, options)));
+  Promise.all(usernames.map(username => fetchUser(username, options)));
 
 export const fetchUser = async (
   username: string,

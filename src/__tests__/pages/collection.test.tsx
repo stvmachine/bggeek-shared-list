@@ -2,6 +2,7 @@ import { ChakraProvider, createSystem, defaultConfig } from "@chakra-ui/react";
 import { render, screen } from "@testing-library/react";
 import { useRouter } from "next/router";
 import { QueryClient, QueryClientProvider } from "react-query";
+
 import Collection from "../../pages/collection";
 
 // Mock Next.js router
@@ -53,32 +54,30 @@ jest.mock("../../components/Results", () => () => (
 jest.mock(
   "../../components/SearchSidebar",
   () =>
-    ({ pendingUsernames, isValidating }: any) =>
-      (
-        <div data-testid="search-sidebar">
-          <div data-testid="pending-usernames">
-            {pendingUsernames?.length || 0} pending usernames
-          </div>
-          <div data-testid="is-validating">
-            {isValidating ? "validating" : "not validating"}
-          </div>
+    ({ pendingUsernames, isValidating }: any) => (
+      <div data-testid="search-sidebar">
+        <div data-testid="pending-usernames">
+          {pendingUsernames?.length || 0} pending usernames
         </div>
-      )
+        <div data-testid="is-validating">
+          {isValidating ? "validating" : "not validating"}
+        </div>
+      </div>
+    )
 );
 jest.mock(
   "../../components/MobileDrawer",
   () =>
-    ({ pendingUsernames, isValidating }: any) =>
-      (
-        <div data-testid="mobile-drawer">
-          <div data-testid="mobile-pending-usernames">
-            {pendingUsernames?.length || 0} pending usernames
-          </div>
-          <div data-testid="mobile-is-validating">
-            {isValidating ? "validating" : "not validating"}
-          </div>
+    ({ pendingUsernames, isValidating }: any) => (
+      <div data-testid="mobile-drawer">
+        <div data-testid="mobile-pending-usernames">
+          {pendingUsernames?.length || 0} pending usernames
         </div>
-      )
+        <div data-testid="mobile-is-validating">
+          {isValidating ? "validating" : "not validating"}
+        </div>
+      </div>
+    )
 );
 
 const createTestQueryClient = () =>

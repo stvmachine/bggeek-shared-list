@@ -19,11 +19,9 @@ This tool allows to share your collection with your friends using BGGeek API. Th
 - [Styled Components][styled-components]
 - [Typescript][typescript]
 
-
 [how-to-start]: docs/HOW_TO_START.md
 [changelog]: CHANGELOG.md
 [contributing]: CONTRIBUTING.md
-
 [bggeek-api-v2]: https://boardgamegeek.com/wiki/page/BGG_XML_API2#toc11
 [chakra-ui]: https://chakra-ui.com/
 [conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/
