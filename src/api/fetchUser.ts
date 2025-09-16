@@ -1,40 +1,24 @@
-import { bggXmlApiClient } from "bgg-xml-api-client";
-
-export interface BggUser {
-  id: string;
-  name: string;
-  firstname?: string;
-  lastname?: string;
-  avatarlink?: string;
-  yearregistered?: string;
-  lastlogin?: string;
-  country?: string;
-  stateorprovince?: string;
-  trade_rating?: string;
-  [key: string]: any;
-}
+import { getBggUser, BggUserParams, BggUserResponse } from "bgg-xml-api-client";
 
 export const fetchUsers = async (
   usernames: string[],
-  options?: any
-): Promise<BggUser[]> =>
+  options?: Partial<BggUserParams>
+): Promise<BggUserResponse[]> =>
   Promise.all(usernames.map((username) => fetchUser(username, options)));
 
 export const fetchUser = async (
   username: string,
-  options?: any
-): Promise<BggUser> => {
-  const userResponse = await bggXmlApiClient.get(
-    "user",
-    {
-      name: username,
-      ...options,
-    },
-    1, // Retries
-    1000 // Retry interval
-  );
+  options?: Partial<BggUserParams>
+): Promise<BggUserResponse> => {
+  const params: BggUserParams = {
+    name: username,
+    ...options,
+  };
 
-  const data = userResponse.data || {};
+  const userResponse: BggUserResponse = await getBggUser(params, {
+    maxRetries: 1,
+    retryInterval: 1000,
+  });
 
-  return data;
+  return userResponse;
 };
