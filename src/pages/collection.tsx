@@ -1,4 +1,11 @@
-import { Box, Button, Container, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -6,7 +13,6 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useQueries } from "react-query";
 
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
-import { ICollection } from "../utils/types";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import MobileDrawer from "../components/MobileDrawer";
@@ -18,6 +24,7 @@ import {
   generatePermalink,
   parseUsernamesFromUrl,
 } from "../utils/permalink";
+import { ICollection } from "../utils/types";
 
 type CollectionPageProps = {
   initialData?: ICollection[];
@@ -89,7 +96,7 @@ const Index: NextPage<CollectionPageProps> = () => {
       if (validNewMembers.length > 0) {
         setMembers((prev) => [...prev, ...validNewMembers]);
       }
-      
+
       // Clear pending state and stop validation
       setPendingUsernames([]);
       setIsValidating(false);
@@ -200,10 +207,14 @@ const Index: NextPage<CollectionPageProps> = () => {
               </Box>
             )}
 
-            <Stack direction={["column", "row"]} alignItems="flex-start" gap={6}>
+            <Stack
+              direction={["column", "row"]}
+              alignItems="flex-start"
+              gap={6}
+            >
               {!isLoading && data ? (
                 <>
-                  <Box 
+                  <Box
                     display={{ base: "none", md: "flex" }}
                     position="sticky"
                     top="20px"
@@ -227,11 +238,11 @@ const Index: NextPage<CollectionPageProps> = () => {
                   </Box>
                 </>
               ) : (
-                <Box 
-                  flex="1" 
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center" 
+                <Box
+                  flex="1"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
                   minHeight="400px"
                 >
                   <Text fontSize="lg" color="gray.500">
