@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+
 import { fetchUser } from "../../api/fetchUser";
 
 export default async function handler(

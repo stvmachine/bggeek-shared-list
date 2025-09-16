@@ -1,4 +1,4 @@
-import { BggCollectionItem } from './types';
+import { BggCollectionItem } from "./types";
 
 export type SortOption =
   | "name_asc"

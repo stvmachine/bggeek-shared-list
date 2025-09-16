@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+
 import { fetchCollection } from "../../api/fetchGroupCollection";
 
 export default async function handler(
@@ -21,14 +22,14 @@ export default async function handler(
     console.log(`Collection data received:`, {
       totalitems: collectionData.totalitems,
       hasItem: !!collectionData.item,
-      itemLength: collectionData.item?.length
+      itemLength: collectionData.item?.length,
     });
     res.status(200).json(collectionData);
   } catch (error) {
     console.error("Error fetching collection:", error);
     console.error("Error details:", {
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
     });
     res.status(500).json({ error: "Failed to fetch collection data" });
   }

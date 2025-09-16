@@ -7,7 +7,7 @@ export function generatePermalink(usernames: string[]): string {
   }
 
   const encodedUsernames = usernames
-    .map((username) => encodeURIComponent(username.trim()))
+    .map(username => encodeURIComponent(username.trim()))
     .join(",");
 
   return `/collection?usernames=${encodedUsernames}`;
@@ -25,8 +25,8 @@ export function parseUsernamesFromUrl(
 
   return usernamesString
     .split(",")
-    .map((username) => decodeURIComponent(username.trim()))
-    .filter((username) => username.length > 0);
+    .map(username => decodeURIComponent(username.trim()))
+    .filter(username => username.length > 0);
 }
 
 /**

@@ -1,6 +1,6 @@
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { AppProps } from "next/app";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,7 +13,7 @@ const queryClient = new QueryClient({
         // Only retry network errors and 5xx server errors once
         return failureCount < 1;
       },
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000, // 5 minutes
       cacheTime: 10 * 60 * 1000, // 10 minutes

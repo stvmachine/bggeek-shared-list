@@ -1,9 +1,10 @@
 import React from "react";
+
 import UsernameManager from "./UsernameManager";
 
 type UsernameFormProps = {
-  onSearch: (usernames: string[]) => void;
-  onValidatedUsernames?: (usernames: string[]) => void;
+  onSearch: (_usernames: string[]) => void;
+  onValidatedUsernames?: (_usernames: string[]) => void;
   isValidating: boolean;
   noForm?: boolean; // Optional prop to render without form wrapper
 };

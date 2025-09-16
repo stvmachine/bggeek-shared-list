@@ -12,12 +12,14 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+
 import SortBar from "../components/SortBar";
 import { useMembers } from "../contexts/MemberContext";
 import { useSearch } from "../hooks/useSearch";
 import { GroupedGames, groupGames } from "../utils/grouping";
 import { sortGames, SortOption } from "../utils/sorting";
 import { BggCollectionItem } from "../utils/types";
+
 import GameCard from "./GameCard";
 
 type ResultsProps = {
@@ -33,7 +35,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
   const watchedMembers = watch("members");
   const groupBy = watch("groupBy") || "none";
   const orderBy = watch("orderBy") || "name_asc";
-  
+
   const checkedMembers = Object.keys(watchedMembers).reduce(
     (accum: string[], key: string) => {
       if (watchedMembers[key]) {

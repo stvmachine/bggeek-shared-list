@@ -8,7 +8,7 @@ export const fetchCollections = async (
   usernames: string[],
   options?: Partial<BggCollectionParams>
 ): Promise<BggCollectionResponse[]> =>
-  Promise.all(usernames.map((username) => fetchCollection(username, options)));
+  Promise.all(usernames.map(username => fetchCollection(username, options)));
 
 export const fetchCollection = async (
   username: string,
@@ -30,12 +30,12 @@ export const fetchCollection = async (
     }
   );
 
-  console.log('Collection response for', username, ':', {
+  console.log("Collection response for", username, ":", {
     totalitems: collectionResponse.totalitems,
     hasItem: !!collectionResponse.item,
     itemType: typeof collectionResponse.item,
     itemIsArray: Array.isArray(collectionResponse.item),
-    itemLength: collectionResponse.item?.length
+    itemLength: collectionResponse.item?.length,
   });
 
   return collectionResponse;
@@ -44,7 +44,10 @@ export const fetchCollection = async (
 export const mergeCollections = (
   rawData: BggCollectionResponse[],
   usernames: string[] = []
-): { boardgames: any[]; collections: { totalitems: number; pubdate: string }[] } => {
+): {
+  boardgames: any[];
+  collections: { totalitems: number; pubdate: string }[];
+} => {
   const collections = rawData.map((item: BggCollectionResponse) => {
     const { totalitems, pubdate } = item || {};
     return {
@@ -55,7 +58,7 @@ export const mergeCollections = (
 
   // Create a map to track which games belong to which users
   const gameOwnersMap = new Map<string, string[]>();
-  
+
   rawData.forEach((collection: BggCollectionResponse, collectionIndex) => {
     const username = usernames[collectionIndex];
     if (collection && collection.item && Array.isArray(collection.item)) {
@@ -72,7 +75,10 @@ export const mergeCollections = (
   });
 
   const boardgames = rawData
-    .filter((collection: BggCollectionResponse) => collection && collection.item && Array.isArray(collection.item))
+    .filter(
+      (collection: BggCollectionResponse) =>
+        collection && collection.item && Array.isArray(collection.item)
+    )
     .reduce(
       (accum: any[], collection: BggCollectionResponse) => [
         ...accum,
@@ -80,25 +86,22 @@ export const mergeCollections = (
       ],
       []
     )
-    .reduce(
-      (accum, bgg) => {
-        const gameId = String(bgg.objectid);
-        const owners = gameOwnersMap.get(gameId) || [];
-        
-        return {
-          ...accum,
-          [gameId]: {
-            ...bgg,
-            owners: owners.map(username => ({
-              username,
-              status: { own: 1 }, // Default status
-              collid: `${username}_${gameId}` // Generate a unique collid
-            })),
-          },
-        };
-      },
-      {}
-    );
+    .reduce((accum, bgg) => {
+      const gameId = String(bgg.objectid);
+      const owners = gameOwnersMap.get(gameId) || [];
+
+      return {
+        ...accum,
+        [gameId]: {
+          ...bgg,
+          owners: owners.map(username => ({
+            username,
+            status: { own: 1 }, // Default status
+            collid: `${username}_${gameId}`, // Generate a unique collid
+          })),
+        },
+      };
+    }, {});
 
   return {
     collections: collections,

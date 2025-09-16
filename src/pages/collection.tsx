@@ -88,13 +88,13 @@ const Index: NextPage<CollectionPageProps> = () => {
     (validatedUsernames: string[]) => {
       // This is called when usernames are successfully validated
       const validNewMembers = validatedUsernames.filter(
-        (member) =>
+        member =>
           member.trim() &&
-          !members.find((m) => m.toLowerCase() === member.toLowerCase())
+          !members.find(m => m.toLowerCase() === member.toLowerCase())
       );
 
       if (validNewMembers.length > 0) {
-        setMembers((prev) => [...prev, ...validNewMembers]);
+        setMembers(prev => [...prev, ...validNewMembers]);
       }
 
       // Clear pending state and stop validation
@@ -113,7 +113,7 @@ const Index: NextPage<CollectionPageProps> = () => {
 
   const removeMember = useCallback(
     (memberToRemove: string) => {
-      const newMembers = members.filter((member) => member !== memberToRemove);
+      const newMembers = members.filter(member => member !== memberToRemove);
       setMembers(newMembers);
     },
     [members]
@@ -124,7 +124,7 @@ const Index: NextPage<CollectionPageProps> = () => {
   }, []);
 
   const results = useQueries(
-    members.map((member) => ({
+    members.map(member => ({
       queryKey: ["collection", member],
       queryFn: async () => {
         const response = await fetch(
@@ -295,7 +295,7 @@ const Index: NextPage<CollectionPageProps> = () => {
               bg="white"
               shadow="lg"
               p={4}
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             >
               <Box
                 fontSize="lg"

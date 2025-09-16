@@ -2,8 +2,9 @@ import Fuse, { FuseOptions } from "fuse.js";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
-import useDebounce from "./useDebounce";
 import { BggCollectionItem } from "../utils/types";
+
+import useDebounce from "./useDebounce";
 
 export interface IFuzzyClient<T> {
   results: T[];
@@ -21,7 +22,10 @@ export const filterByNumPlayers = (
       )
     : boardgames;
 
-export const filterByPlayingTime = (boardgames: BggCollectionItem[], playingTime: number) =>
+export const filterByPlayingTime = (
+  boardgames: BggCollectionItem[],
+  playingTime: number
+) =>
   playingTime
     ? boardgames.filter((bg: BggCollectionItem) => {
         if (playingTime == 1 && bg.stats.maxplaytime <= 30) {
@@ -62,10 +66,15 @@ export const filterByPlayingTime = (boardgames: BggCollectionItem[], playingTime
       })
     : boardgames;
 
-export const filterByUsers = (boardgames: BggCollectionItem[], usernames: string[]) =>
+export const filterByUsers = (
+  boardgames: BggCollectionItem[],
+  usernames: string[]
+) =>
   boardgames.filter(
     (bg: BggCollectionItem) =>
-      bg.owners?.filter((o: { username: string }) => usernames.includes(o.username))?.length
+      bg.owners?.filter((o: { username: string }) =>
+        usernames.includes(o.username)
+      )?.length
   );
 
 const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
@@ -127,7 +136,7 @@ export function useSearch<T>(
     let results: any = data;
     const { playingTime, numberOfPlayers } = otherFields;
     results = keyword ? (searcher.search(keyword) as T[]) : results;
-    
+
     const filteredMembers = Object.keys(members).reduce(
       (accum: string[], key: string) => {
         if (members[key]) {
@@ -137,7 +146,7 @@ export function useSearch<T>(
       },
       []
     );
-    
+
     results = filterByUsers(results, filteredMembers);
     results = filterByPlayingTime(results, Number(playingTime));
     results = filterByNumPlayers(results, Number(numberOfPlayers));
