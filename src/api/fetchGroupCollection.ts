@@ -42,14 +42,33 @@ export const fetchCollection = async (
 };
 
 export const mergeCollections = (
-  rawData: BggCollectionResponse[]
-): { boardgames: any[]; collections: BggCollectionResponse[] } => {
+  rawData: BggCollectionResponse[],
+  usernames: string[] = []
+): { boardgames: any[]; collections: { totalitems: number; pubdate: string }[] } => {
   const collections = rawData.map((item: BggCollectionResponse) => {
     const { totalitems, pubdate } = item || {};
     return {
       totalitems,
       pubdate,
     };
+  });
+
+  // Create a map to track which games belong to which users
+  const gameOwnersMap = new Map<string, string[]>();
+  
+  rawData.forEach((collection: BggCollectionResponse, collectionIndex) => {
+    const username = usernames[collectionIndex];
+    if (collection && collection.item && Array.isArray(collection.item)) {
+      collection.item.forEach((game: any) => {
+        const gameId = String(game.objectid);
+        if (!gameOwnersMap.has(gameId)) {
+          gameOwnersMap.set(gameId, []);
+        }
+        if (username) {
+          gameOwnersMap.get(gameId)?.push(username);
+        }
+      });
+    }
   });
 
   const boardgames = rawData
@@ -62,12 +81,22 @@ export const mergeCollections = (
       []
     )
     .reduce(
-      (accum, bgg) => ({
-        ...accum,
-        [`${bgg.objectid}`]: {
-          ...bgg,
-        },
-      }),
+      (accum, bgg) => {
+        const gameId = String(bgg.objectid);
+        const owners = gameOwnersMap.get(gameId) || [];
+        
+        return {
+          ...accum,
+          [gameId]: {
+            ...bgg,
+            owners: owners.map(username => ({
+              username,
+              status: { own: 1 }, // Default status
+              collid: `${username}_${gameId}` // Generate a unique collid
+            })),
+          },
+        };
+      },
       {}
     );
 

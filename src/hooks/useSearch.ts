@@ -21,9 +21,9 @@ export const filterByNumPlayers = (
       )
     : boardgames;
 
-export const filterByPlayingTime = (boardgames: IItem[], playingTime: number) =>
+export const filterByPlayingTime = (boardgames: BggCollectionItem[], playingTime: number) =>
   playingTime
-    ? boardgames.filter((bg: IItem) => {
+    ? boardgames.filter((bg: BggCollectionItem) => {
         if (playingTime == 1 && bg.stats.maxplaytime <= 30) {
           return true;
         }
@@ -62,10 +62,10 @@ export const filterByPlayingTime = (boardgames: IItem[], playingTime: number) =>
       })
     : boardgames;
 
-export const filterByUsers = (boardgames: IItem[], usernames: string[]) =>
+export const filterByUsers = (boardgames: BggCollectionItem[], usernames: string[]) =>
   boardgames.filter(
-    (bg: IItem) =>
-      bg.owners?.filter((o) => usernames.includes(o.username))?.length
+    (bg: BggCollectionItem) =>
+      bg.owners?.filter((o: { username: string }) => usernames.includes(o.username))?.length
   );
 
 const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
@@ -75,7 +75,7 @@ const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
   return a > b ? 1 : -1;
 };
 
-export const orderByFn = (boardgames: IItem[], orderBy: string) => {
+export const orderByFn = (boardgames: BggCollectionItem[], orderBy: string) => {
   if (orderBy.match("rating")) {
     return boardgames.sort((a, b) =>
       checkAsc(
@@ -125,8 +125,12 @@ export function useSearch<T>(
 
   const results = useMemo(() => {
     let results: any = data;
+    console.log('useSearch - initial data length:', data?.length);
+    
     const { playingTime, numberOfPlayers } = otherFields;
     results = keyword ? (searcher.search(keyword) as T[]) : results;
+    console.log('useSearch - after keyword search:', results?.length);
+    
     const filteredMembers = Object.keys(members).reduce(
       (accum: string[], key: string) => {
         if (members[key]) {
@@ -136,10 +140,19 @@ export function useSearch<T>(
       },
       []
     );
+    console.log('useSearch - filteredMembers:', filteredMembers);
+    
     results = filterByUsers(results, filteredMembers);
+    console.log('useSearch - after filterByUsers:', results?.length);
+    
     results = filterByPlayingTime(results, Number(playingTime));
+    console.log('useSearch - after filterByPlayingTime:', results?.length);
+    
     results = filterByNumPlayers(results, Number(numberOfPlayers));
+    console.log('useSearch - after filterByNumPlayers:', results?.length);
+    
     results = orderByFn(results, orderBy);
+    console.log('useSearch - after orderByFn:', results?.length);
 
     return results;
   }, [...debouncedValue]);
