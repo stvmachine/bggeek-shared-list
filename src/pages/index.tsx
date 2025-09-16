@@ -15,8 +15,8 @@ export async function getStaticProps() {
     });
 
     const collectionData = {
-      ...results.data,
-      item: results.data.item.sort(() => 0.5 - Math.random()).slice(0, 24),
+      ...results,
+      item: results.item.sort(() => 0.5 - Math.random()).slice(0, 30),
     };
 
     return {

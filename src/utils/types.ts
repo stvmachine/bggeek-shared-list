@@ -1,4 +1,8 @@
-import { ThingType } from "bgg-xml-api-client";
+import { 
+  BggThingLink, 
+  BggThingItemBase
+} from "bgg-xml-api-client";
+
 declare type ZeroOrOne = 0 | 1;
 
 export type IHotItem = {
@@ -15,6 +19,10 @@ export type IHotItem = {
   };
 };
 
+// Re-export library types for convenience
+export type BggLink = BggThingLink;
+
+// Keep our existing types for compatibility with current code
 export type IItem = {
   collid: string;
   image: string;
@@ -24,7 +32,7 @@ export type IItem = {
   };
   numplays: string;
   objectid: string;
-  objectype: ThingType;
+  objectype: string;
   status: {
     fortrade: ZeroOrOne;
     lastmodified: string;
@@ -36,7 +44,7 @@ export type IItem = {
     wanttoplay: ZeroOrOne;
     whishlist: ZeroOrOne;
   };
-  subtype: ThingType;
+  subtype: string;
   thumbnail?: string;
   yearpublished: string;
   stats: {
@@ -56,7 +64,7 @@ export type IItem = {
           friendlyname: string;
           id: number;
           name: string;
-          type: ThingType;
+          type: string;
           value: number;
         }[];
       };
@@ -73,28 +81,24 @@ export type IItem = {
     id: string;
     name: string;
   };
+  // Detailed game information
+  categories?: BggLink[];
+  mechanics?: BggLink[];
+  families?: BggLink[];
+  publishers?: BggLink[];
+  artists?: BggLink[];
+  designers?: BggLink[];
+  compilations?: BggLink[];
 };
 
-export type IGame = {
-  id: string;
-  image: string;
-  thumbnail?: string;
-  description: string;
-  name: {
-    type: "primary" | "alternate";
-    value: string;
-  }[];
-  [prop: string]: any;
-};
-
-export type IBgDict = {
-  [prop: string]: IGame;
-};
-
+export type IGame = BggThingItemBase;
 export type ICollection = {
   totalitems: string;
   pubdate: string;
   termsofuse?: string;
   item?: IItem[];
   username: string;
+};
+export type IBgDict = {
+  [prop: string]: BggThingItemBase;
 };

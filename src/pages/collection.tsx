@@ -13,6 +13,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useQueries } from "react-query";
 
 import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
+import { enhanceCollectionData } from "../utils/enhanceCollectionData";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import MobileDrawer from "../components/MobileDrawer";
@@ -48,6 +49,8 @@ const Index: NextPage<CollectionPageProps> = () => {
   const [members, setMembers] = useState<string[]>([]);
   const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
   const [isValidating, setIsValidating] = useState(false);
+  const [enhancedData, setEnhancedData] = useState<any>(undefined);
+  const [isEnhancing, setIsEnhancing] = useState(false);
 
   // Initialize with usernames from query params
   useEffect(() => {
@@ -131,18 +134,42 @@ const Index: NextPage<CollectionPageProps> = () => {
     }))
   );
 
-  const isLoading = useMemo(
-    () => results.reduce((acc, next) => next.isLoading || acc, false),
+  const rawData = useMemo(
+    () =>
+      !results.reduce((acc, next) => next.isLoading || acc, false)
+        ? mergeCollections(results.map((result: any) => result?.data))
+        : undefined,
     [results]
   );
 
-  const data = useMemo(
-    () =>
-      !isLoading
-        ? mergeCollections(results.map((result: any) => result?.data))
-        : undefined,
-    [isLoading, results]
+  const isLoading = useMemo(
+    () => results.reduce((acc, next) => next.isLoading || acc, false) || isEnhancing,
+    [results, isEnhancing]
   );
+
+  // Enhance data with detailed game information when raw data changes
+  useEffect(() => {
+    if (rawData && rawData.boardgames) {
+      setIsEnhancing(true);
+      enhanceCollectionData(rawData.boardgames)
+        .then(enhancedBoardgames => {
+          setEnhancedData({
+            ...rawData,
+            boardgames: enhancedBoardgames
+          });
+          setIsEnhancing(false);
+        })
+        .catch(error => {
+          console.error('Error enhancing collection data:', error);
+          setEnhancedData(rawData);
+          setIsEnhancing(false);
+        });
+    } else {
+      setEnhancedData(rawData);
+    }
+  }, [rawData]);
+
+  const data = enhancedData;
 
   const defaultValues = useMemo(
     () => ({
@@ -246,7 +273,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                   minHeight="400px"
                 >
                   <Text fontSize="lg" color="gray.500">
-                    Loading collections...
+                    {isEnhancing ? 'Enhancing game data...' : 'Loading collections...'}
                   </Text>
                 </Box>
               )}

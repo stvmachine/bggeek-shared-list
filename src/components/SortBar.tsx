@@ -90,6 +90,27 @@ const SortBar = () => {
               <option value="bestPlayers" key="group_by_best_players">
                 Best with X Players
               </option>
+              <option value="categories" key="group_by_categories">
+                Categories
+              </option>
+              <option value="mechanics" key="group_by_mechanics">
+                Mechanics
+              </option>
+              <option value="families" key="group_by_families">
+                Families
+              </option>
+              <option value="publishers" key="group_by_publishers">
+                Publishers
+              </option>
+              <option value="artists" key="group_by_artists">
+                Artists
+              </option>
+              <option value="designers" key="group_by_designers">
+                Designers
+              </option>
+              <option value="compilations" key="group_by_compilations">
+                Compilations
+              </option>
             </Box>
           </VStack>
         </HStack>

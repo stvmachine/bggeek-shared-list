@@ -1,46 +1,90 @@
-import { bggXmlApiClient } from "bgg-xml-api-client";
+import {
+  getBggCollection,
+  BggCollectionParams,
+  BggCollectionResponse,
+} from "bgg-xml-api-client";
 import { ICollection, IItem } from "../utils/types";
 
 export const fetchCollections = async (
   usernames: string[],
-  options?: any
+  options?: Partial<BggCollectionParams>
 ): Promise<ICollection[]> =>
   Promise.all(usernames.map((username) => fetchCollection(username, options)));
 
 export const fetchCollection = async (
   username: string,
-  options?: any
+  options?: Partial<BggCollectionParams>
 ): Promise<ICollection> => {
-  const collectionResponse = await bggXmlApiClient.get(
-    "collection",
+  const params: BggCollectionParams = {
+    username,
+    own: 1,
+    subtype: "boardgame",
+    stats: 1,
+    ...options,
+  };
+
+  const collectionResponse: BggCollectionResponse = await getBggCollection(
+    params,
     {
-      username,
-      own: 1,
-      subtype: "boardgame",
-      stats: 1,
-      ...options,
-    },
-    3, // Retries
-    2000 // Retry interval
+      maxRetries: 3,
+      retryInterval: 2000,
+    }
   );
 
-  const data = collectionResponse.data || {};
+  console.log('Collection response for', username, ':', {
+    totalitems: collectionResponse.totalitems,
+    hasItem: !!collectionResponse.item,
+    itemType: typeof collectionResponse.item,
+    itemIsArray: Array.isArray(collectionResponse.item),
+    itemLength: collectionResponse.item?.length
+  });
 
   return {
-    ...data,
-    item: (data as any)?.item
-      ? (data as any).item.map((item: IItem) => ({
-          yearpublished: item.yearpublished,
-          stats: item.stats,
-          subtype: item.subtype,
-          objectid: item.objectid,
-          thumbnail: item.thumbnail ? item.thumbnail : null,
-          name: { ...item.name },
+    totalitems: collectionResponse.totalitems.toString(),
+    pubdate: collectionResponse.pubdate,
+    termsofuse: collectionResponse.termsofuse,
+    item: collectionResponse?.item && Array.isArray(collectionResponse.item)
+      ? collectionResponse.item.map((item) => ({
+          yearpublished: item.yearpublished.toString(),
+          stats: {
+            maxplayers: item.stats?.maxplayers || 0,
+            maxplaytime: item.stats?.maxplaytime || 0,
+            minplayers: item.stats?.minplayers || 0,
+            minplaytime: item.stats?.minplaytime || 0,
+            numowned: item.stats?.numowned || 0,
+            playingtime: item.stats?.playingtime || 0,
+            rating: {
+              average: { value: item.stats?.rating?.average?.value || 0 },
+              bayesaverage: {
+                value: item.stats?.rating?.bayesaverage?.value || 0,
+              },
+              median: { value: item.stats?.rating?.median?.value || 0 },
+              ranks: {
+                rank: (item.stats?.rating?.ranks?.rank || []).map((rank) => ({
+                  bayesaverage: rank.bayesaverage || 0,
+                  friendlyname: rank.friendlyname || "",
+                  id: rank.id || 0,
+                  name: rank.name || "",
+                  type: (rank.type as any) || "boardgame",
+                  value: rank.value || 0,
+                })),
+              },
+              stddev: { value: item.stats?.rating?.stddev?.value || 0 },
+              usersrated: { value: item.stats?.rating?.usersrated?.value || 0 },
+            },
+          },
+          subtype: item.subtype as any,
+          objectid: item.objectid.toString(),
+          thumbnail: item.thumbnail || null,
+          name: {
+            text: item.name.text,
+            sortIndex: item.name.sortindex.toString(),
+          },
           owners: [
             {
               username,
               status: item.status,
-              collid: item.collid,
+              collid: item.collid?.toString() || "",
             },
           ],
         }))
@@ -62,6 +106,7 @@ export const mergeCollections = (
   });
 
   const boardgames = rawData
+    .filter((collection: ICollection) => collection && collection.item && Array.isArray(collection.item))
     .reduce(
       (accum: any[], collection: ICollection) => [
         ...accum,
