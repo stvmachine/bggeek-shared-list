@@ -11,9 +11,10 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useQueries } from "react-query";
+// import { useInfiniteQueryWithExpiration } from "../hooks/useInfiniteQueryWithExpiration";
 
-import { fetchCollection, mergeCollections } from "../api/fetchGroupCollection";
-import { enhanceCollectionData } from "../utils/enhanceCollectionData";
+import { mergeCollections } from "../api/fetchGroupCollection";
+import { useGameEnhancement } from "../hooks/useGameEnhancement";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import MobileDrawer from "../components/MobileDrawer";
@@ -49,8 +50,15 @@ const Index: NextPage<CollectionPageProps> = () => {
   const [members, setMembers] = useState<string[]>([]);
   const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
   const [isValidating, setIsValidating] = useState(false);
-  const [enhancedData, setEnhancedData] = useState<any>(undefined);
-  const [isEnhancing, setIsEnhancing] = useState(false);
+  
+  // Use Redux for game enhancement
+  const {
+    enhanceGamesInBackground,
+    enhanceGamesWithDetails,
+    isProcessing: isEnhancing,
+    enhancedGamesCount,
+    queueLength
+  } = useGameEnhancement();
 
   // Initialize with usernames from query params
   useEffect(() => {
@@ -129,7 +137,13 @@ const Index: NextPage<CollectionPageProps> = () => {
   const results = useQueries(
     members.map((member) => ({
       queryKey: ["collection", member],
-      queryFn: () => fetchCollection(member),
+      queryFn: async () => {
+        const response = await fetch(`/api/collection?username=${encodeURIComponent(member)}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      },
       refetchOnWindowFocus: false,
     }))
   );
@@ -147,29 +161,21 @@ const Index: NextPage<CollectionPageProps> = () => {
     [results, isEnhancing]
   );
 
-  // Enhance data with detailed game information when raw data changes
-  useEffect(() => {
-    if (rawData && rawData.boardgames) {
-      setIsEnhancing(true);
-      enhanceCollectionData(rawData.boardgames)
-        .then(enhancedBoardgames => {
-          setEnhancedData({
-            ...rawData,
-            boardgames: enhancedBoardgames
-          });
-          setIsEnhancing(false);
-        })
-        .catch(error => {
-          console.error('Error enhancing collection data:', error);
-          setEnhancedData(rawData);
-          setIsEnhancing(false);
-        });
-    } else {
-      setEnhancedData(rawData);
-    }
-  }, [rawData]);
+  // Skip enhancement for now - just use raw data
+  // useEffect(() => {
+  //   if (rawData && rawData.boardgames) {
+  //     // Start background enhancement
+  //     enhanceGamesInBackground(rawData.boardgames);
+  //   }
+  // }, [rawData, enhanceGamesInBackground]);
 
-  const data = enhancedData;
+  // Process data without enhancement
+  const data = useMemo(() => {
+    if (!rawData) return undefined;
+    
+    // Return raw data without enhancement
+    return rawData;
+  }, [rawData]);
 
   const defaultValues = useMemo(
     () => ({
@@ -261,6 +267,26 @@ const Index: NextPage<CollectionPageProps> = () => {
                   </Box>
 
                   <Box flex="1" minWidth={0}>
+                    {/* Background Enhancement Status - Disabled for now */}
+                    {/* {(isEnhancing || queueLength > 0) && (
+                      <Box
+                        bg="blue.50"
+                        border="1px solid"
+                        borderColor="blue.200"
+                        borderRadius="md"
+                        p={3}
+                        mb={4}
+                        fontSize="sm"
+                        color="blue.700"
+                      >
+                        <Text>
+                          {isEnhancing 
+                            ? `Enhancing game data... (${enhancedGamesCount} enhanced)` 
+                            : `Queued ${queueLength} games for enhancement`}
+                        </Text>
+                      </Box>
+                    )} */}
+                    
                     <Results boardgames={data?.boardgames} />
                   </Box>
                 </>

@@ -1,5 +1,7 @@
 import {
+  Badge,
   Box,
+  Flex,
   Heading,
   HStack,
   LinkBox,
@@ -7,26 +9,23 @@ import {
   Text,
   VStack,
   Wrap,
-  Badge,
-  Flex,
 } from "@chakra-ui/react";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import SortBar from "../components/SortBar";
 import { useMembers } from "../contexts/MemberContext";
 import { useSearch } from "../hooks/useSearch";
-import { IItem } from "../utils/types";
-import { groupGames, GroupedGames } from "../utils/grouping";
+import { GroupedGames, groupGames } from "../utils/grouping";
 import { sortGames, SortOption } from "../utils/sorting";
-
+import { BggCollectionItem } from "../utils/types";
 import GameCard from "./GameCard";
 
 type ResultsProps = {
-  boardgames?: IItem[];
+  boardgames?: BggCollectionItem[];
 };
 
 const Results = React.memo(({ boardgames }: ResultsProps) => {
-  const { results } = useSearch<IItem>(boardgames || [], {
+  const { results } = useSearch<BggCollectionItem>(boardgames || [], {
     keys: ["name.text"],
   });
   const { watch } = useFormContext();
@@ -53,11 +52,11 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
   return (
     <Box flex="1" p={4}>
       {checkedMembers?.length > 0 ? (
-        <Box 
-          border="1px solid" 
-          borderColor="gray.200" 
-          borderRadius="lg" 
-          p={4} 
+        <Box
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="lg"
+          p={4}
           mb={6}
           bg="white"
         >
@@ -70,7 +69,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
                 {results.length} games
               </Badge>
             </Flex>
-            
+
             <Box>
               <Text fontSize="sm" color="gray.600" mb={3}>
                 Displaying games owned by:
@@ -87,16 +86,16 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Box 
-                          border="1px solid" 
-                          borderColor="gray.200" 
-                          borderRadius="lg" 
+                        <Box
+                          border="1px solid"
+                          borderColor="gray.200"
+                          borderRadius="lg"
                           p={3}
-                          _hover={{ 
-                            borderColor: "blue.300", 
+                          _hover={{
+                            borderColor: "blue.300",
                             bg: "blue.50",
                             transform: "translateY(-1px)",
-                            boxShadow: "md"
+                            boxShadow: "md",
                           }}
                           transition="all 0.2s"
                           cursor="pointer"
@@ -130,11 +129,11 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
           </VStack>
         </Box>
       ) : (
-        <Box 
-          border="1px solid" 
-          borderColor="gray.200" 
-          borderRadius="lg" 
-          p={8} 
+        <Box
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="lg"
+          p={8}
           mb={6}
           textAlign="center"
           bg="white"
@@ -147,29 +146,34 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
           </Text>
         </Box>
       )}
-      
+
       <SortBar />
-      
+
       {groupBy === "none" ? (
         <Box>
           {sortedResults.length > 0 ? (
             <Wrap gap={4} justify="flex-start">
-              {sortedResults.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
-                <GameCard
-                  image={thumbnail}
-                  key={`${objectid}_${index}`}
-                  bgName={name.text}
-                  owners={owners}
-                  objectid={objectid}
-                />
-              ))}
+              {sortedResults.map(
+                (
+                  { thumbnail, name, owners, objectid }: BggCollectionItem,
+                  index
+                ) => (
+                  <GameCard
+                    image={thumbnail}
+                    key={`${objectid}_${index}`}
+                    bgName={name.text}
+                    owners={owners}
+                    objectid={objectid}
+                  />
+                )
+              )}
             </Wrap>
           ) : (
-            <Box 
-              border="1px solid" 
-              borderColor="gray.200" 
-              borderRadius="lg" 
-              p={8} 
+            <Box
+              border="1px solid"
+              borderColor="gray.200"
+              borderRadius="lg"
+              p={8}
               textAlign="center"
               bg="white"
             >
@@ -182,11 +186,11 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
       ) : (
         <VStack align="stretch" gap={6}>
           {Object.entries(groupedResults).map(([groupName, games]) => (
-            <Box 
-              key={groupName} 
-              border="1px solid" 
-              borderColor="gray.200" 
-              borderRadius="lg" 
+            <Box
+              key={groupName}
+              border="1px solid"
+              borderColor="gray.200"
+              borderRadius="lg"
               p={4}
               bg="white"
             >
@@ -196,24 +200,39 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
                     {groupName}
                   </Heading>
                   <Badge colorScheme="blue" variant="subtle" fontSize="sm">
-                    {games.length} {games.length === 1 ? 'Game' : 'Games'}
+                    {games.length} {games.length === 1 ? "Game" : "Games"}
                   </Badge>
                 </Flex>
-                
+
                 {games.length > 0 ? (
                   <Wrap gap={4} justify="flex-start">
-                    {games.map(({ thumbnail, name, owners, objectid }: IItem, index) => (
-                      <GameCard
-                        image={thumbnail}
-                        key={`${objectid}_${index}`}
-                        bgName={name.text}
-                        owners={owners}
-                        objectid={objectid}
-                      />
-                    ))}
+                    {games.map(
+                      (
+                        {
+                          thumbnail,
+                          name,
+                          owners,
+                          objectid,
+                        }: BggCollectionItem,
+                        index
+                      ) => (
+                        <GameCard
+                          image={thumbnail}
+                          key={`${objectid}_${index}`}
+                          bgName={name.text}
+                          owners={owners}
+                          objectid={objectid}
+                        />
+                      )
+                    )}
                   </Wrap>
                 ) : (
-                  <Text color="gray.500" fontSize="sm" textAlign="center" py={4}>
+                  <Text
+                    color="gray.500"
+                    fontSize="sm"
+                    textAlign="center"
+                    py={4}
+                  >
                     No games in this group
                   </Text>
                 )}

@@ -1,6 +1,8 @@
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Provider } from "react-redux";
 import { AppProps } from "next/app";
+import { store } from "../store";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,11 +25,13 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider value={defaultSystem}>
-        <Component {...pageProps} />
-      </ChakraProvider>
-    </QueryClientProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider value={defaultSystem}>
+          <Component {...pageProps} />
+        </ChakraProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 }
 

@@ -1,104 +1,42 @@
-import { 
-  BggThingLink, 
-  BggThingItemBase
+import {
+  BggCollectionResponse,
+  BggThingItemBase,
+  BggThingLink,
 } from "bgg-xml-api-client";
-
-declare type ZeroOrOne = 0 | 1;
-
-export type IHotItem = {
-  id: string;
-  name: {
-    value: string;
-  };
-  rank: number;
-  thumbnail?: {
-    value: string;
-  };
-  yearpublished: {
-    value: number;
-  };
-};
 
 // Re-export library types for convenience
 export type BggLink = BggThingLink;
 
-// Keep our existing types for compatibility with current code
-export type IItem = {
-  collid: string;
-  image: string;
-  name: {
-    text: string;
-    sortIndex: string;
-  };
-  numplays: string;
-  objectid: string;
-  objectype: string;
-  status: {
-    fortrade: ZeroOrOne;
-    lastmodified: string;
-    own: ZeroOrOne;
-    preordered: ZeroOrOne;
-    prevowned: ZeroOrOne;
-    want: ZeroOrOne;
-    wanttobuy: ZeroOrOne;
-    wanttoplay: ZeroOrOne;
-    whishlist: ZeroOrOne;
-  };
-  subtype: string;
-  thumbnail?: string;
-  yearpublished: string;
-  stats: {
-    maxplayers: number;
-    maxplaytime: number;
-    minplayers: number;
-    minplaytime: number;
-    numowned: number;
-    playingtime: number;
-    rating: {
-      average: { value: number };
-      bayesaverage: { value: number };
-      median: { value: number };
-      ranks: {
-        rank: {
-          bayesaverage: number;
-          friendlyname: string;
-          id: number;
-          name: string;
-          type: string;
-          value: number;
-        }[];
-      };
-      stddev: { value: number };
-      usersrated: { value: number };
-    };
-  };
-  owners?: {
-    username: string;
-    status: any;
-    collid: string;
-  }[];
-  primaryFamily?: {
-    id: string;
-    name: string;
-  };
-  // Detailed game information
-  categories?: BggLink[];
-  mechanics?: BggLink[];
-  families?: BggLink[];
-  publishers?: BggLink[];
-  artists?: BggLink[];
-  designers?: BggLink[];
-  compilations?: BggLink[];
+// Define BggCollectionItem type based on the actual structure used in the app
+export type BggCollectionItem =
+  BggCollectionResponse["item"] extends (infer T)[]
+    ? T & {
+        // Additional properties that are added during data processing
+        owners?: Array<{
+          username: string;
+          status: any;
+          collid: string;
+        }>;
+        objectid: string; // Converted to string during processing
+        // Enhanced properties from game details
+        categories?: any[];
+        mechanics?: any[];
+        families?: any[];
+        publishers?: any[];
+        artists?: any[];
+        designers?: any[];
+        compilations?: any[];
+      }
+    : never;
+
+// Collection type for simplified collection data
+export type ICollection = {
+  totalitems: number;
+  pubdate: string;
 };
 
+// Re-export BGG types for convenience
 export type IGame = BggThingItemBase;
-export type ICollection = {
-  totalitems: string;
-  pubdate: string;
-  termsofuse?: string;
-  item?: IItem[];
-  username: string;
-};
 export type IBgDict = {
   [prop: string]: BggThingItemBase;
 };

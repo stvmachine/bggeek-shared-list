@@ -1,4 +1,13 @@
-import { Box, Button, HStack, Input, Text, VStack, Badge, Flex } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Input,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import UsernameManager from "./UsernameManager";
@@ -99,17 +108,17 @@ const SearchSidebar = React.memo(
 
     return (
       <form onSubmit={handleSubmit(onSubmit, onError)}>
-        <VStack 
-          width={isOpenDrawer ? "100%" : "320px"} 
-          gap={4} 
+        <VStack
+          width={isOpenDrawer ? "100%" : "320px"}
+          gap={4}
           align="stretch"
           p={isOpenDrawer ? 0 : 4}
         >
           {/* Search Section */}
-          <Box 
-            border="1px solid" 
-            borderColor="gray.200" 
-            borderRadius="lg" 
+          <Box
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="lg"
             p={4}
             bg="white"
           >
@@ -125,110 +134,120 @@ const SearchSidebar = React.memo(
                 borderColor="gray.300"
                 _focus={{
                   borderColor: "blue.400",
-                  boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)"
+                  boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)",
                 }}
               />
             </VStack>
           </Box>
 
           {/* Filters Section */}
-          <Box 
-            border="1px solid" 
-            borderColor="gray.200" 
-            borderRadius="lg" 
+          <Box
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="lg"
             p={4}
             bg="white"
           >
             <VStack gap={4} align="stretch">
-                <Text fontSize="lg" fontWeight="bold" color="gray.700" mb={2}>
-                  🎯 Filters
-                </Text>
-                
-                <VStack gap={3} align="stretch">
-                  <Box>
-                    <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={2}>
-                      Number of Players
-                    </Text>
-                    <Box
-                      as="select"
-                      {...register("numberOfPlayers")}
-                      width="100%"
-                      p={3}
-                      border="1px solid"
-                      borderColor="gray.300"
-                      borderRadius="lg"
-                      bg="white"
-                      fontSize="sm"
-                      _focus={{
-                        borderColor: "blue.400",
-                        boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)"
-                      }}
-                    >
-                      <option value="">Any number of players</option>
-                      {numberOfPlayersOptions &&
-                        numberOfPlayersOptions.map((item) => (
-                          <option
-                            value={item.value}
-                            key={`number_of_players_${item.value}`}
-                          >
-                            {item.name}
-                          </option>
-                        ))}
-                    </Box>
+              <Text fontSize="lg" fontWeight="bold" color="gray.700" mb={2}>
+                🎯 Filters
+              </Text>
+
+              <VStack gap={3} align="stretch">
+                <Box>
+                  <Text
+                    fontSize="sm"
+                    fontWeight="medium"
+                    color="gray.600"
+                    mb={2}
+                  >
+                    Number of Players
+                  </Text>
+                  <Box
+                    as="select"
+                    {...register("numberOfPlayers")}
+                    width="100%"
+                    p={3}
+                    border="1px solid"
+                    borderColor="gray.300"
+                    borderRadius="lg"
+                    bg="white"
+                    fontSize="sm"
+                    _focus={{
+                      borderColor: "blue.400",
+                      boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)",
+                    }}
+                  >
+                    <option value="">Any number of players</option>
+                    {numberOfPlayersOptions &&
+                      numberOfPlayersOptions.map((item) => (
+                        <option
+                          value={item.value}
+                          key={`number_of_players_${item.value}`}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
                   </Box>
-                  
-                  <Box>
-                    <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={2}>
-                      Playing Time
-                    </Text>
-                    <Box
-                      as="select"
-                      {...register("playingTime")}
-                      width="100%"
-                      p={3}
-                      border="1px solid"
-                      borderColor="gray.300"
-                      borderRadius="lg"
-                      bg="white"
-                      fontSize="sm"
-                      _focus={{
-                        borderColor: "blue.400",
-                        boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)"
-                      }}
-                    >
-                      <option value="">Any playing time</option>
-                      {playingTimeOptions &&
-                        playingTimeOptions.map((item) => (
-                          <option
-                            value={item.value}
-                            key={`playing_time_${item.value}`}
-                          >
-                            {item.name}
-                          </option>
-                        ))}
-                    </Box>
+                </Box>
+
+                <Box>
+                  <Text
+                    fontSize="sm"
+                    fontWeight="medium"
+                    color="gray.600"
+                    mb={2}
+                  >
+                    Playing Time
+                  </Text>
+                  <Box
+                    as="select"
+                    {...register("playingTime")}
+                    width="100%"
+                    p={3}
+                    border="1px solid"
+                    borderColor="gray.300"
+                    borderRadius="lg"
+                    bg="white"
+                    fontSize="sm"
+                    _focus={{
+                      borderColor: "blue.400",
+                      boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)",
+                    }}
+                  >
+                    <option value="">Any playing time</option>
+                    {playingTimeOptions &&
+                      playingTimeOptions.map((item) => (
+                        <option
+                          value={item.value}
+                          key={`playing_time_${item.value}`}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
                   </Box>
-                </VStack>
+                </Box>
               </VStack>
-            </Box>
+            </VStack>
+          </Box>
 
           {/* Members Section */}
-          <Box 
-            border="1px solid" 
-            borderColor="gray.200" 
-            borderRadius="lg" 
+          <Box
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="lg"
             p={4}
             bg="white"
           >
             <VStack gap={4} align="stretch">
-                <Flex justify="space-between" align="center" width="100%">
-                  <Text fontSize="lg" fontWeight="bold" color="gray.700">
-                    👥 Group Collectors
-                  </Text>
-                  <Badge colorScheme="blue" variant="subtle" fontSize="sm">
-                    {selectedCount}/{members.length} selected
-                  </Badge>
-                </Flex>
+              <Flex justify="space-between" align="center" width="100%">
+                <Text fontSize="lg" fontWeight="bold" color="gray.700">
+                  👥 Group Collectors
+                </Text>
+                <Badge colorScheme="blue" variant="subtle" fontSize="sm">
+                  {selectedCount}/{members.length} selected
+                </Badge>
+              </Flex>
               {members && collections && (
                 <Box>
                   <VStack alignItems={"flex-start"}>
@@ -277,7 +296,13 @@ const SearchSidebar = React.memo(
                       hidePills={true}
                     />
 
-                    <VStack gap={2} align="stretch" maxHeight="300px" overflowY="auto" width="100%">
+                    <VStack
+                      gap={2}
+                      align="stretch"
+                      maxHeight="300px"
+                      overflowY="auto"
+                      width="100%"
+                    >
                       {members.map((member, index) => {
                         const memberData = getMemberData(member);
                         if (!memberData) return null;
@@ -291,11 +316,17 @@ const SearchSidebar = React.memo(
                             borderRadius="lg"
                             border="1px solid"
                             borderColor="gray.200"
-                            bg={getValues(`members[${member}]`) ? "blue.50" : "white"}
+                            bg={
+                              getValues(`members[${member}]`)
+                                ? "blue.50"
+                                : "white"
+                            }
                             transition="all 0.2s"
                             _hover={{
                               borderColor: "blue.300",
-                              bg: getValues(`members[${member}]`) ? "blue.100" : "gray.50"
+                              bg: getValues(`members[${member}]`)
+                                ? "blue.100"
+                                : "gray.50",
                             }}
                           >
                             <HStack gap={3} width="100%">
@@ -311,7 +342,7 @@ const SearchSidebar = React.memo(
                                 style={{
                                   width: "16px",
                                   height: "16px",
-                                  accentColor: "var(--chakra-colors-blue-500)"
+                                  accentColor: "var(--chakra-colors-blue-500)",
                                 }}
                               />
                               <Box
@@ -330,7 +361,11 @@ const SearchSidebar = React.memo(
                                 {memberData.initial}
                               </Box>
                               <Box flex="1" minWidth={0}>
-                                <Text fontWeight="medium" fontSize="sm" truncate>
+                                <Text
+                                  fontWeight="medium"
+                                  fontSize="sm"
+                                  truncate
+                                >
                                   {member}
                                 </Text>
                                 <Text fontSize="xs" color="gray.500">

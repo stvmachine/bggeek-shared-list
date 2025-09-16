@@ -1,9 +1,9 @@
-import { IItem } from './types';
+import { BggCollectionItem } from './types';
 import { fetchGameDetails } from '../api/fetchGameDetails';
 
 export const enhanceCollectionData = async (
-  boardgames: IItem[]
-): Promise<IItem[]> => {
+  boardgames: BggCollectionItem[]
+): Promise<BggCollectionItem[]> => {
   if (boardgames.length === 0) return boardgames;
 
   // Extract unique game IDs

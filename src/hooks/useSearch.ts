@@ -2,20 +2,20 @@ import Fuse, { FuseOptions } from "fuse.js";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { IItem } from "../utils/types";
 import useDebounce from "./useDebounce";
+import { BggCollectionItem } from "../utils/types";
 
 export interface IFuzzyClient<T> {
   results: T[];
 }
 
 export const filterByNumPlayers = (
-  boardgames: IItem[],
+  boardgames: BggCollectionItem[],
   numberOfPlayers: number
 ) =>
   numberOfPlayers
     ? boardgames.filter(
-        (bg: IItem) =>
+        (bg: BggCollectionItem) =>
           Number(bg.stats.maxplayers) >= numberOfPlayers &&
           Number(bg.stats.minplayers) <= numberOfPlayers
       )

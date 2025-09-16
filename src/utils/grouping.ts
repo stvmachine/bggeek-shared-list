@@ -1,4 +1,4 @@
-import { IItem } from './types';
+import { BggCollectionItem } from './types';
 
 export type GroupingOption = 
   | 'none' 
@@ -14,15 +14,15 @@ export type GroupingOption =
   | 'compilations';
 
 export interface GroupedGames {
-  [key: string]: IItem[];
+  [key: string]: BggCollectionItem[];
 }
 
-export const groupGamesByPlayers = (games: IItem[]): GroupedGames => {
+export const groupGamesByPlayers = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
-    const minPlayers = game.stats?.minplayers || 1;
-    const maxPlayers = game.stats?.maxplayers || minPlayers;
+    const minPlayers = Number(game.stats?.minplayers) || 1;
+    const maxPlayers = Number(game.stats?.maxplayers) || minPlayers;
     
     // Create a range string for the group key
     const groupKey = minPlayers === maxPlayers 
@@ -50,7 +50,7 @@ export const groupGamesByPlayers = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByYear = (games: IItem[]): GroupedGames => {
+export const groupGamesByYear = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
@@ -78,7 +78,7 @@ export const groupGamesByYear = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByRating = (games: IItem[]): GroupedGames => {
+export const groupGamesByRating = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {
     '9.0+ (Excellent)': [],
     '8.0-8.9 (Very Good)': [],
@@ -116,7 +116,7 @@ export const groupGamesByRating = (games: IItem[]): GroupedGames => {
   return groups;
 };
 
-export const groupGamesByBestPlayers = (games: IItem[]): GroupedGames => {
+export const groupGamesByBestPlayers = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
 
   games.forEach((game) => {
@@ -161,7 +161,7 @@ export const groupGamesByBestPlayers = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByCategories = (games: IItem[]): GroupedGames => {
+export const groupGamesByCategories = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
@@ -195,7 +195,7 @@ export const groupGamesByCategories = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByMechanics = (games: IItem[]): GroupedGames => {
+export const groupGamesByMechanics = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
@@ -229,7 +229,7 @@ export const groupGamesByMechanics = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByFamilies = (games: IItem[]): GroupedGames => {
+export const groupGamesByFamilies = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
@@ -263,7 +263,7 @@ export const groupGamesByFamilies = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByPublishers = (games: IItem[]): GroupedGames => {
+export const groupGamesByPublishers = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
@@ -297,7 +297,7 @@ export const groupGamesByPublishers = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByArtists = (games: IItem[]): GroupedGames => {
+export const groupGamesByArtists = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
@@ -331,7 +331,7 @@ export const groupGamesByArtists = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByDesigners = (games: IItem[]): GroupedGames => {
+export const groupGamesByDesigners = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
@@ -365,7 +365,7 @@ export const groupGamesByDesigners = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByCompilations = (games: IItem[]): GroupedGames => {
+export const groupGamesByCompilations = (games: BggCollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
   
   games.forEach(game => {
@@ -399,7 +399,7 @@ export const groupGamesByCompilations = (games: IItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGames = (games: IItem[], groupBy: GroupingOption): GroupedGames => {
+export const groupGames = (games: BggCollectionItem[], groupBy: GroupingOption): GroupedGames => {
   switch (groupBy) {
     case 'players':
       return groupGamesByPlayers(games);

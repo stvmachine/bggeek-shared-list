@@ -12,7 +12,6 @@ import {
 import React, { useCallback, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useQuery } from "react-query";
-import { fetchUser } from "../api/fetchUser";
 
 type FormData = {
   username: string;
@@ -56,10 +55,16 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
     async () => {
       if (usernamesToValidate.length === 0) return [];
 
-      // Validate all usernames in parallel using the efficient fetchUser API
+      // Validate all usernames in parallel using the API route
       const validationPromises = usernamesToValidate.map(async (username) => {
         try {
-          const userData = await fetchUser(username);
+          const response = await fetch(
+            `/api/user?username=${encodeURIComponent(username)}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const userData = await response.json();
           return { username, userData, error: null };
         } catch (error) {
           return { username, userData: null, error };
