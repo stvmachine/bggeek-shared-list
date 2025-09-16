@@ -145,13 +145,10 @@ const Index: NextPage<CollectionPageProps> = () => {
       if (isLoading) return undefined;
       
       const dataArray = results.map((result: any) => result?.data).filter(Boolean);
-      console.log('Raw results data:', results);
-      console.log('Filtered data array:', dataArray);
       
       if (dataArray.length === 0) return undefined;
       
       const merged = mergeCollections(dataArray, members);
-      console.log('Merged collections data:', merged);
       return merged;
     },
     [results, members]

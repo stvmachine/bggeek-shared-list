@@ -1,14 +1,3 @@
-export const COLLECTION_STATUS = [
-  "fortrade",
-  "own",
-  "preordered",
-  "prevowned",
-  "want",
-  "wanttobuy",
-  "wanttoplay",
-  "wishlist",
-];
-
 export const numberOfPlayersOptions = [
   { value: 1, name: 1 },
   { value: 2, name: 2 },

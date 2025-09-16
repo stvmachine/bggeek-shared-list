@@ -1,11 +1,11 @@
-import { sortGames } from '../sorting';
-import { IItem } from '../types';
+import { sortGames } from "../sorting";
+import { BggCollectionItem } from "../types";
 
 // Mock game data for testing
-const mockGames: IItem[] = [
+const mockGames: BggCollectionItem[] = [
   {
-    objectid: '1',
-    name: { text: 'Zebra Game', sortIndex: '1' },
+    objectid: "1",
+    name: { text: "Zebra Game", sortIndex: "1" },
     stats: {
       minplayers: 1,
       maxplayers: 4,
@@ -19,21 +19,22 @@ const mockGames: IItem[] = [
         median: { value: 8.0 },
         ranks: { rank: [] },
         stddev: { value: 1.2 },
-        usersrated: { value: 1000 }
-      }
+        usersrated: { value: 1000 },
+      },
     },
-    yearpublished: '2020',
-    collid: '1',
-    image: '',
-    numplays: '0',
-    objectype: 'boardgame' as any,
+    yearpublished: "2020",
+    collid: "1",
+    image: "",
+    numplays: "0",
+    objectype: "boardgame" as any,
     status: {} as any,
-    subtype: 'boardgame' as any,
-    thumbnail: ''
+    subtype: "boardgame" as any,
+    thumbnail: "",
+    owners: [{ username: "testuser", status: {}, collid: "1" }],
   },
   {
-    objectid: '2',
-    name: { text: 'Alpha Game', sortIndex: '2' },
+    objectid: "2",
+    name: { text: "Alpha Game", sortIndex: "2" },
     stats: {
       minplayers: 2,
       maxplayers: 2,
@@ -47,21 +48,22 @@ const mockGames: IItem[] = [
         median: { value: 7.0 },
         ranks: { rank: [] },
         stddev: { value: 1.0 },
-        usersrated: { value: 500 }
-      }
+        usersrated: { value: 500 },
+      },
     },
-    yearpublished: '2019',
-    collid: '2',
-    image: '',
-    numplays: '0',
-    objectype: 'boardgame' as any,
+    yearpublished: "2019",
+    collid: "2",
+    image: "",
+    numplays: "0",
+    objectype: "boardgame" as any,
     status: {} as any,
-    subtype: 'boardgame' as any,
-    thumbnail: ''
+    subtype: "boardgame" as any,
+    thumbnail: "",
+    owners: [{ username: "testuser", status: {}, collid: "2" }],
   },
   {
-    objectid: '3',
-    name: { text: 'Beta Game', sortIndex: '3' },
+    objectid: "3",
+    name: { text: "Beta Game", sortIndex: "3" },
     stats: {
       minplayers: 3,
       maxplayers: 6,
@@ -75,66 +77,67 @@ const mockGames: IItem[] = [
         median: { value: 9.0 },
         ranks: { rank: [] },
         stddev: { value: 0.8 },
-        usersrated: { value: 2000 }
-      }
+        usersrated: { value: 2000 },
+      },
     },
-    yearpublished: '2021',
-    collid: '3',
-    image: '',
-    numplays: '0',
-    objectype: 'boardgame' as any,
+    yearpublished: "2021",
+    collid: "3",
+    image: "",
+    numplays: "0",
+    objectype: "boardgame" as any,
     status: {} as any,
-    subtype: 'boardgame' as any,
-    thumbnail: ''
-  }
-];
+    subtype: "boardgame" as any,
+    thumbnail: "",
+    owners: [{ username: "testuser", status: {}, collid: "3" }],
+  },
+] as BggCollectionItem[];
 
-describe('Sorting Utilities', () => {
-  describe('sortGames', () => {
-    it('should sort by name ascending', () => {
-      const result = sortGames(mockGames, 'name_asc');
-      expect(result[0].name.text).toBe('Alpha Game');
-      expect(result[1].name.text).toBe('Beta Game');
-      expect(result[2].name.text).toBe('Zebra Game');
+describe("Sorting Utilities", () => {
+  describe("sortGames", () => {
+    it("should sort by name ascending", () => {
+      const result = sortGames(mockGames, "name_asc");
+      expect(result[0].name.text).toBe("Alpha Game");
+      expect(result[1].name.text).toBe("Beta Game");
+      expect(result[2].name.text).toBe("Zebra Game");
     });
 
-    it('should sort by name descending', () => {
-      const result = sortGames(mockGames, 'name_desc');
-      expect(result[0].name.text).toBe('Zebra Game');
-      expect(result[1].name.text).toBe('Beta Game');
-      expect(result[2].name.text).toBe('Alpha Game');
+    it("should sort by name descending", () => {
+      const result = sortGames(mockGames, "name_desc");
+      expect(result[0].name.text).toBe("Zebra Game");
+      expect(result[1].name.text).toBe("Beta Game");
+      expect(result[2].name.text).toBe("Alpha Game");
     });
 
-    it('should sort by rating ascending', () => {
-      const result = sortGames(mockGames, 'rating_asc');
+    it("should sort by rating ascending", () => {
+      const result = sortGames(mockGames, "rating_asc");
       expect(result[0].stats.rating.average.value).toBe(7.5);
       expect(result[1].stats.rating.average.value).toBe(8.5);
       expect(result[2].stats.rating.average.value).toBe(9.2);
     });
 
-    it('should sort by rating descending', () => {
-      const result = sortGames(mockGames, 'rating_desc');
+    it("should sort by rating descending", () => {
+      const result = sortGames(mockGames, "rating_desc");
       expect(result[0].stats.rating.average.value).toBe(9.2);
       expect(result[1].stats.rating.average.value).toBe(8.5);
       expect(result[2].stats.rating.average.value).toBe(7.5);
     });
 
-    it('should sort by year ascending', () => {
-      const result = sortGames(mockGames, 'year_asc');
-      expect(result[0].yearpublished).toBe('2019');
-      expect(result[1].yearpublished).toBe('2020');
-      expect(result[2].yearpublished).toBe('2021');
+    it("should sort by year ascending", () => {
+      const result = sortGames(mockGames, "year_asc");
+      expect(result[0].yearpublished).toBe("2019");
+      expect(result[1].yearpublished).toBe("2020");
+      expect(result[2].yearpublished).toBe("2021");
     });
 
-    it('should sort by year descending', () => {
-      const result = sortGames(mockGames, 'year_desc');
-      expect(result[0].yearpublished).toBe('2021');
-      expect(result[1].yearpublished).toBe('2020');
-      expect(result[2].yearpublished).toBe('2019');
+    it("should sort by year descending", () => {
+      const result = sortGames(mockGames, "year_desc");
+      expect(result[0].yearpublished).toBe("2021");
+      expect(result[1].yearpublished).toBe("2020");
+      expect(result[2].yearpublished).toBe("2019");
     });
 
-    it('should return original array for unknown sort option', () => {
-      const result = sortGames(mockGames, 'unknown' as any);
+    it("should return original array for unknown sort option", () => {
+      const result = sortGames(mockGames, "unknown" as any);
       expect(result).toEqual(mockGames);
     });
   });
