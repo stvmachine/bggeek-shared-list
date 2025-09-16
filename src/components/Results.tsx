@@ -25,26 +25,15 @@ type ResultsProps = {
 };
 
 const Results = React.memo(({ boardgames }: ResultsProps) => {
-  console.log('Results component received boardgames:', boardgames);
-  console.log('Boardgames length:', boardgames?.length);
-  console.log('First game structure:', boardgames?.[0]);
-  console.log('First game owners:', boardgames?.[0]?.owners);
-  
   const { results } = useSearch<BggCollectionItem>(boardgames || [], {
     keys: ["name.text"],
   });
-  
-  console.log('Search results:', results);
-  console.log('Search results length:', results?.length);
   const { watch } = useFormContext();
   const { getMemberData } = useMembers();
   const watchedMembers = watch("members");
   const groupBy = watch("groupBy") || "none";
   const orderBy = watch("orderBy") || "name_asc";
   
-  console.log('Form data - watchedMembers:', watchedMembers);
-  console.log('Form data - groupBy:', groupBy);
-  console.log('Form data - orderBy:', orderBy);
   const checkedMembers = Object.keys(watchedMembers).reduce(
     (accum: string[], key: string) => {
       if (watchedMembers[key]) {
@@ -55,16 +44,11 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
     []
   );
 
-  console.log('Checked members:', checkedMembers);
-
   // Sort the results first
   const sortedResults = sortGames(results, orderBy as SortOption);
-  console.log('Sorted results:', sortedResults);
-  console.log('Sorted results length:', sortedResults?.length);
 
   // Group the sorted results based on the selected grouping option
   const groupedResults: GroupedGames = groupGames(sortedResults, groupBy);
-  console.log('Grouped results:', groupedResults);
 
   return (
     <Box flex="1" p={4}>

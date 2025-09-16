@@ -18,14 +18,6 @@ export type BggCollectionItem =
           collid: string;
         }>;
         objectid: string; // Converted to string during processing
-        // Enhanced properties from game details
-        categories?: any[];
-        mechanics?: any[];
-        families?: any[];
-        publishers?: any[];
-        artists?: any[];
-        designers?: any[];
-        compilations?: any[];
       }
     : never;
 

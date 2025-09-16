@@ -14,7 +14,6 @@ import { useQueries } from "react-query";
 // import { useInfiniteQueryWithExpiration } from "../hooks/useInfiniteQueryWithExpiration";
 
 import { mergeCollections } from "../api/fetchGroupCollection";
-import { useGameEnhancement } from "../hooks/useGameEnhancement";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import MobileDrawer from "../components/MobileDrawer";
@@ -51,14 +50,6 @@ const Index: NextPage<CollectionPageProps> = () => {
   const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
   const [isValidating, setIsValidating] = useState(false);
   
-  // Use Redux for game enhancement
-  const {
-    enhanceGamesInBackground,
-    enhanceGamesWithDetails,
-    isProcessing: isEnhancing,
-    enhancedGamesCount,
-    queueLength
-  } = useGameEnhancement();
 
   // Initialize with usernames from query params
   useEffect(() => {
@@ -167,25 +158,12 @@ const Index: NextPage<CollectionPageProps> = () => {
   );
 
   const isLoading = useMemo(
-    () => results.reduce((acc, next) => next.isLoading || acc, false) || isEnhancing,
-    [results, isEnhancing]
+    () => results.reduce((acc, next) => next.isLoading || acc, false),
+    [results]
   );
 
-  // Skip enhancement for now - just use raw data
-  // useEffect(() => {
-  //   if (rawData && rawData.boardgames) {
-  //     // Start background enhancement
-  //     enhanceGamesInBackground(rawData.boardgames);
-  //   }
-  // }, [rawData, enhanceGamesInBackground]);
-
-  // Process data without enhancement
-  const data = useMemo(() => {
-    if (!rawData) return undefined;
-    
-    // Return raw data without enhancement
-    return rawData;
-  }, [rawData]);
+  // Use rawData directly as data
+  const data = rawData;
 
   const defaultValues = useMemo(
     () => ({
@@ -277,26 +255,6 @@ const Index: NextPage<CollectionPageProps> = () => {
                   </Box>
 
                   <Box flex="1" minWidth={0}>
-                    {/* Background Enhancement Status - Disabled for now */}
-                    {/* {(isEnhancing || queueLength > 0) && (
-                      <Box
-                        bg="blue.50"
-                        border="1px solid"
-                        borderColor="blue.200"
-                        borderRadius="md"
-                        p={3}
-                        mb={4}
-                        fontSize="sm"
-                        color="blue.700"
-                      >
-                        <Text>
-                          {isEnhancing 
-                            ? `Enhancing game data... (${enhancedGamesCount} enhanced)` 
-                            : `Queued ${queueLength} games for enhancement`}
-                        </Text>
-                      </Box>
-                    )} */}
-                    
                     <Results boardgames={data?.boardgames} />
                   </Box>
                 </>
@@ -309,7 +267,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                   minHeight="400px"
                 >
                   <Text fontSize="lg" color="gray.500">
-                    {isEnhancing ? 'Enhancing game data...' : 'Loading collections...'}
+                    Loading collections...
                   </Text>
                 </Box>
               )}
