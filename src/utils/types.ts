@@ -91,47 +91,10 @@ export type IBgDict = {
   [prop: string]: IGame;
 };
 
-export type IPlaysByDateDict = {
-  [prop: string]: IPlay[];
-};
-
 export type ICollection = {
   totalitems: string;
   pubdate: string;
   termsofuse?: string;
   item?: IItem[];
   username: string;
-};
-
-export type IPlayer = {
-  color: string;
-  name: "Anonymous player" | string;
-  new: ZeroOrOne;
-  rating: number;
-  score: number;
-  startposition: number;
-  userid: string;
-  username: string;
-  win: ZeroOrOne;
-};
-
-export type IPlay = {
-  id: string;
-  date: string;
-  incomplete: ZeroOrOne;
-  item: {
-    name: string;
-    objectid: string;
-    objecttype: ThingType;
-  };
-  length?: string;
-  location: string;
-  nowinstats?: string;
-  players: IPlayer[];
-  quantity: number;
-};
-
-export type IExtendedUser = {
-  bggUsername: string;
-  bggVerified: boolean;
 };

@@ -1,4 +1,4 @@
-import { getBggCollection } from "bgg-xml-api-client";
+import { bggXmlApiClient } from "bgg-xml-api-client";
 import { ICollection, IItem } from "../utils/types";
 
 export const fetchCollections = async (
@@ -11,16 +11,21 @@ export const fetchCollection = async (
   username: string,
   options?: any
 ): Promise<ICollection> => {
-  const collectionResponse = await getBggCollection({
-    own: 1,
-    subtype: "boardgame",
-    stats: 1,
-    username,
-    ...options,
-  });
+  const collectionResponse = await bggXmlApiClient.get(
+    "collection",
+    {
+      username,
+      own: 1,
+      subtype: "boardgame",
+      stats: 1,
+      ...options,
+    },
+    3, // Retries
+    2000 // Retry interval
+  );
 
   const data = collectionResponse.data || {};
-  
+
   return {
     ...data,
     item: (data as any)?.item

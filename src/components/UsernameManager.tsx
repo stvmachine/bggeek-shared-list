@@ -9,10 +9,10 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { getBggUser } from "bgg-xml-api-client";
-import React, { useState, useCallback } from "react";
-import { useForm, FormProvider, Controller } from "react-hook-form";
+import React, { useCallback, useState } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useQuery } from "react-query";
+import { fetchUser } from "../api/fetchUser";
 
 type FormData = {
   username: string;
@@ -56,10 +56,10 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
     async () => {
       if (usernamesToValidate.length === 0) return [];
 
-      // Validate all usernames in parallel
+      // Validate all usernames in parallel using the efficient fetchUser API
       const validationPromises = usernamesToValidate.map(async (username) => {
         try {
-          const userData = await getBggUser({ name: username });
+          const userData = await fetchUser(username);
           return { username, userData, error: null };
         } catch (error) {
           return { username, userData: null, error };
@@ -102,7 +102,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
         const invalidUsernames: string[] = [];
 
         data.forEach((result) => {
-          if (result.userData?.data?.id) {
+          if (result.userData?.id) {
             validUsernames.push(result.username);
           } else {
             invalidUsernames.push(result.username);
@@ -314,8 +314,8 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                   (r) => r.username === username
                 );
                 const isValidating = isValidatingAny;
-                const validationError = result?.error;
-                const isValid = result?.userData?.data?.id;
+                const validationError = result?.error as Error | null;
+                const isValid = result?.userData?.id;
 
                 return (
                   <Badge
