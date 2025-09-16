@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useQueries } from "react-query";
-// import { useInfiniteQueryWithExpiration } from "../hooks/useInfiniteQueryWithExpiration";
 
 import { mergeCollections } from "../api/fetchGroupCollection";
 import Footer from "../components/Layout/Footer";
@@ -49,7 +48,6 @@ const Index: NextPage<CollectionPageProps> = () => {
   const [members, setMembers] = useState<string[]>([]);
   const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
   const [isValidating, setIsValidating] = useState(false);
-  
 
   // Initialize with usernames from query params
   useEffect(() => {
@@ -129,7 +127,9 @@ const Index: NextPage<CollectionPageProps> = () => {
     members.map((member) => ({
       queryKey: ["collection", member],
       queryFn: async () => {
-        const response = await fetch(`/api/collection?username=${encodeURIComponent(member)}`);
+        const response = await fetch(
+          `/api/collection?username=${encodeURIComponent(member)}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -139,20 +139,22 @@ const Index: NextPage<CollectionPageProps> = () => {
     }))
   );
 
-  const rawData = useMemo(
-    () => {
-      const isLoading = results.reduce((acc, next) => next.isLoading || acc, false);
-      if (isLoading) return undefined;
-      
-      const dataArray = results.map((result: any) => result?.data).filter(Boolean);
-      
-      if (dataArray.length === 0) return undefined;
-      
-      const merged = mergeCollections(dataArray, members);
-      return merged;
-    },
-    [results, members]
-  );
+  const rawData = useMemo(() => {
+    const isLoading = results.reduce(
+      (acc, next) => next.isLoading || acc,
+      false
+    );
+    if (isLoading) return undefined;
+
+    const dataArray = results
+      .map((result: any) => result?.data)
+      .filter(Boolean);
+
+    if (dataArray.length === 0) return undefined;
+
+    const merged = mergeCollections(dataArray, members);
+    return merged;
+  }, [results, members]);
 
   const isLoading = useMemo(
     () => results.reduce((acc, next) => next.isLoading || acc, false),
