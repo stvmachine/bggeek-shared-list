@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  Button,
   Flex,
   Heading,
   HStack,
@@ -10,7 +11,7 @@ import {
   VStack,
   Wrap,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import SortBar from "../components/SortBar";
@@ -20,6 +21,7 @@ import { GroupedGames, groupGames } from "../utils/grouping";
 import { sortGames, SortOption } from "../utils/sorting";
 import { BggCollectionItem } from "../utils/types";
 
+import CollapsibleGroup from "./CollapsibleGroup";
 import GameCard from "./GameCard";
 
 type ResultsProps = {
@@ -35,6 +37,37 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
   const watchedMembers = watch("members");
   const groupBy = watch("groupBy") || "none";
   const orderBy = watch("orderBy") || "name_asc";
+
+  // State for collapsed groups
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
+    new Set()
+  );
+
+  // Helper functions for managing collapsed groups
+  const toggleGroup = (groupName: string) => {
+    setCollapsedGroups(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(groupName)) {
+        newSet.delete(groupName);
+      } else {
+        newSet.add(groupName);
+      }
+      return newSet;
+    });
+  };
+
+  const isGroupCollapsed = (groupName: string) =>
+    collapsedGroups.has(groupName);
+
+  // Helper functions for bulk operations
+  const collapseAllGroups = () => {
+    const allGroupNames = Object.keys(groupedResults);
+    setCollapsedGroups(new Set(allGroupNames));
+  };
+
+  const expandAllGroups = () => {
+    setCollapsedGroups(new Set());
+  };
 
   const checkedMembers = Object.keys(watchedMembers).reduce(
     (accum: string[], key: string) => {
@@ -152,6 +185,29 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
 
       <SortBar />
 
+      {groupBy !== "none" && Object.keys(groupedResults).length > 0 && (
+        <Box mb={4}>
+          <Flex gap={2} justify="flex-end">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={expandAllGroups}
+              fontSize="xs"
+            >
+              Expand All
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={collapseAllGroups}
+              fontSize="xs"
+            >
+              Collapse All
+            </Button>
+          </Flex>
+        </Box>
+      )}
+
       {groupBy === "none" ? (
         <Box>
           {sortedResults.length > 0 ? (
@@ -189,58 +245,13 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
       ) : (
         <VStack align="stretch" gap={6}>
           {Object.entries(groupedResults).map(([groupName, games]) => (
-            <Box
+            <CollapsibleGroup
               key={groupName}
-              border="1px solid"
-              borderColor="gray.200"
-              borderRadius="lg"
-              p={4}
-              bg="white"
-            >
-              <VStack align="stretch" gap={4}>
-                <Flex align="center" gap={3}>
-                  <Heading fontSize="lg" color="gray.700">
-                    {groupName}
-                  </Heading>
-                  <Badge colorScheme="blue" variant="subtle" fontSize="sm">
-                    {games.length} {games.length === 1 ? "Game" : "Games"}
-                  </Badge>
-                </Flex>
-
-                {games.length > 0 ? (
-                  <Wrap gap={4} justify="flex-start">
-                    {games.map(
-                      (
-                        {
-                          thumbnail,
-                          name,
-                          owners,
-                          objectid,
-                        }: BggCollectionItem,
-                        index
-                      ) => (
-                        <GameCard
-                          image={thumbnail}
-                          key={`${objectid}_${index}`}
-                          bgName={name.text}
-                          owners={owners}
-                          objectid={objectid}
-                        />
-                      )
-                    )}
-                  </Wrap>
-                ) : (
-                  <Text
-                    color="gray.500"
-                    fontSize="sm"
-                    textAlign="center"
-                    py={4}
-                  >
-                    No games in this group
-                  </Text>
-                )}
-              </VStack>
-            </Box>
+              groupName={groupName}
+              games={games}
+              isCollapsed={isGroupCollapsed(groupName)}
+              onToggle={() => toggleGroup(groupName)}
+            />
           ))}
         </VStack>
       )}
