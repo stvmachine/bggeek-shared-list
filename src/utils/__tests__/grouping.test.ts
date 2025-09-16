@@ -1,11 +1,16 @@
-import { groupGamesByPlayers, groupGamesByYear, groupGamesByRating, groupGamesByBestPlayers, groupGames } from '../grouping';
-import { IItem } from '../types';
+import {
+  groupGames,
+  groupGamesByBestPlayers,
+  groupGamesByPlayers,
+  groupGamesByRating,
+} from "../grouping";
+import { BggCollectionItem } from "../types";
 
 // Mock game data for testing
-const mockGames: IItem[] = [
+const mockGames: BggCollectionItem[] = [
   {
-    objectid: '1',
-    name: { text: 'Game 1', sortIndex: '1' },
+    objectid: "1",
+    name: { text: "Game 1", sortIndex: "1" },
     stats: {
       minplayers: 1,
       maxplayers: 4,
@@ -19,21 +24,22 @@ const mockGames: IItem[] = [
         median: { value: 8.0 },
         ranks: { rank: [] },
         stddev: { value: 1.2 },
-        usersrated: { value: 1000 }
-      }
+        usersrated: { value: 1000 },
+      },
     },
-    yearpublished: '2020',
-    collid: '1',
-    image: '',
-    numplays: '0',
-    objectype: 'boardgame' as any,
+    yearpublished: "2020",
+    collid: "1",
+    image: "",
+    numplays: "0",
+    objectype: "boardgame" as any,
     status: {} as any,
-    subtype: 'boardgame' as any,
-    thumbnail: '',
+    subtype: "boardgame" as any,
+    thumbnail: "",
+    owners: [{ username: "testuser", status: {}, collid: "1" }],
   },
   {
-    objectid: '2',
-    name: { text: 'Game 2', sortIndex: '2' },
+    objectid: "2",
+    name: { text: "Game 2", sortIndex: "2" },
     stats: {
       minplayers: 2,
       maxplayers: 2,
@@ -47,21 +53,22 @@ const mockGames: IItem[] = [
         median: { value: 7.0 },
         ranks: { rank: [] },
         stddev: { value: 1.0 },
-        usersrated: { value: 500 }
-      }
+        usersrated: { value: 500 },
+      },
     },
-    yearpublished: '2019',
-    collid: '2',
-    image: '',
-    numplays: '0',
-    objectype: 'boardgame' as any,
+    yearpublished: "2019",
+    collid: "2",
+    image: "",
+    numplays: "0",
+    objectype: "boardgame" as any,
     status: {} as any,
-    subtype: 'boardgame' as any,
-    thumbnail: '',
+    subtype: "boardgame" as any,
+    thumbnail: "",
+    owners: [{ username: "testuser", status: {}, collid: "2" }],
   },
   {
-    objectid: '3',
-    name: { text: 'Game 3', sortIndex: '3' },
+    objectid: "3",
+    name: { text: "Game 3", sortIndex: "3" },
     stats: {
       minplayers: 3,
       maxplayers: 6,
@@ -75,127 +82,124 @@ const mockGames: IItem[] = [
         median: { value: 9.0 },
         ranks: { rank: [] },
         stddev: { value: 0.8 },
-        usersrated: { value: 2000 }
-      }
+        usersrated: { value: 2000 },
+      },
     },
-    yearpublished: '2021',
-    collid: '3',
-    image: '',
-    numplays: '0',
-    objectype: 'boardgame' as any,
+    yearpublished: "2021",
+    collid: "3",
+    image: "",
+    numplays: "0",
+    objectype: "boardgame" as any,
     status: {} as any,
-    subtype: 'boardgame' as any,
-    thumbnail: '',
-  }
-];
+    subtype: "boardgame" as any,
+    thumbnail: "",
+    owners: [{ username: "testuser", status: {}, collid: "3" }],
+  },
+] as BggCollectionItem[];
 
-describe('Grouping Utilities', () => {
-  describe('groupGamesByPlayers', () => {
-    it('should group games by player count correctly', () => {
+describe("Grouping Utilities", () => {
+  describe("groupGamesByPlayers", () => {
+    it("should group games by player count correctly", () => {
       const result = groupGamesByPlayers(mockGames);
-      
+
       expect(Object.keys(result)).toHaveLength(3);
-      expect(result['1-4 Players']).toHaveLength(1);
-      expect(result['2 Players']).toHaveLength(1);
-      expect(result['3-6 Players']).toHaveLength(1);
+      expect(result["1-4 Players"]).toHaveLength(1);
+      expect(result["2 Players"]).toHaveLength(1);
+      expect(result["3-6 Players"]).toHaveLength(1);
     });
 
-    it('should sort groups by minimum player count', () => {
+    it("should sort groups by minimum player count", () => {
       const result = groupGamesByPlayers(mockGames);
       const groupNames = Object.keys(result);
-      
-      expect(groupNames[0]).toBe('1-4 Players');
-      expect(groupNames[1]).toBe('2 Players');
-      expect(groupNames[2]).toBe('3-6 Players');
+
+      expect(groupNames[0]).toBe("1-4 Players");
+      expect(groupNames[1]).toBe("2 Players");
+      expect(groupNames[2]).toBe("3-6 Players");
     });
   });
 
-
-  describe('groupGamesByRating', () => {
-    it('should group games by rating ranges correctly', () => {
+  describe("groupGamesByRating", () => {
+    it("should group games by rating ranges correctly", () => {
       const result = groupGamesByRating(mockGames);
-      
-      expect(result['9.0+ (Excellent)']).toHaveLength(1);
-      expect(result['8.0-8.9 (Very Good)']).toHaveLength(1);
-      expect(result['7.0-7.9 (Good)']).toHaveLength(1);
+
+      expect(result["9.0+ (Excellent)"]).toHaveLength(1);
+      expect(result["8.0-8.9 (Very Good)"]).toHaveLength(1);
+      expect(result["7.0-7.9 (Good)"]).toHaveLength(1);
     });
 
-    it('should not include empty groups', () => {
+    it("should not include empty groups", () => {
       const result = groupGamesByRating(mockGames);
-      
-      expect(result['Below 6.0 (Poor)']).toBeUndefined();
-      expect(result['Unrated']).toBeUndefined();
+
+      expect(result["Below 6.0 (Poor)"]).toBeUndefined();
+      expect(result["Unrated"]).toBeUndefined();
     });
   });
 
-  describe('groupGamesByBestPlayers', () => {
-    it('should group games by best player count correctly', () => {
+  describe("groupGamesByBestPlayers", () => {
+    it("should group games by best player count correctly", () => {
       const result = groupGamesByBestPlayers(mockGames);
-      
+
       expect(Object.keys(result)).toHaveLength(3);
-      expect(result['Best with 4 players']).toHaveLength(1); // 1-4 range -> 4 players (upper 2/3)
-      expect(result['Best with 2 players']).toHaveLength(1); // 2-2 range -> 2 players
-      expect(result['Best with 6 players']).toHaveLength(1); // 3-6 range -> 6 players (upper 2/3)
+      expect(result["Best with 4 players"]).toHaveLength(1); // 1-4 range -> 4 players (upper 2/3)
+      expect(result["Best with 2 players"]).toHaveLength(1); // 2-2 range -> 2 players
+      expect(result["Best with 6 players"]).toHaveLength(1); // 3-6 range -> 6 players (upper 2/3)
     });
 
-    it('should sort groups by player count', () => {
+    it("should sort groups by player count", () => {
       const result = groupGamesByBestPlayers(mockGames);
       const groupNames = Object.keys(result);
-      
-      expect(groupNames[0]).toBe('Best with 2 players');
-      expect(groupNames[1]).toBe('Best with 4 players');
-      expect(groupNames[2]).toBe('Best with 6 players');
+
+      expect(groupNames[0]).toBe("Best with 2 players");
+      expect(groupNames[1]).toBe("Best with 4 players");
+      expect(groupNames[2]).toBe("Best with 6 players");
     });
 
-    it('should handle single player games correctly', () => {
-      const singlePlayerGame: IItem = {
+    it("should handle single player games correctly", () => {
+      const singlePlayerGame: BggCollectionItem = {
         ...mockGames[0],
         stats: {
           ...mockGames[0].stats,
           minplayers: 1,
-          maxplayers: 1
-        }
+          maxplayers: 1,
+        },
       };
-      
+
       const result = groupGamesByBestPlayers([singlePlayerGame]);
-      
+
       expect(Object.keys(result)).toHaveLength(1);
-      expect(result['Best with 1 player']).toHaveLength(1);
+      expect(result["Best with 1 player"]).toHaveLength(1);
     });
   });
 
-
-  describe('groupGames', () => {
+  describe("groupGames", () => {
     it('should return ungrouped games when groupBy is "none"', () => {
-      const result = groupGames(mockGames, 'none');
-      
+      const result = groupGames(mockGames, "none");
+
       expect(Object.keys(result)).toHaveLength(1);
-      expect(result['All Games']).toHaveLength(3);
+      expect(result["All Games"]).toHaveLength(3);
     });
 
     it('should group by players when groupBy is "players"', () => {
-      const result = groupGames(mockGames, 'players');
-      
+      const result = groupGames(mockGames, "players");
+
       expect(Object.keys(result)).toHaveLength(3);
-      expect(result['1-4 Players']).toHaveLength(1);
+      expect(result["1-4 Players"]).toHaveLength(1);
     });
 
-
     it('should group by rating when groupBy is "rating"', () => {
-      const result = groupGames(mockGames, 'rating');
-      
+      const result = groupGames(mockGames, "rating");
+
       expect(Object.keys(result)).toHaveLength(3);
-      expect(result['9.0+ (Excellent)']).toHaveLength(1);
+      expect(result["9.0+ (Excellent)"]).toHaveLength(1);
     });
 
     it('should group by best players when groupBy is "bestPlayers"', () => {
-      const result = groupGames(mockGames, 'bestPlayers');
-      
-      expect(Object.keys(result)).toHaveLength(3);
-      expect(result['Best with 2 players']).toHaveLength(1);
-      expect(result['Best with 4 players']).toHaveLength(1);
-      expect(result['Best with 6 players']).toHaveLength(1);
-    });
+      const result = groupGames(mockGames, "bestPlayers");
 
+      expect(Object.keys(result)).toHaveLength(3);
+      expect(result["Best with 2 players"]).toHaveLength(1);
+      expect(result["Best with 4 players"]).toHaveLength(1);
+      expect(result["Best with 6 players"]).toHaveLength(1);
+    });
   });
 });

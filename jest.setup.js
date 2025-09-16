@@ -2,7 +2,18 @@ import '@testing-library/jest-dom'
 
 // Polyfill for structuredClone (not available in Jest environment)
 if (!global.structuredClone) {
-  global.structuredClone = (obj) => JSON.parse(JSON.stringify(obj))
+  global.structuredClone = (obj) => {
+    try {
+      const stringified = JSON.stringify(obj);
+      if (stringified === undefined) {
+        return obj; // Return original if JSON.stringify returns undefined
+      }
+      return JSON.parse(stringified);
+    } catch (error) {
+      // If JSON operations fail, return the original object
+      return obj;
+    }
+  }
 }
 
 // Mock Next.js router
