@@ -5,11 +5,11 @@ const SortBar = () => {
   const { register } = useFormContext();
 
   return (
-    <Box 
-      border="1px solid" 
-      borderColor="gray.200" 
-      borderRadius="lg" 
-      p={4} 
+    <Box
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="lg"
+      p={4}
       mb={6}
       bg="white"
     >
@@ -17,7 +17,7 @@ const SortBar = () => {
         <Text fontSize="lg" fontWeight="bold" color="gray.700">
           🔧 Sort & Group
         </Text>
-        
+
         <HStack gap={6} flexWrap="wrap" align="flex-start">
           <VStack align="stretch" gap={2} minWidth="200px">
             <Text fontSize="sm" fontWeight="medium" color="gray.600">
@@ -35,7 +35,7 @@ const SortBar = () => {
               fontSize="sm"
               _focus={{
                 borderColor: "blue.400",
-                boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)"
+                boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)",
               }}
             >
               <option value="name_asc" key="order_by_name_asc">
@@ -75,7 +75,7 @@ const SortBar = () => {
               fontSize="sm"
               _focus={{
                 borderColor: "blue.400",
-                boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)"
+                boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)",
               }}
             >
               <option value="none" key="group_by_none">

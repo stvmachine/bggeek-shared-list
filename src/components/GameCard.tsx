@@ -95,7 +95,7 @@ const GameCard: React.FC<GameCardProps> = ({
                 {owners.slice(0, 6).map(({ username }, index) => {
                   const memberData = getMemberData(username);
                   if (!memberData) return null;
-                  
+
                   return (
                     <WrapItem key={index}>
                       <Box
