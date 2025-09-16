@@ -125,11 +125,8 @@ export function useSearch<T>(
 
   const results = useMemo(() => {
     let results: any = data;
-    console.log('useSearch - initial data length:', data?.length);
-    
     const { playingTime, numberOfPlayers } = otherFields;
     results = keyword ? (searcher.search(keyword) as T[]) : results;
-    console.log('useSearch - after keyword search:', results?.length);
     
     const filteredMembers = Object.keys(members).reduce(
       (accum: string[], key: string) => {
@@ -140,19 +137,11 @@ export function useSearch<T>(
       },
       []
     );
-    console.log('useSearch - filteredMembers:', filteredMembers);
     
     results = filterByUsers(results, filteredMembers);
-    console.log('useSearch - after filterByUsers:', results?.length);
-    
     results = filterByPlayingTime(results, Number(playingTime));
-    console.log('useSearch - after filterByPlayingTime:', results?.length);
-    
     results = filterByNumPlayers(results, Number(numberOfPlayers));
-    console.log('useSearch - after filterByNumPlayers:', results?.length);
-    
     results = orderByFn(results, orderBy);
-    console.log('useSearch - after orderByFn:', results?.length);
 
     return results;
   }, [...debouncedValue]);
