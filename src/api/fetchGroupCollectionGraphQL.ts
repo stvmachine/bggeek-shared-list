@@ -1,28 +1,36 @@
 import { apolloClient } from "../lib/graphql/client";
-import { GET_MULTIPLE_COLLECTIONS } from "../lib/graphql/queries";
+import { GET_USER_COLLECTION } from "../lib/graphql/queries";
+import { GetUserCollectionQuery } from "../lib/graphql/generated/types";
 
 export const fetchCollectionsGraphQL = async (
   usernames: string[]
 ): Promise<any[]> => {
   try {
-    const { data, error } = await apolloClient.query({
-      query: GET_MULTIPLE_COLLECTIONS,
-      variables: { usernames },
-      errorPolicy: "all",
-    });
+    // Fetch collections individually since the schema doesn't support multiple collections in one query
+    const collections = await Promise.all(
+      usernames.map(async username => {
+        const { data, error } =
+          await apolloClient.query<GetUserCollectionQuery>({
+            query: GET_USER_COLLECTION,
+            variables: { username },
+            errorPolicy: "all",
+          });
 
-    if (error) {
-      console.error("GraphQL errors:", error);
-      throw new Error(
-        `GraphQL errors: ${error.map((e: any) => e.message).join(", ")}`
-      );
-    }
+        if (error) {
+          console.error(`GraphQL errors for ${username}:`, error);
+        }
 
-    if (!data?.collections) {
+        return data?.userCollection;
+      })
+    );
+
+    const validCollections = collections.filter(Boolean);
+
+    if (validCollections.length === 0) {
       throw new Error("No collections data received");
     }
 
-    return data.collections;
+    return validCollections;
   } catch (error) {
     console.error("Error fetching collections via GraphQL:", error);
     throw error;
@@ -89,14 +97,8 @@ export const mergeCollectionsGraphQL = (
           thumbnail: bgg.thumbnail,
           image: bgg.image,
           yearpublished: bgg.yearPublished,
-          minplayers: bgg.minPlayers,
-          maxplayers: bgg.maxPlayers,
-          playingtime: bgg.playingTime,
-          minplaytime: bgg.minPlayTime,
-          maxplaytime: bgg.maxPlayTime,
-          minage: bgg.minAge,
+          numplays: bgg.numPlays,
           status: bgg.status,
-          stats: bgg.stats,
           owners: owners.map(username => ({
             username,
             status: { own: 1 }, // Default status

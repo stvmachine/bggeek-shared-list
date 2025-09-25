@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { apolloClient } from "../../lib/graphql/client";
 import { GET_USER } from "../../lib/graphql/queries";
+import { GetUserQuery } from "../../lib/graphql/generated/types";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,7 +20,7 @@ export default async function handler(
   try {
     console.log(`Fetching user via GraphQL for username: ${username}`);
 
-    const { data, error } = await apolloClient.query({
+    const { data, error } = await apolloClient.query<GetUserQuery>({
       query: GET_USER,
       variables: { username },
       errorPolicy: "all",
@@ -34,33 +35,40 @@ export default async function handler(
     }
 
     console.log(`GraphQL user data received:`, {
-      name: data.user.name,
-      yearRegistered: data.user.yearRegistered,
+      username: data.user.username,
+      dateRegistered: data.user.dateRegistered,
     });
 
     // Transform GraphQL response to match the expected format
     const transformedData = {
       id: data.user.id,
-      name: data.user.name,
+      name: data.user.username,
       firstname: data.user.firstName,
       lastname: data.user.lastName,
-      avatar: data.user.avatar,
-      yearregistered: data.user.yearRegistered,
-      lastlogin: data.user.lastLogin,
-      country: data.user.country,
-      stateorprovince: data.user.stateOrProvince,
-      traderating: data.user.tradeRating,
-      traderatingtext: data.user.tradeRatingText,
-      traderatingtextlong: data.user.tradeRatingTextLong,
-      buddycount: data.user.buddyCount,
-      guildcount: data.user.guildCount,
-      microbadgecount: data.user.microbadgeCount,
-      topitems:
-        data.user.topItems?.map((item: any) => ({
-          objectid: item.objectId,
-          name: item.name,
-          rank: item.rank,
-          rating: item.rating,
+      yearregistered: data.user.dateRegistered,
+      supportyears: data.user.supportYears,
+      designerid: data.user.designerId,
+      publisherid: data.user.publisherId,
+      address: data.user.address
+        ? {
+            country: data.user.address.isoCountry,
+            stateorprovince: data.user.address.city,
+          }
+        : null,
+      guilds:
+        data.user.guilds?.map((guild: any) => ({
+          id: guild.id,
+          name: guild.name,
+        })) || [],
+      microbadges:
+        data.user.microbadges?.map((badge: any) => ({
+          id: badge.id,
+          name: badge.name,
+          image: badge.imageSrc,
+        })) || [],
+      top:
+        data.user.top?.map((item: any) => ({
+          boardgame: item.boardgame,
         })) || [],
     };
 
