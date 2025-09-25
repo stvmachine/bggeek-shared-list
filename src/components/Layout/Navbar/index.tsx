@@ -1,4 +1,6 @@
-import { Box, Flex, HStack, IconButton, Link } from "@chakra-ui/react";
+import { Box, Flex, HStack, IconButton, Link as ChakraLink } from "@chakra-ui/react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 import Logo from "./Logo";
 
@@ -11,6 +13,9 @@ type NavbarProps = {
 };
 
 const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
+  const router = useRouter();
+  const isActive = (path: string) => router.pathname === path;
+  const isHomepage = router.pathname === '/';
   return (
     <Box
       position="sticky"
@@ -19,19 +24,22 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
       width="100%"
       left={0}
       right={0}
+      bg="transparent"
+      backdropFilter="blur(10px)"
     >
       <Flex
-        bg="white"
         color="gray.600"
-        minH={"70px"}
-        py={{ base: 3 }}
+        bg="rgba(255, 255, 255, 0.8)"
+        minH={"65px"}
+        py={3}
         px={{ base: 4, md: 6 }}
         borderBottom={1}
         borderStyle={"solid"}
         borderColor="gray.200"
         align={"center"}
-        boxShadow="sm"
         width="100%"
+        maxW="container.lg"
+        mx="auto"
       >
         <Logo />
 
@@ -47,27 +55,49 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
           ☰
         </IconButton>
 
-        {/* Desktop Navigation */}
-        <HStack gap={8} ml="auto" display={{ base: "none", md: "flex" }}>
-          <Link
-            href="/"
-            fontSize="md"
-            fontWeight="medium"
-            color="gray.600"
-            _hover={{ color: "blue.500" }}
-          >
-            Home
-          </Link>
-          <Link
-            href="/collection"
-            fontSize="md"
-            fontWeight="medium"
-            color="gray.600"
-            _hover={{ color: "blue.500" }}
-          >
-            Collection
-          </Link>
-        </HStack>
+        {/* Desktop Navigation - Only show on non-home pages */}
+        {!isHomepage && (
+          <HStack gap={6} ml={6} display={{ base: "none", md: "flex" }}>
+            <Link href="/" passHref legacyBehavior>
+              <ChakraLink
+                px={3}
+                py={2}
+                rounded="md"
+                fontSize="md"
+                fontWeight="semibold"
+                color={isActive("/") ? "blue.600" : "gray.700"}
+                borderBottom={isActive("/") ? "2px solid" : "none"}
+                borderColor="blue.500"
+                _hover={{ 
+                  color: "blue.500",
+                  bg: "rgba(0, 0, 0, 0.05)",
+                  textDecoration: "none"
+                }}
+              >
+                Home
+              </ChakraLink>
+            </Link>
+            <Link href="/collection" passHref legacyBehavior>
+              <ChakraLink
+                px={3}
+                py={2}
+                rounded="md"
+                fontSize="md"
+                fontWeight="semibold"
+                color={isActive("/collection") ? "blue.600" : "gray.700"}
+                borderBottom={isActive("/collection") ? "2px solid" : "none"}
+                borderColor="blue.500"
+                _hover={{ 
+                  color: "blue.500",
+                  bg: "rgba(0, 0, 0, 0.05)",
+                  textDecoration: "none"
+                }}
+              >
+                Collection
+              </ChakraLink>
+            </Link>
+          </HStack>
+        )}
       </Flex>
     </Box>
   );
