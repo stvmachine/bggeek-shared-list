@@ -1,9 +1,9 @@
-import { useQuery, useLazyQuery } from "@apollo/client/react/hooks";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
 import {
-  GET_USER_COLLECTION,
-  GET_USER,
-  SEARCH_GAMES,
   GET_GAME_DETAILS,
+  GET_USER,
+  GET_USER_COLLECTION,
+  SEARCH_GAMES,
 } from "../lib/graphql/queries";
 
 // Hook to get a single user's collection
