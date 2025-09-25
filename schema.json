@@ -1,1 +1,2201 @@
-{"data":{"__schema":{"types":[{"name":"Query","kind":"OBJECT","fields":[{"name":"thing","type":{"name":"Thing","kind":"OBJECT","ofType":null}},{"name":"things","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"search","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"user","type":{"name":"User","kind":"OBJECT","ofType":null}},{"name":"userCollection","type":{"name":"Collection","kind":"OBJECT","ofType":null}},{"name":"userPlays","type":{"name":"PlayResult","kind":"OBJECT","ofType":null}},{"name":"geeklist","type":{"name":"Geeklist","kind":"OBJECT","ofType":null}},{"name":"geeklists","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"hotItems","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"ID","kind":"SCALAR","fields":null},{"name":"String","kind":"SCALAR","fields":null},{"name":"Boolean","kind":"SCALAR","fields":null},{"name":"Int","kind":"SCALAR","fields":null},{"name":"Thing","kind":"OBJECT","fields":[{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ThingType","kind":"ENUM"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"alternateNames","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"yearPublished","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"minPlayers","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"maxPlayers","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"playingTime","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"minPlayTime","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"maxPlayTime","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"minAge","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"description","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"image","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"thumbnail","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"statistics","type":{"name":"Statistics","kind":"OBJECT","ofType":null}},{"name":"polls","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"comments","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"versions","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"expansions","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"categories","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"mechanics","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"families","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"designers","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"artists","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"publishers","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"ranks","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"average","type":{"name":"Float","kind":"SCALAR","ofType":null}},{"name":"bayesAverage","type":{"name":"Float","kind":"SCALAR","ofType":null}},{"name":"usersRated","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"usersOwned","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"usersWanting","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"usersWishing","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"numComments","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"numWeights","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"averageWeight","type":{"name":"Float","kind":"SCALAR","ofType":null}}]},{"name":"Float","kind":"SCALAR","fields":null},{"name":"Statistics","kind":"OBJECT","fields":[{"name":"page","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"ratings","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"RatingStats","kind":"OBJECT"}}}]},{"name":"RatingStats","kind":"OBJECT","fields":[{"name":"usersRated","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"average","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Float","kind":"SCALAR"}}},{"name":"bayesAverage","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Float","kind":"SCALAR"}}},{"name":"ranks","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"stdDev","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Float","kind":"SCALAR"}}},{"name":"median","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Float","kind":"SCALAR"}}},{"name":"owned","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"trading","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"wanting","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"wishing","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"numComments","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"numWeights","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"averageWeight","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Float","kind":"SCALAR"}}}]},{"name":"Rank","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"friendlyName","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"bayesAverage","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Poll","kind":"OBJECT","fields":[{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"title","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"totalVotes","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"results","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"PollResult","kind":"OBJECT","fields":[{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"numVotes","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"level","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"players","type":{"name":"String","kind":"SCALAR","ofType":null}}]},{"name":"Comment","kind":"OBJECT","fields":[{"name":"username","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"rating","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Version","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"yearPublished","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"productCode","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"width","type":{"name":"Float","kind":"SCALAR","ofType":null}},{"name":"length","type":{"name":"Float","kind":"SCALAR","ofType":null}},{"name":"depth","type":{"name":"Float","kind":"SCALAR","ofType":null}},{"name":"weight","type":{"name":"Float","kind":"SCALAR","ofType":null}},{"name":"size","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"color","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"price","type":{"name":"Float","kind":"SCALAR","ofType":null}},{"name":"currency","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"image","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"thumbnail","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"links","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"Expansion","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"yearPublished","type":{"name":"Int","kind":"SCALAR","ofType":null}},{"name":"image","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"thumbnail","type":{"name":"String","kind":"SCALAR","ofType":null}}]},{"name":"Category","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Mechanic","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Family","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Designer","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Artist","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Publisher","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Link","kind":"OBJECT","fields":[{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"User","kind":"OBJECT","fields":[{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"firstName","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"lastName","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"username","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"dateRegistered","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"supportYears","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"designerId","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"publisherId","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"address","type":{"name":"Address","kind":"OBJECT","ofType":null}},{"name":"guilds","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"microbadges","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"top","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"Address","kind":"OBJECT","fields":[{"name":"city","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"isoCountry","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Guild","kind":"OBJECT","fields":[{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"manager","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"User","kind":"OBJECT"}}},{"name":"members","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"GuildMember","kind":"OBJECT","fields":[{"name":"user","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"User","kind":"OBJECT"}}},{"name":"joined","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Microbadge","kind":"OBJECT","fields":[{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"imageSrc","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"TopItem","kind":"OBJECT","fields":[{"name":"boardgame","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"BoardgameRank","kind":"OBJECT"}}}]},{"name":"BoardgameRank","kind":"OBJECT","fields":[{"name":"rank","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Collection","kind":"OBJECT","fields":[{"name":"totalItems","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"pubDate","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"items","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"CollectionItem","kind":"OBJECT","fields":[{"name":"objectType","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"objectId","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"subtype","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"collId","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"yearPublished","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"image","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"thumbnail","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"status","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Status","kind":"OBJECT"}}},{"name":"numPlays","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"comment","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"conditionText","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"condition","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"wantPartsList","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"hasPartsList","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"preordered","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"lastModified","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Status","kind":"OBJECT","fields":[{"name":"own","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"prevOwned","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"forTrade","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"want","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"wantToPlay","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"wantToBuy","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"wishlist","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"preordered","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"lastModified","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"PlayResult","kind":"OBJECT","fields":[{"name":"total","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"page","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"plays","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"Play","kind":"OBJECT","fields":[{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"date","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"quantity","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"length","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"incomplete","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Boolean","kind":"SCALAR"}}},{"name":"nowInStats","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Boolean","kind":"SCALAR"}}},{"name":"location","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"item","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"PlayItem","kind":"OBJECT"}}},{"name":"players","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"comments","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"PlayItem","kind":"OBJECT","fields":[{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"objectType","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"objectId","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"subtypes","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"Subtype","kind":"OBJECT","fields":[{"name":"value","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"PlayPlayer","kind":"OBJECT","fields":[{"name":"username","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"name","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"userId","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"position","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"color","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"score","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"rating","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"new","type":{"name":"Boolean","kind":"SCALAR","ofType":null}},{"name":"win","type":{"name":"Boolean","kind":"SCALAR","ofType":null}}]},{"name":"Geeklist","kind":"OBJECT","fields":[{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"title","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"postDate","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"postDateTimestamp","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"lastReplyDate","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"lastReplyDateTimestamp","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"thumbs","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"numItems","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"username","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"items","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"GeeklistItem","kind":"OBJECT","fields":[{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"objectType","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"objectId","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"objectName","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"username","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"postDate","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"postDateTimestamp","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"editDate","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"editDateTimestamp","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"thumbs","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"imageId","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"body","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"comments","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"GeeklistComment","kind":"OBJECT","fields":[{"name":"username","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"postDate","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"postDateTimestamp","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"editDate","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"editDateTimestamp","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"thumbs","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Int","kind":"SCALAR"}}},{"name":"body","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"ThingType","kind":"ENUM","fields":null},{"name":"CollectionSubtype","kind":"ENUM","fields":null},{"name":"SearchInput","kind":"INPUT_OBJECT","fields":null},{"name":"PlayFiltersInput","kind":"INPUT_OBJECT","fields":null},{"name":"CollectionFiltersInput","kind":"INPUT_OBJECT","fields":null},{"name":"SearchResult","kind":"UNION","fields":null},{"name":"BGGEntity","kind":"INTERFACE","fields":[{"name":"id","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"ID","kind":"SCALAR"}}},{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}}]},{"name":"Date","kind":"SCALAR","fields":null},{"name":"URL","kind":"SCALAR","fields":null},{"name":"Email","kind":"SCALAR","fields":null},{"name":"JSON","kind":"SCALAR","fields":null},{"name":"__Schema","kind":"OBJECT","fields":[{"name":"description","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"types","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"queryType","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"__Type","kind":"OBJECT"}}},{"name":"mutationType","type":{"name":"__Type","kind":"OBJECT","ofType":null}},{"name":"subscriptionType","type":{"name":"__Type","kind":"OBJECT","ofType":null}},{"name":"directives","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"__Type","kind":"OBJECT","fields":[{"name":"kind","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"__TypeKind","kind":"ENUM"}}},{"name":"name","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"description","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"specifiedByURL","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"fields","type":{"name":null,"kind":"LIST","ofType":{"name":null,"kind":"NON_NULL"}}},{"name":"interfaces","type":{"name":null,"kind":"LIST","ofType":{"name":null,"kind":"NON_NULL"}}},{"name":"possibleTypes","type":{"name":null,"kind":"LIST","ofType":{"name":null,"kind":"NON_NULL"}}},{"name":"enumValues","type":{"name":null,"kind":"LIST","ofType":{"name":null,"kind":"NON_NULL"}}},{"name":"inputFields","type":{"name":null,"kind":"LIST","ofType":{"name":null,"kind":"NON_NULL"}}},{"name":"ofType","type":{"name":"__Type","kind":"OBJECT","ofType":null}},{"name":"isOneOf","type":{"name":"Boolean","kind":"SCALAR","ofType":null}}]},{"name":"__TypeKind","kind":"ENUM","fields":null},{"name":"__Field","kind":"OBJECT","fields":[{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"description","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"args","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"__Type","kind":"OBJECT"}}},{"name":"isDeprecated","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Boolean","kind":"SCALAR"}}},{"name":"deprecationReason","type":{"name":"String","kind":"SCALAR","ofType":null}}]},{"name":"__InputValue","kind":"OBJECT","fields":[{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"description","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"type","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"__Type","kind":"OBJECT"}}},{"name":"defaultValue","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"isDeprecated","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Boolean","kind":"SCALAR"}}},{"name":"deprecationReason","type":{"name":"String","kind":"SCALAR","ofType":null}}]},{"name":"__EnumValue","kind":"OBJECT","fields":[{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"description","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"isDeprecated","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Boolean","kind":"SCALAR"}}},{"name":"deprecationReason","type":{"name":"String","kind":"SCALAR","ofType":null}}]},{"name":"__Directive","kind":"OBJECT","fields":[{"name":"name","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"String","kind":"SCALAR"}}},{"name":"description","type":{"name":"String","kind":"SCALAR","ofType":null}},{"name":"isRepeatable","type":{"name":null,"kind":"NON_NULL","ofType":{"name":"Boolean","kind":"SCALAR"}}},{"name":"locations","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}},{"name":"args","type":{"name":null,"kind":"NON_NULL","ofType":{"name":null,"kind":"LIST"}}}]},{"name":"__DirectiveLocation","kind":"ENUM","fields":null}]}}}
+{
+  "data": {
+    "__schema": {
+      "types": [
+        {
+          "name": "Query",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "thing",
+              "type": { "name": "Thing", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "things",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "search",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "user",
+              "type": { "name": "User", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "userCollection",
+              "type": { "name": "Collection", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "userPlays",
+              "type": { "name": "PlayResult", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "geeklist",
+              "type": { "name": "Geeklist", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "geeklists",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "hotItems",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        { "name": "ID", "kind": "SCALAR", "fields": null },
+        { "name": "String", "kind": "SCALAR", "fields": null },
+        { "name": "Boolean", "kind": "SCALAR", "fields": null },
+        { "name": "Int", "kind": "SCALAR", "fields": null },
+        {
+          "name": "Thing",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ThingType", "kind": "ENUM" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "alternateNames",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "yearPublished",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "minPlayers",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "maxPlayers",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "playingTime",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "minPlayTime",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "maxPlayTime",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "minAge",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "description",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "image",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "thumbnail",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "statistics",
+              "type": { "name": "Statistics", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "polls",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "comments",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "versions",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "expansions",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "categories",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "mechanics",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "families",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "designers",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "artists",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "publishers",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "ranks",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "average",
+              "type": { "name": "Float", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "bayesAverage",
+              "type": { "name": "Float", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "usersRated",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "usersOwned",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "usersWanting",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "usersWishing",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "numComments",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "numWeights",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "averageWeight",
+              "type": { "name": "Float", "kind": "SCALAR", "ofType": null }
+            }
+          ]
+        },
+        { "name": "Float", "kind": "SCALAR", "fields": null },
+        {
+          "name": "Statistics",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "page",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "ratings",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "RatingStats", "kind": "OBJECT" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "RatingStats",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "usersRated",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "average",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Float", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "bayesAverage",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Float", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "ranks",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "stdDev",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Float", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "median",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Float", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "owned",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "trading",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "wanting",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "wishing",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "numComments",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "numWeights",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "averageWeight",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Float", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rank",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "friendlyName",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "bayesAverage",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "title",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "totalVotes",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "results",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "PollResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "numVotes",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "level",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "players",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            }
+          ]
+        },
+        {
+          "name": "Comment",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "username",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "rating",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Version",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "yearPublished",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "productCode",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "width",
+              "type": { "name": "Float", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "length",
+              "type": { "name": "Float", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "depth",
+              "type": { "name": "Float", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "weight",
+              "type": { "name": "Float", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "size",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "color",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "price",
+              "type": { "name": "Float", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "currency",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "image",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "thumbnail",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "links",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Expansion",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "yearPublished",
+              "type": { "name": "Int", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "image",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "thumbnail",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            }
+          ]
+        },
+        {
+          "name": "Category",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mechanic",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Family",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Designer",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Artist",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Publisher",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Link",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "User",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "firstName",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "lastName",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "username",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "dateRegistered",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "supportYears",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "designerId",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "publisherId",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "address",
+              "type": { "name": "Address", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "guilds",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "microbadges",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "top",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Address",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "city",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "isoCountry",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Guild",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "manager",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "User", "kind": "OBJECT" }
+              }
+            },
+            {
+              "name": "members",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "GuildMember",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "user",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "User", "kind": "OBJECT" }
+              }
+            },
+            {
+              "name": "joined",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Microbadge",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "imageSrc",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "TopItem",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "boardgame",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "BoardgameRank", "kind": "OBJECT" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "BoardgameRank",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "rank",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Collection",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "totalItems",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "pubDate",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "items",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "CollectionItem",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "objectType",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "objectId",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "subtype",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "collId",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "yearPublished",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "image",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "thumbnail",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "status",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Status", "kind": "OBJECT" }
+              }
+            },
+            {
+              "name": "numPlays",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "comment",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "conditionText",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "condition",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "wantPartsList",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "hasPartsList",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "preordered",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "lastModified",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Status",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "own",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "prevOwned",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "forTrade",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "want",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "wantToPlay",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "wantToBuy",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "wishlist",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "preordered",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "lastModified",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "PlayResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "total",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "page",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "plays",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Play",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "date",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "quantity",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "length",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "incomplete",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Boolean", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "nowInStats",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Boolean", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "location",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "item",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "PlayItem", "kind": "OBJECT" }
+              }
+            },
+            {
+              "name": "players",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "comments",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "PlayItem",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "objectType",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "objectId",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "subtypes",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Subtype",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "value",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "PlayPlayer",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "username",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "name",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "userId",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "position",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "color",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "score",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "rating",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "new",
+              "type": { "name": "Boolean", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "win",
+              "type": { "name": "Boolean", "kind": "SCALAR", "ofType": null }
+            }
+          ]
+        },
+        {
+          "name": "Geeklist",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "title",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "postDate",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "postDateTimestamp",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "lastReplyDate",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "lastReplyDateTimestamp",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "thumbs",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "numItems",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "username",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "items",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "GeeklistItem",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "objectType",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "objectId",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "objectName",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "username",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "postDate",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "postDateTimestamp",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "editDate",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "editDateTimestamp",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "thumbs",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "imageId",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "body",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "comments",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "GeeklistComment",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "username",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "postDate",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "postDateTimestamp",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "editDate",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "editDateTimestamp",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "thumbs",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Int", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "body",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        { "name": "ThingType", "kind": "ENUM", "fields": null },
+        { "name": "CollectionSubtype", "kind": "ENUM", "fields": null },
+        { "name": "SearchInput", "kind": "INPUT_OBJECT", "fields": null },
+        { "name": "PlayFiltersInput", "kind": "INPUT_OBJECT", "fields": null },
+        {
+          "name": "CollectionFiltersInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null
+        },
+        { "name": "SearchResult", "kind": "UNION", "fields": null },
+        {
+          "name": "BGGEntity",
+          "kind": "INTERFACE",
+          "fields": [
+            {
+              "name": "id",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "ID", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            }
+          ]
+        },
+        { "name": "Date", "kind": "SCALAR", "fields": null },
+        { "name": "URL", "kind": "SCALAR", "fields": null },
+        { "name": "Email", "kind": "SCALAR", "fields": null },
+        { "name": "JSON", "kind": "SCALAR", "fields": null },
+        {
+          "name": "__Schema",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "description",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "types",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "queryType",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "__Type", "kind": "OBJECT" }
+              }
+            },
+            {
+              "name": "mutationType",
+              "type": { "name": "__Type", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "subscriptionType",
+              "type": { "name": "__Type", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "directives",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "__Type",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "kind",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "__TypeKind", "kind": "ENUM" }
+              }
+            },
+            {
+              "name": "name",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "description",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "specifiedByURL",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "fields",
+              "type": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": { "name": null, "kind": "NON_NULL" }
+              }
+            },
+            {
+              "name": "interfaces",
+              "type": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": { "name": null, "kind": "NON_NULL" }
+              }
+            },
+            {
+              "name": "possibleTypes",
+              "type": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": { "name": null, "kind": "NON_NULL" }
+              }
+            },
+            {
+              "name": "enumValues",
+              "type": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": { "name": null, "kind": "NON_NULL" }
+              }
+            },
+            {
+              "name": "inputFields",
+              "type": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": { "name": null, "kind": "NON_NULL" }
+              }
+            },
+            {
+              "name": "ofType",
+              "type": { "name": "__Type", "kind": "OBJECT", "ofType": null }
+            },
+            {
+              "name": "isOneOf",
+              "type": { "name": "Boolean", "kind": "SCALAR", "ofType": null }
+            }
+          ]
+        },
+        { "name": "__TypeKind", "kind": "ENUM", "fields": null },
+        {
+          "name": "__Field",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "description",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "args",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "__Type", "kind": "OBJECT" }
+              }
+            },
+            {
+              "name": "isDeprecated",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Boolean", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "deprecationReason",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            }
+          ]
+        },
+        {
+          "name": "__InputValue",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "description",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "type",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "__Type", "kind": "OBJECT" }
+              }
+            },
+            {
+              "name": "defaultValue",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "isDeprecated",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Boolean", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "deprecationReason",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            }
+          ]
+        },
+        {
+          "name": "__EnumValue",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "description",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "isDeprecated",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Boolean", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "deprecationReason",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            }
+          ]
+        },
+        {
+          "name": "__Directive",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "String", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "description",
+              "type": { "name": "String", "kind": "SCALAR", "ofType": null }
+            },
+            {
+              "name": "isRepeatable",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": "Boolean", "kind": "SCALAR" }
+              }
+            },
+            {
+              "name": "locations",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            },
+            {
+              "name": "args",
+              "type": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": { "name": null, "kind": "LIST" }
+              }
+            }
+          ]
+        },
+        { "name": "__DirectiveLocation", "kind": "ENUM", "fields": null }
+      ]
+    }
+  }
+}

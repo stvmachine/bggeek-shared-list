@@ -18,11 +18,11 @@ export default async function handler(
 
   try {
     console.log(`Fetching user via GraphQL for username: ${username}`);
-    
+
     const { data, error } = await apolloClient.query({
       query: GET_USER,
       variables: { username },
-      errorPolicy: 'all',
+      errorPolicy: "all",
     });
 
     if (error) {
@@ -55,12 +55,13 @@ export default async function handler(
       buddycount: data.user.buddyCount,
       guildcount: data.user.guildCount,
       microbadgecount: data.user.microbadgeCount,
-      topitems: data.user.topItems?.map((item: any) => ({
-        objectid: item.objectId,
-        name: item.name,
-        rank: item.rank,
-        rating: item.rating,
-      })) || [],
+      topitems:
+        data.user.topItems?.map((item: any) => ({
+          objectid: item.objectId,
+          name: item.name,
+          rank: item.rank,
+          rating: item.rating,
+        })) || [],
     };
 
     res.status(200).json(transformedData);

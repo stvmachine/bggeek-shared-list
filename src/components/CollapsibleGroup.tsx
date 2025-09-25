@@ -87,16 +87,32 @@ const CollapsibleGroup: React.FC<CollapsibleGroupProps> = ({
               {games.map((game: BggCollectionItem) => {
                 const gameData = {
                   id: game.objectid,
-                  name: typeof game.name === 'string' ? game.name : (game.name as any)?.text || 'Unknown Game',
+                  name:
+                    typeof game.name === "string"
+                      ? game.name
+                      : (game.name as any)?.text || "Unknown Game",
                   thumbnail: game.thumbnail,
-                  yearPublished: typeof game.yearpublished === 'string' 
-                    ? game.yearpublished 
-                    : (game.yearpublished as any)?.text || '',
-                  minPlayers: (game.stats as any)?.minplayers?.value || (game.stats as any)?.minplayers || 0,
-                  maxPlayers: (game.stats as any)?.maxplayers?.value || (game.stats as any)?.maxplayers || 0,
-                  playingTime: (game.stats as any)?.playingtime?.value || (game.stats as any)?.playingtime || 0,
-                  averageRating: (game.stats as any)?.rating?.average?.value || (game.stats as any)?.rating?.average || 0,
-                  owners: game.owners || []
+                  yearPublished:
+                    typeof game.yearpublished === "string"
+                      ? game.yearpublished
+                      : (game.yearpublished as any)?.text || "",
+                  minPlayers:
+                    (game.stats as any)?.minplayers?.value ||
+                    (game.stats as any)?.minplayers ||
+                    0,
+                  maxPlayers:
+                    (game.stats as any)?.maxplayers?.value ||
+                    (game.stats as any)?.maxplayers ||
+                    0,
+                  playingTime:
+                    (game.stats as any)?.playingtime?.value ||
+                    (game.stats as any)?.playingtime ||
+                    0,
+                  averageRating:
+                    (game.stats as any)?.rating?.average?.value ||
+                    (game.stats as any)?.rating?.average ||
+                    0,
+                  owners: game.owners || [],
                 };
 
                 return (

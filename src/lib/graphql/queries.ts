@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 // Query to get a user's collection
 export const GET_USER_COLLECTION = gql`
