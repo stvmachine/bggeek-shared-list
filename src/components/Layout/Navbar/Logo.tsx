@@ -11,6 +11,8 @@ const Logo = () => {
       cursor="pointer"
       onClick={() => router.push('/')}
       h="100%"
+      pl={{ base: 3, md: 4 }}
+      flexShrink={0}
     >
       <Image 
         src="/img/logo.svg" 
