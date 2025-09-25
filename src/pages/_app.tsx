@@ -1,5 +1,6 @@
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
 import { AppProps } from "next/app";
+import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { GraphQLProvider } from "../components/GraphQLProvider";
 
@@ -24,13 +25,19 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider value={defaultSystem}>
-        <GraphQLProvider>
-          <Component {...pageProps} />
-        </GraphQLProvider>
-      </ChakraProvider>
-    </QueryClientProvider>
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </Head>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider value={defaultSystem}>
+          <GraphQLProvider>
+            <Component {...pageProps} />
+          </GraphQLProvider>
+        </ChakraProvider>
+      </QueryClientProvider>
+    </>
   );
 }
 
