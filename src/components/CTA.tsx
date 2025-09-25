@@ -1,15 +1,7 @@
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  Flex,
-  Image,
-  Icon,
-} from "@chakra-ui/react";
-import { FaUserFriends, FaSearch, FaGamepad } from "react-icons/fa";
+import { Box, Container, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { FaGamepad, FaSearch, FaUserFriends } from "react-icons/fa";
 
 import { generatePermalink } from "../utils/permalink";
 import UsernameForm from "./UsernameForm";

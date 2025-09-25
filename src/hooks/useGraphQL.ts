@@ -25,7 +25,10 @@ export const useUser = (username: string, options?: any) => {
 };
 
 // Hook to get multiple users' collections (makes multiple individual calls)
-export const useMultipleCollections = (usernames: string[], options?: any) => {
+export const useMultipleCollections = (
+  _usernames: string[],
+  _options?: any
+) => {
   // Since the schema doesn't support multiple collections in one query,
   // we'll need to make multiple individual calls
   // This is a placeholder - implementation would need to be done differently
