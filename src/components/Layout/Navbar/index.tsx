@@ -8,9 +8,8 @@ type NavbarProps = {
   onMobileMenuOpen?: () => void;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
+const   : React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
   const router = useRouter();
-  const isHomepage = router.pathname === "/";
 
   return (
     <Box

@@ -1,4 +1,4 @@
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client/react/hooks";
 import {
   GET_USER_COLLECTION,
   GET_USER,
