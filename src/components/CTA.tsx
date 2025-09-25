@@ -1,4 +1,12 @@
-import { Box, Container, Heading, Text, Flex, Image, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  Flex,
+  Image,
+  Icon,
+} from "@chakra-ui/react";
 import { FaUserFriends, FaSearch, FaGamepad } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -57,7 +65,7 @@ export default function CTA() {
     >
       <Container maxW="container.xl" px={8} h="100%">
         <Flex
-          direction={{ base: 'column', lg: 'row' }}
+          direction={{ base: "column", lg: "row" }}
           alignItems="center"
           justifyContent="space-between"
           gap={{ base: 8, lg: 12 }}
@@ -68,8 +76,8 @@ export default function CTA() {
           w="100%"
         >
           {/* Content - Takes full width on mobile, 50% on larger screens */}
-          <Box 
-            flex={{ base: '1 0 100%', lg: '0 0 45%' }}
+          <Box
+            flex={{ base: "1 0 100%", lg: "0 0 45%" }}
             alignSelf="center"
             pt={{ base: 8, lg: 12 }}
             order={{ base: 1, lg: 1 }}
@@ -83,7 +91,7 @@ export default function CTA() {
             >
               Discover, Organize, and Share Your Board Game Collection
             </Heading>
-            
+
             <Text
               fontSize="lg"
               color={mutedTextColor}
@@ -91,14 +99,15 @@ export default function CTA() {
               lineHeight="1.7"
               maxW="600px"
             >
-              Connect with your friends' BoardGameGeek collections to find games everyone will love.
-              Perfect for game nights and building your next favorite collection.
+              Connect with your friends' BoardGameGeek collections to find games
+              everyone will love. Perfect for game nights and building your next
+              favorite collection.
             </Text>
 
             {/* Search Form - Moved below text on mobile, next to image on desktop */}
-            <Box 
+            <Box
               w="100%"
-              maxW={{ base: '100%', lg: '90%' }}
+              maxW={{ base: "100%", lg: "90%" }}
               mt={{ base: 8, lg: 0 }}
             >
               <UsernameForm
@@ -110,20 +119,15 @@ export default function CTA() {
           </Box>
 
           {/* Right Column - Image */}
-          <Box 
-            flex={{ base: '1 0 100%', lg: '0 0 50%' }}
+          <Box
+            flex={{ base: "1 0 100%", lg: "0 0 50%" }}
             display="flex"
             justifyContent="center"
             alignItems="center"
             order={{ base: 2, lg: 2 }}
             position="relative"
           >
-            <Box 
-              position="relative"
-              w="100%"
-              maxW="600px"
-              mx="auto"
-            >
+            <Box position="relative" w="100%" maxW="600px" mx="auto">
               <Box
                 position="relative"
                 overflow="hidden"
@@ -133,12 +137,12 @@ export default function CTA() {
                 borderColor="gray.200"
                 transition="all 0.3s ease-in-out"
                 _hover={{
-                  transform: 'scale(1.02)',
-                  boxShadow: '2xl',
+                  transform: "scale(1.02)",
+                  boxShadow: "2xl",
                 }}
               >
-                <Image 
-                  src="/img/hero.png" 
+                <Image
+                  src="/img/hero.png"
                   alt="Board Game Collection"
                   width="100%"
                   height="auto"
@@ -150,13 +154,17 @@ export default function CTA() {
         </Flex>
 
         {/* How to Get Started Section */}
-        <Box mt={{ base: 16, md: 24 }} textAlign="center" px={{ base: 4, md: 8 }}>
-          <Box 
-            as="span" 
-            display="inline-block" 
+        <Box
+          mt={{ base: 16, md: 24 }}
+          textAlign="center"
+          px={{ base: 4, md: 8 }}
+        >
+          <Box
+            as="span"
+            display="inline-block"
             bgGradient="linear(to-r, blue.500, purple.500)"
             bgClip="text"
-            fontSize={{ base: 'sm', md: 'md' }}
+            fontSize={{ base: "sm", md: "md" }}
             fontWeight="semibold"
             letterSpacing="wider"
             textTransform="uppercase"
@@ -164,9 +172,9 @@ export default function CTA() {
           >
             Get Started in 3 Simple Steps
           </Box>
-          
-          <Heading 
-            size={{ base: "2xl", md: "3xl", lg: "4xl" }} 
+
+          <Heading
+            size={{ base: "2xl", md: "3xl", lg: "4xl" }}
             mb={{ base: 8, md: 12 }}
             fontWeight="bold"
             lineHeight="1.2"
@@ -176,9 +184,9 @@ export default function CTA() {
           >
             How to Find Your Next Game Night Favorite
           </Heading>
-          
-          <Flex 
-            direction={{ base: 'column', md: 'row' }} 
+
+          <Flex
+            direction={{ base: "column", md: "row" }}
             gap={{ base: 6, md: 8, lg: 12 }}
             justify="center"
             maxW="7xl"
@@ -189,36 +197,39 @@ export default function CTA() {
               {
                 icon: FaUserFriends,
                 title: "1. Add Friends",
-                description: "Enter your friends' BoardGameGeek usernames to see their collections"
+                description:
+                  "Enter your friends' BoardGameGeek usernames to see their collections",
               },
               {
                 icon: FaSearch,
                 title: "2. Discover Matches",
-                description: "Instantly find games that everyone owns or wants to play"
+                description:
+                  "Instantly find games that everyone owns or wants to play",
               },
               {
                 icon: FaGamepad,
                 title: "3. Play & Enjoy",
-                description: "Start your game night with the perfect game for your group"
-              }
+                description:
+                  "Start your game night with the perfect game for your group",
+              },
             ].map((step, index) => (
-              <Box 
+              <Box
                 key={index}
                 bg="white"
                 p={{ base: 6, md: 8 }}
                 borderRadius="xl"
                 boxShadow="xl"
                 flex="1"
-                minW={{ base: 'full', md: '300px' }}
-                maxW={{ base: '100%', md: '350px' }}
+                minW={{ base: "full", md: "300px" }}
+                maxW={{ base: "100%", md: "350px" }}
                 borderTop="4px solid"
-                borderTopColor={`blue.${300 + (index * 100)}`}
+                borderTopColor={`blue.${300 + index * 100}`}
                 border="1px solid"
                 borderColor="gray.100"
               >
                 <Flex direction="row" align="flex-start" gap={5} mb={4}>
-                  <Box 
-                    p={3} 
+                  <Box
+                    p={3}
                     bg="gray.100"
                     rounded="lg"
                     color="gray.700"
@@ -230,14 +241,10 @@ export default function CTA() {
                     height="48px"
                     mt={1}
                   >
-                    <Box
-                      as={step.icon}
-                      boxSize="24px"
-                      color="gray.700"
-                    />
+                    <Box as={step.icon} boxSize="24px" color="gray.700" />
                   </Box>
                   <Box flex="1">
-                    <Text 
+                    <Text
                       color={textColor}
                       fontSize="lg"
                       fontWeight="semibold"
@@ -247,9 +254,9 @@ export default function CTA() {
                     >
                       {step.title}
                     </Text>
-                    <Text 
-                      color={mutedTextColor} 
-                      fontSize="md" 
+                    <Text
+                      color={mutedTextColor}
+                      fontSize="md"
                       textAlign="left"
                       lineHeight="tall"
                     >

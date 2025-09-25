@@ -8,12 +8,14 @@ export const fetchCollectionsGraphQL = async (
     const { data, error } = await apolloClient.query({
       query: GET_MULTIPLE_COLLECTIONS,
       variables: { usernames },
-      errorPolicy: 'all',
+      errorPolicy: "all",
     });
 
     if (error) {
       console.error("GraphQL errors:", error);
-      throw new Error(`GraphQL errors: ${error.map((e: any) => e.message).join(', ')}`);
+      throw new Error(
+        `GraphQL errors: ${error.map((e: any) => e.message).join(", ")}`
+      );
     }
 
     if (!data?.collections) {

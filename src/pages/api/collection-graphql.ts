@@ -19,11 +19,11 @@ export default async function handler(
 
   try {
     console.log(`Fetching collection via GraphQL for username: ${username}`);
-    
+
     const { data, error } = await apolloClient.query<GetUserCollectionQuery>({
       query: GET_USER_COLLECTION,
       variables: { username },
-      errorPolicy: 'all',
+      errorPolicy: "all",
     });
 
     if (error) {
@@ -43,23 +43,24 @@ export default async function handler(
     const transformedData = {
       totalitems: data.userCollection.totalItems,
       pubdate: data.userCollection.pubDate,
-      item: data.userCollection.items?.map((item: any) => ({
-        objectid: item.objectId,
-        name: {
-          text: item.name,
-        },
-        thumbnail: item.thumbnail,
-        image: item.image,
-        yearpublished: item.yearPublished,
-        minplayers: item.minPlayers,
-        maxplayers: item.maxPlayers,
-        playingtime: item.playingTime,
-        minplaytime: item.minPlayTime,
-        maxplaytime: item.maxPlayTime,
-        minage: item.minAge,
-        status: item.status,
-        stats: item.stats,
-      })) || [],
+      item:
+        data.userCollection.items?.map((item: any) => ({
+          objectid: item.objectId,
+          name: {
+            text: item.name,
+          },
+          thumbnail: item.thumbnail,
+          image: item.image,
+          yearpublished: item.yearPublished,
+          minplayers: item.minPlayers,
+          maxplayers: item.maxPlayers,
+          playingtime: item.playingTime,
+          minplaytime: item.minPlayTime,
+          maxplaytime: item.maxPlayTime,
+          minage: item.minAge,
+          status: item.status,
+          stats: item.stats,
+        })) || [],
     };
 
     res.status(200).json(transformedData);
@@ -69,6 +70,8 @@ export default async function handler(
       message: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : undefined,
     });
-    res.status(500).json({ error: "Failed to fetch collection data via GraphQL" });
+    res
+      .status(500)
+      .json({ error: "Failed to fetch collection data via GraphQL" });
   }
 }

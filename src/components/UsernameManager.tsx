@@ -232,10 +232,10 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                     }
                   }}
                 />
-                <Text 
-                  fontSize="xs" 
-                  color="gray.500" 
-                  mt={1} 
+                <Text
+                  fontSize="xs"
+                  color="gray.500"
+                  mt={1}
                   ml={1}
                   fontStyle="italic"
                 >

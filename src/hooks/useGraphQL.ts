@@ -1,10 +1,10 @@
-import { useQuery, useLazyQuery } from '@apollo/client';
-import { 
-  GET_USER_COLLECTION, 
-  GET_USER, 
+import { useQuery, useLazyQuery } from "@apollo/client";
+import {
+  GET_USER_COLLECTION,
+  GET_USER,
   SEARCH_GAMES,
-  GET_GAME_DETAILS 
-} from '../lib/graphql/queries';
+  GET_GAME_DETAILS,
+} from "../lib/graphql/queries";
 
 // Hook to get a single user's collection
 export const useUserCollection = (username: string, options?: any) => {

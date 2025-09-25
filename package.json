@@ -10,8 +10,8 @@
     "commit": "cz",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "npx prettier --write .",
+    "format:check": "npx prettier --check .",
     "codegen": "graphql-codegen --config codegen.yml",
     "codegen:watch": "graphql-codegen --config codegen.yml --watch"
   },
