@@ -7,11 +7,10 @@ import {
   Text,
   TextProps
 } from "@chakra-ui/react";
+import { MemberAvatar } from "./MemberAvatar";
 import Image from "next/image";
 import React from "react";
 import { FaClock, FaStar, FaUsers } from "react-icons/fa";
-
-
 export interface GameOwner {
   username: string;
   status: any;
@@ -121,9 +120,15 @@ const GameCard: React.FC<GameCardProps> = ({
             <Image
               src={thumbnail}
               alt={name}
-              layout="fill"
-              objectFit="cover"
-              unoptimized={thumbnail.startsWith("http")}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              style={{
+                objectFit: 'cover',
+                width: '100%',
+                height: '100%'
+              }}
+              unoptimized={!thumbnail.includes('boardgamegeek.com')}
+              priority={false}
             />
           ) : (
             <Skeleton height="100%" width="100%" />
@@ -204,9 +209,19 @@ const GameCard: React.FC<GameCardProps> = ({
         {/* Owners */}
         {owners.length > 0 && (
           <Box mt={2} pt={2} borderTopWidth="1px" borderTopColor="gray.100">
-            <Text fontSize="xs" color="gray.500" mb={1}>
-              Owned by:
-            </Text>
+            <Text fontSize="xs" color="gray.500" mb={1}>Owned by:</Text>
+            <HStack spacing={1.5} mt={1.5} flexWrap="wrap">
+              {owners.map((owner) => (
+                <Box key={owner.username}>
+                  <MemberAvatar 
+                    username={owner.username} 
+                    showUsername={false} 
+                    size="xs"
+                    spacing="1"
+                  />
+                </Box>
+              ))}
+            </HStack>
           </Box>
         )}
       </Box>

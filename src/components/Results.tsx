@@ -5,7 +5,6 @@ import {
   ButtonProps,
   Flex,
   Heading,
-  HStack,
   Icon,
   LinkBox,
   LinkOverlay,
@@ -18,8 +17,11 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { FiFilter, FiInfo, FiUsers } from "react-icons/fi";
+import { FiUsers } from "react-icons/fi"; // Used in EmptyState component
+// Other icons commented out until needed
+// import { FiFilter, FiInfo } from "react-icons/fi";
 import SortBar from "../components/SortBar";
+import { MemberAvatar } from "./MemberAvatar";
 import { useMembers } from "../contexts/MemberContext";
 import { useSearch } from "../hooks/useSearch";
 import { GroupedGames, groupGames, GroupingOption } from "../utils/grouping";
@@ -173,20 +175,6 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
     groupBy as GroupingOption
   );
 
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
-
-  // Quick filters
-  const quickFilters = [
-    { id: "all", label: "All Games", icon: FiFilter },
-    { id: "owned", label: "Owned by All", icon: FiUsers },
-    { id: "wishlist", label: "Wishlist Items", icon: FiInfo },
-  ];
-
-  const handleFilterClick = (filterId: string) => {
-    setActiveFilter(activeFilter === filterId ? null : filterId);
-    // TODO: Implement filter logic
-  };
-
   return (
     <Box flex="1" p={{ base: 2, md: 4 }}>
       {checkedMembers?.length > 0 ? (
@@ -246,25 +234,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
                           transition="all 0.2s"
                           cursor="pointer"
                         >
-                          <HStack gap={2}>
-                            <Box
-                              width="28px"
-                              height="28px"
-                              borderRadius="full"
-                              bg={memberData.color.bg}
-                              color={memberData.color.color}
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                              fontSize="xs"
-                              fontWeight="bold"
-                            >
-                              {memberData.initial}
-                            </Box>
-                            <Text fontWeight="medium" fontSize="sm">
-                              {member}
-                            </Text>
-                          </HStack>
+                          <MemberAvatar username={member} size="md" />
                         </Box>
                       </LinkOverlay>
                     </LinkBox>

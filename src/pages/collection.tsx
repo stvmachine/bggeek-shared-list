@@ -171,29 +171,48 @@ const Index: NextPage<CollectionPageProps> = () => {
     methods.reset(defaultValues);
   }, [members, methods, defaultValues]);
 
-  const { open: isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onClose } = useDisclosure();
+
+  const sidebarWidth = "300px";
 
   return (
     <MemberProvider usernames={members}>
       <FormProvider {...methods}>
         <Box minH="100vh" display="flex" flexDirection="column">
-          <Navbar
-            openDrawer={onOpen}
-            isOpenDrawer={isOpen}
-            onMobileMenuOpen={onMobileMenuOpen}
-            onMobileMenuClose={onMobileMenuClose}
-            isMobileMenuOpen={isMobileMenuOpen}
-          />
-          <Container maxW="container.xl" flex="1" py={8}>
-            <Stack direction={['column', 'row']} gap={6} align="flex-start">
+          <Navbar onMobileMenuOpen={onMobileMenuOpen} />
+          <Container
+            maxW="container.xl"
+            flex="1"
+            py={8}
+            px={{ base: 0, md: 4 }}
+          >
+            <Box position="relative">
               {!isLoading && data ? (
                 <>
+                  {/* Mobile Drawer */}
+                  <MobileDrawer
+                    isOpen={open}
+                    onClose={onClose}
+                    members={members}
+                    collections={data.collections}
+                    onSearch={handleSearch}
+                    onValidatedUsernames={handleValidatedUsernames}
+                    onValidationError={handleValidationError}
+                    removeMember={removeMember}
+                    removeAllMembers={removeAllMembers}
+                    isValidating={isValidating}
+                    pendingUsernames={pendingUsernames}
+                    title="Filters & Members"
+                  />
+
+                  {/* Desktop Sidebar */}
                   <Box
                     display={{ base: "none", md: "block" }}
-                    position="sticky"
-                    top="100px"
-                    width="300px"
+                    position="fixed"
+                    width={sidebarWidth}
                     flexShrink={0}
+                    pr={4}
+                    style={{ height: "calc(100vh - 180px)", overflowY: "auto" }}
                   >
                     <SearchSidebar
                       members={members}
@@ -207,7 +226,14 @@ const Index: NextPage<CollectionPageProps> = () => {
                       pendingUsernames={pendingUsernames}
                     />
                   </Box>
-                  <Box flex="1" minW={0}>
+
+                  {/* Main Content */}
+                  <Box
+                    ml={{ base: 0, md: sidebarWidth }}
+                    pl={{ base: 4, md: 8 }}
+                    pr={{ base: 4, md: 0 }}
+                    width={{ base: "100%", md: `calc(100% - ${sidebarWidth})` }}
+                  >
                     <Results boardgames={data.boardgames} />
                   </Box>
                 </>
@@ -224,12 +250,12 @@ const Index: NextPage<CollectionPageProps> = () => {
                   </Text>
                 </Box>
               )}
-            </Stack>
+            </Box>
           </Container>
           <Footer />
         </Box>
 
-        {isOpen && (
+        {isMobileMenuOpen && (
           <Box
             position="fixed"
             top={0}
