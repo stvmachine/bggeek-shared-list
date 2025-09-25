@@ -124,6 +124,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
   const watchedMembers = watch("members");
   const groupBy = watch("groupBy") || "none";
   const orderBy = watch("orderBy") || "name_asc";
+  const loading = false;
 
   // State for collapsed groups
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
@@ -276,7 +277,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
       {groupBy === "none" ? (
         <Box>
           {/* Loading state removed as it's not being used */}
-          {false ? (
+          {loading ? (
             <Grid columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }} gap={4}>
               {[...Array(12)].map((_, i) => (
                 <GameCardSkeleton key={i} />
