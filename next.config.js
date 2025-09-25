@@ -9,6 +9,7 @@ module.exports = {
   experimental: {
     appDir: false,
   },
+  swcMinify: false,
   // Override the pages directory to use src/pages
   webpack: config => {
     config.resolve.alias = {
