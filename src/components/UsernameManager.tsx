@@ -196,8 +196,8 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
 
   const formContent = (
     <VStack gap={4} w="full">
-      <Box maxW="md">
-        <HStack gap={2}>
+      <Box w="full" maxW="2xl">
+        <HStack gap={2} w="full">
           <Controller
             name="username"
             control={methods.control}
@@ -212,13 +212,18 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
               <Input
                 {...field}
                 placeholder="Enter BoardGameGeek username(s) - separate multiple with commas"
-                bg="gray.100"
-                border="none"
+                bg="white"
+                border="1px solid #E5E7EB"
                 _focus={{
-                  bg: "gray.200",
-                  boxShadow: "none",
+                  bg: "white",
+                  borderColor: "#9d174d",
+                  boxShadow: "0 0 0 1px #9d174d",
+                }}
+                _hover={{
+                  borderColor: "#9d174d",
                 }}
                 flex={1}
+                h="48px"
                 onKeyDown={e => {
                   if (e.key === "Enter" && noForm) {
                     e.preventDefault();
@@ -228,17 +233,28 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
               />
             )}
           />
-          <IconButton
+          <Button
             aria-label="Add Username"
             size="lg"
-            colorPalette="green"
+            bg="#9d174d"
+            color="white"
+            _hover={{
+              bg: "#831843",
+            }}
+            _active={{
+              bg: "#831843",
+              transform: "scale(0.98)",
+            }}
             type={noForm ? "button" : "submit"}
             onClick={noForm ? handleFormSubmit : undefined}
             loading={isValidatingAny}
             disabled={isValidatingAny}
+            h="48px"
+            px={6}
+            minW="100px"
           >
-            +
-          </IconButton>
+            Add
+          </Button>
         </HStack>
         {methods.formState.errors.username && (
           <Box color="red.500" fontSize="sm" mt={2}>
