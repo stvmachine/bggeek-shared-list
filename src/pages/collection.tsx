@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Stack,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Container, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -19,11 +12,7 @@ import MobileDrawer from "../components/MobileDrawer";
 import Results from "../components/Results";
 import SearchSidebar from "../components/SearchSidebar";
 import { MemberProvider } from "../contexts/MemberContext";
-import {
-  copyToClipboard,
-  generatePermalink,
-  parseUsernamesFromUrl,
-} from "../utils/permalink";
+import { generatePermalink, parseUsernamesFromUrl } from "../utils/permalink";
 import { ICollection } from "../utils/types";
 
 type CollectionPageProps = {
@@ -184,61 +173,27 @@ const Index: NextPage<CollectionPageProps> = () => {
 
   const { open: isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleShare = async () => {
-    if (members.length === 0) return;
-
-    const permalink = generatePermalink(members);
-    const fullUrl = `${window.location.origin}${permalink}`;
-
-    const success = await copyToClipboard(fullUrl);
-
-    if (success) {
-      alert(
-        "Link copied! Share this link with your friends to show your collection."
-      );
-    } else {
-      alert("Copy failed. Please copy the URL manually from the address bar.");
-    }
-  };
-
   return (
     <MemberProvider usernames={members}>
       <FormProvider {...methods}>
-        <Navbar
-          openDrawer={onOpen}
-          isOpenDrawer={isOpen}
-          onMobileMenuOpen={onMobileMenuOpen}
-          onMobileMenuClose={onMobileMenuClose}
-          isMobileMenuOpen={isMobileMenuOpen}
-        />
-        <Container height="100vh" maxWidth="100%">
-          <Box mt={12}>
-            {/* Share Button */}
-            {members.length > 0 && (
-              <Box mb={4} textAlign="center">
-                <Button
-                  onClick={handleShare}
-                  colorPalette="blue"
-                  size="sm"
-                  variant="outline"
-                >
-                  📤 Share Collection
-                </Button>
-              </Box>
-            )}
-
-            <Stack
-              direction={["column", "row"]}
-              alignItems="flex-start"
-              gap={6}
-            >
+        <Box minH="100vh" display="flex" flexDirection="column">
+          <Navbar
+            openDrawer={onOpen}
+            isOpenDrawer={isOpen}
+            onMobileMenuOpen={onMobileMenuOpen}
+            onMobileMenuClose={onMobileMenuClose}
+            isMobileMenuOpen={isMobileMenuOpen}
+          />
+          <Container maxW="container.xl" flex="1" py={8}>
+            <Stack direction={['column', 'row']} gap={6} align="flex-start">
               {!isLoading && data ? (
                 <>
                   <Box
-                    display={{ base: "none", md: "flex" }}
+                    display={{ base: "none", md: "block" }}
                     position="sticky"
-                    top="20px"
-                    alignSelf="flex-start"
+                    top="100px"
+                    width="300px"
+                    flexShrink={0}
                   >
                     <SearchSidebar
                       members={members}
@@ -252,9 +207,8 @@ const Index: NextPage<CollectionPageProps> = () => {
                       pendingUsernames={pendingUsernames}
                     />
                   </Box>
-
-                  <Box flex="1" minWidth={0}>
-                    <Results boardgames={data?.boardgames} />
+                  <Box flex="1" minW={0}>
+                    <Results boardgames={data.boardgames} />
                   </Box>
                 </>
               ) : (
@@ -263,7 +217,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  minHeight="400px"
+                  minH="400px"
                 >
                   <Text fontSize="lg" color="gray.500">
                     Loading collections...
@@ -271,9 +225,9 @@ const Index: NextPage<CollectionPageProps> = () => {
                 </Box>
               )}
             </Stack>
-          </Box>
+          </Container>
           <Footer />
-        </Container>
+        </Box>
 
         {isOpen && (
           <Box

@@ -1,20 +1,15 @@
-import { Box, Flex, HStack, IconButton, Link as ChakraLink } from "@chakra-ui/react";
-import Link from "next/link";
+import { Box, Flex, HStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { FiMenu, FiShare2 } from "react-icons/fi";
 
 import Logo from "./Logo";
 
 type NavbarProps = {
-  openDrawer?: () => void;
-  isOpenDrawer?: boolean;
   onMobileMenuOpen?: () => void;
-  onMobileMenuClose?: () => void;
-  isMobileMenuOpen?: boolean;
 };
 
 const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
   const router = useRouter();
-  const isActive = (path: string) => router.pathname === path;
   const isHomepage = router.pathname === '/';
   return (
     <Box
@@ -43,60 +38,69 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
         <Logo />
 
         {/* Mobile Menu Button */}
-        <IconButton
+        <Box
+          as="button"
           onClick={onMobileMenuOpen}
-          variant="ghost"
           aria-label="Open mobile menu"
-          size="md"
           display={{ base: "flex", md: "none" }}
+          alignItems="center"
+          justifyContent="center"
           ml="auto"
+          p={2}
+          rounded="md"
+          color="gray.700"
+          _hover={{
+            bg: "gray.100",
+            color: "gray.800"
+          }}
+          _active={{
+            bg: "gray.200",
+            color: "gray.900"
+          }}
         >
-          ☰
-        </IconButton>
+          <FiMenu size="24px" />
+        </Box>
 
-        {/* Desktop Navigation - Only show on non-home pages */}
-        {!isHomepage && (
+        <Box ml="auto" display={{ base: "none", md: "flex" }} alignItems="center">
+          {!isHomepage && (
           <HStack gap={6} ml={6} display={{ base: "none", md: "flex" }}>
-            <Link href="/" passHref legacyBehavior>
-              <ChakraLink
-                px={3}
-                py={2}
-                rounded="md"
-                fontSize="md"
-                fontWeight="semibold"
-                color={isActive("/") ? "blue.600" : "gray.700"}
-                borderBottom={isActive("/") ? "2px solid" : "none"}
-                borderColor="blue.500"
-                _hover={{ 
-                  color: "blue.500",
-                  bg: "rgba(0, 0, 0, 0.05)",
-                  textDecoration: "none"
-                }}
-              >
-                Home
-              </ChakraLink>
-            </Link>
-            <Link href="/collection" passHref legacyBehavior>
-              <ChakraLink
-                px={3}
-                py={2}
-                rounded="md"
-                fontSize="md"
-                fontWeight="semibold"
-                color={isActive("/collection") ? "blue.600" : "gray.700"}
-                borderBottom={isActive("/collection") ? "2px solid" : "none"}
-                borderColor="blue.500"
-                _hover={{ 
-                  color: "blue.500",
-                  bg: "rgba(0, 0, 0, 0.05)",
-                  textDecoration: "none"
-                }}
-              >
-                Collection
-              </ChakraLink>
-            </Link>
+            <Box
+              as="button"
+              display="inline-flex"
+              alignItems="center"
+              justifyContent="center"
+              px={3}
+              py={1}
+              ml={4}
+              fontSize="sm"
+              fontWeight="medium"
+              color="blue.500"
+              bg="white"
+              border="1px solid"
+              borderColor="blue.500"
+              borderRadius="md"
+              _hover={{
+                bg: "blue.50"
+              }}
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: 'My Board Game Collection',
+                    text: 'Check out my board game collection!',
+                    url: window.location.href,
+                  }).catch(console.error);
+                } else {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Link copied to clipboard!');
+                }
+              }}
+            >
+              <Box as={FiShare2} mr={2} />
+              Share Collection
+            </Box>
           </HStack>
-        )}
+          )}
+        </Box>
       </Flex>
     </Box>
   );
