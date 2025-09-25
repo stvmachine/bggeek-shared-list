@@ -21,7 +21,7 @@ const Footer = () => (
       px={4}
     >
       <Text color="gray.600" fontSize="sm">
-        © 2024 SharedGameCollection - Made by stevmachine
+        © 2024 Shared Shelf - Made by stevmachine
       </Text>
       <HStack gap={6}>
         <Link
