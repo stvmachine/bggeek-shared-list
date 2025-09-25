@@ -24,15 +24,14 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
       width="100%"
       left={0}
       right={0}
-      bg="transparent"
       backdropFilter="blur(10px)"
     >
       <Flex
         color="gray.600"
         bg="rgba(255, 255, 255, 0.8)"
-        minH={"65px"}
-        py={3}
-        px={{ base: 4, md: 6 }}
+        minH={"50px"}
+        py={2}
+        px={{ base: 3, md: 4 }}
         borderBottom={1}
         borderStyle={"solid"}
         borderColor="gray.200"

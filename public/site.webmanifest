@@ -1,0 +1,17 @@
+{
+  "name": "Shared Shelf",
+  "short_name": "SharedShelf",
+  "description": "Organize and share your board game collection",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0B2540",
+  "icons": [
+    {
+      "src": "/img/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
