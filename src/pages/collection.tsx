@@ -201,12 +201,22 @@ const Index: NextPage<CollectionPageProps> = () => {
 
                   {/* Desktop Sidebar */}
                   <Box
-                    display={{ base: "none", md: "block" }}
+                    display={{ base: "none", md: "flex" }}
                     position="fixed"
                     width={sidebarWidth}
                     flexShrink={0}
                     pr={4}
-                    style={{ height: "calc(100vh - 180px)", overflowY: "auto" }}
+                    height="calc(100vh - 180px)"
+                    flexDirection="column"
+                    css={{
+                      '&': {
+                        msOverflowStyle: 'none',
+                        scrollbarWidth: 'none',
+                        '&::-webkit-scrollbar': {
+                          display: 'none',
+                        },
+                      },
+                    }}
                   >
                     <SearchSidebar
                       members={members}

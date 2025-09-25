@@ -108,12 +108,30 @@ const SearchSidebar = React.memo(
     useKeydown(hideVirtualKeyboard);
 
     return (
-      <form onSubmit={handleSubmit(onSubmit, onError)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)} style={{ height: '100%' }}>
         <VStack
           width={isOpenDrawer ? "100%" : "320px"}
           gap={4}
           align="stretch"
           p={isOpenDrawer ? 0 : 4}
+          height="100%"
+          overflowY="auto"
+          pr={2}
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '4px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'gray.300',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: 'gray.400',
+            },
+          }}
         >
           {/* Search Section */}
           <Box
