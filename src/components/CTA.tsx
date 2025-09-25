@@ -208,11 +208,6 @@ export default function CTA() {
                 p={{ base: 6, md: 8 }}
                 borderRadius="xl"
                 boxShadow="xl"
-                transition="all 0.3s ease"
-                _hover={{
-                  transform: 'translateY(-4px)',
-                  boxShadow: '2xl',
-                }}
                 flex="1"
                 minW={{ base: 'full', md: '300px' }}
                 maxW={{ base: '100%', md: '350px' }}
@@ -221,27 +216,37 @@ export default function CTA() {
                 border="1px solid"
                 borderColor="gray.100"
               >
-                <Flex direction="row" align="flex-start" gap={4} mb={4}>
+                <Flex direction="row" align="flex-start" gap={5} mb={4}>
                   <Box 
                     p={3} 
-                    bgGradient={`linear(to-br, blue.${400 + (index * 100)}, purple.${400 + (index * 100)})`}
-                    rounded="xl"
-                    color="white"
-                    boxShadow="md"
+                    bg="gray.100"
+                    rounded="lg"
+                    color="gray.700"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    flexShrink={0}
+                    width="48px"
+                    height="48px"
+                    mt={1}
                   >
-                    <Icon as={step.icon} w={6} h={6} />
+                    <Box
+                      as={step.icon}
+                      boxSize="24px"
+                      color="gray.700"
+                    />
                   </Box>
-                  <Box>
-                    <Heading 
-                      size="md" 
-                      color={textColor} 
-                      textAlign="left"
-                      mb={2}
+                  <Box flex="1">
+                    <Text 
+                      color={textColor}
+                      fontSize="lg"
                       fontWeight="semibold"
-                      letterSpacing="tight"
+                      lineHeight="shorter"
+                      mb={2}
+                      textAlign="left"
                     >
                       {step.title}
-                    </Heading>
+                    </Text>
                     <Text 
                       color={mutedTextColor} 
                       fontSize="md" 
