@@ -1,5 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
 import NextDocument, { Head, Html, Main, NextScript } from "next/document";
-
 export default class Document extends NextDocument {
   render() {
     return (
@@ -38,6 +38,7 @@ export default class Document extends NextDocument {
           <title>Shared Shelf</title>
         </Head>
         <body>
+          <Analytics />
           <Main />
           <NextScript />
         </body>
