@@ -1,8 +1,15 @@
-import { Box, Container, Text, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Text,
+  useDisclosure,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { FiShare2 } from "react-icons/fi";
 import { useQueries } from "react-query";
 
 import { mergeCollections } from "../api/fetchGroupCollection";
@@ -29,6 +36,9 @@ const Index: NextPage<CollectionPageProps> = () => {
   const router = useRouter();
   const { usernames: urlUsernames, username } = router.query;
   const { open, onOpen, onClose } = useDisclosure({ defaultOpen: false });
+  const [isMobile] = useMediaQuery(["(max-width: 48em)"]);
+  const isHomepage = router.pathname === "/";
+  const showFAB = isMobile && !isHomepage;
 
   const [members, setMembers] = useState<string[]>([]);
   const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
@@ -209,11 +219,11 @@ const Index: NextPage<CollectionPageProps> = () => {
                     height="calc(100vh - 180px)"
                     flexDirection="column"
                     css={{
-                      '&': {
-                        msOverflowStyle: 'none',
-                        scrollbarWidth: 'none',
-                        '&::-webkit-scrollbar': {
-                          display: 'none',
+                      "&": {
+                        msOverflowStyle: "none",
+                        scrollbarWidth: "none",
+                        "&::-webkit-scrollbar": {
+                          display: "none",
                         },
                       },
                     }}
@@ -257,6 +267,59 @@ const Index: NextPage<CollectionPageProps> = () => {
             </Box>
           </Container>
           <Footer />
+
+          {/* Mobile Floating Action Button */}
+          {showFAB && (
+            <Box
+              position="fixed"
+              bottom="6"
+              right="6"
+              zIndex={1400}
+              display={{ base: "block", md: "none" }}
+            >
+              <Box
+                as="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    if (isMobile && navigator.share) {
+                      await navigator.share({
+                        title: "My Board Game Collection",
+                        text: "Check out my board game collection!",
+                        url: window.location.href,
+                      });
+                    } else {
+                      alert("Link copied to clipboard!");
+                    }
+                  } catch (err) {
+                    console.error("Failed to share:", err);
+                    alert("Failed to copy link. Please try again.");
+                  }
+                }}
+                aria-label="Share collection"
+                bg="blue.500"
+                color="white"
+                width="56px"
+                height="56px"
+                borderRadius="full"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                boxShadow="0 4px 12px rgba(0, 0, 0, 0.15)"
+                _hover={{
+                  bg: "blue.600",
+                  transform: "scale(1.05)",
+                  transition: "all 0.2s",
+                }}
+                _active={{
+                  bg: "blue.700",
+                  transform: "scale(0.95)",
+                }}
+              >
+                <FiShare2 size="24px" />
+              </Box>
+            </Box>
+          )}
         </Box>
       </FormProvider>
     </MemberProvider>
