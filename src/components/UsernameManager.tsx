@@ -197,7 +197,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
   const formContent = (
     <VStack gap={4} w="full">
       <Box w="full" maxW="2xl">
-        <HStack gap={2} w="full">
+        <HStack gap={2} w="full" alignItems="flex-start">
           <Controller
             name="username"
             control={methods.control}
