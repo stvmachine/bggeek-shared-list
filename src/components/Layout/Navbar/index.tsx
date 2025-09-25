@@ -1,14 +1,14 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { FiMenu } from "react-icons/fi";
 
 import Logo from "./Logo";
+import { useRouter } from "next/router";
 
 type NavbarProps = {
   onMobileMenuOpen?: () => void;
 };
 
-const   : React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
+const  Navbar : React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
   const router = useRouter();
 
   return (
