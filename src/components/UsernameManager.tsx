@@ -209,28 +209,39 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
               },
             }}
             render={({ field }) => (
-              <Input
-                {...field}
-                placeholder="Enter BoardGameGeek username(s) - separate multiple with commas"
-                bg="white"
-                border="1px solid #E5E7EB"
-                _focus={{
-                  bg: "white",
-                  borderColor: "#9d174d",
-                  boxShadow: "0 0 0 1px #9d174d",
-                }}
-                _hover={{
-                  borderColor: "#9d174d",
-                }}
-                flex={1}
-                h="48px"
-                onKeyDown={e => {
-                  if (e.key === "Enter" && noForm) {
-                    e.preventDefault();
-                    handleFormSubmit();
-                  }
-                }}
-              />
+              <Box w="full">
+                <Input
+                  {...field}
+                  placeholder="e.g., username1, username2, username3"
+                  bg="white"
+                  border="1px solid #E5E7EB"
+                  _focus={{
+                    bg: "white",
+                    borderColor: "#9d174d",
+                    boxShadow: "0 0 0 1px #9d174d",
+                  }}
+                  _hover={{
+                    borderColor: "#9d174d",
+                  }}
+                  flex={1}
+                  h="48px"
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && noForm) {
+                      e.preventDefault();
+                      handleFormSubmit();
+                    }
+                  }}
+                />
+                <Text 
+                  fontSize="xs" 
+                  color="gray.500" 
+                  mt={1} 
+                  ml={1}
+                  fontStyle="italic"
+                >
+                  Enter BoardGameGeek usernames, separated by commas
+                </Text>
+              </Box>
             )}
           />
           <Button
