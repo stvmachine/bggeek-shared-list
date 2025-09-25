@@ -132,12 +132,21 @@ export function useSearch<T>(
     500
   );
 
-  const results = useMemo(() => {
-    let results: any = data;
+  const results = useMemo((): T[] => {
+    let currentResults: T[] = [...data];
     const { playingTime, numberOfPlayers } = otherFields;
-    results = keyword ? (searcher.search(keyword) as T[]) : results;
+    
+    // Apply search if keyword exists
+    if (keyword) {
+      const searchResults = searcher.search(keyword);
+      // Extract items from Fuse.js search results
+      currentResults = searchResults.map((result: any) => 
+        result.item ? result.item : result
+      ) as T[];
+    }
 
-    const filteredMembers = Object.keys(members).reduce(
+    // Filter by members who have the game
+    const filteredMembers = Object.keys(members || {}).reduce(
       (accum: string[], key: string) => {
         if (members[key]) {
           accum.push(key);
@@ -147,12 +156,13 @@ export function useSearch<T>(
       []
     );
 
-    results = filterByUsers(results, filteredMembers);
-    results = filterByPlayingTime(results, Number(playingTime));
-    results = filterByNumPlayers(results, Number(numberOfPlayers));
-    results = orderByFn(results, orderBy);
+    // Apply all filters
+    currentResults = filterByUsers(currentResults as BggCollectionItem[], filteredMembers) as T[];
+    currentResults = filterByPlayingTime(currentResults as BggCollectionItem[], Number(playingTime)) as T[];
+    currentResults = filterByNumPlayers(currentResults as BggCollectionItem[], Number(numberOfPlayers)) as T[];
+    currentResults = orderByFn(currentResults as BggCollectionItem[], orderBy) as T[];
 
-    return results;
+    return currentResults;
   }, [...debouncedValue]);
 
   return {
