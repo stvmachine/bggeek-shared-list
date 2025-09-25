@@ -1,4 +1,4 @@
-import { Box, Container, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Container, Text, useDisclosure } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -28,11 +28,7 @@ export async function getStaticProps() {
 const Index: NextPage<CollectionPageProps> = () => {
   const router = useRouter();
   const { usernames: urlUsernames, username } = router.query;
-  const {
-    open: isMobileMenuOpen,
-    onOpen: onMobileMenuOpen,
-    onClose: onMobileMenuClose,
-  } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure({ defaultOpen: false });
 
   const [members, setMembers] = useState<string[]>([]);
   const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
@@ -171,15 +167,13 @@ const Index: NextPage<CollectionPageProps> = () => {
     methods.reset(defaultValues);
   }, [members, methods, defaultValues]);
 
-  const { open, onClose } = useDisclosure();
-
   const sidebarWidth = "300px";
 
   return (
     <MemberProvider usernames={members}>
       <FormProvider {...methods}>
         <Box minH="100vh" display="flex" flexDirection="column">
-          <Navbar onMobileMenuOpen={onMobileMenuOpen} />
+          <Navbar onMobileMenuOpen={onOpen} />
           <Container
             maxW="container.xl"
             flex="1"
@@ -194,7 +188,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                     isOpen={open}
                     onClose={onClose}
                     members={members}
-                    collections={data.collections}
+                    collections={data?.collections || []}
                     onSearch={handleSearch}
                     onValidatedUsernames={handleValidatedUsernames}
                     onValidationError={handleValidationError}
@@ -254,73 +248,6 @@ const Index: NextPage<CollectionPageProps> = () => {
           </Container>
           <Footer />
         </Box>
-
-        {isMobileMenuOpen && (
-          <Box
-            position="fixed"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            zIndex={1000}
-            bg="blackAlpha.600"
-            onClick={onClose}
-          >
-            <Box
-              position="absolute"
-              top={0}
-              left={0}
-              bottom={0}
-              width="300px"
-              bg="white"
-              shadow="lg"
-              p={4}
-              onClick={e => e.stopPropagation()}
-            >
-              <Box
-                fontSize="lg"
-                fontWeight="bold"
-                mb={4}
-                borderBottom="1px"
-                borderColor="gray.200"
-                pb={2}
-              >
-                Filter
-              </Box>
-              {data && (
-                <SearchSidebar
-                  isOpenDrawer
-                  members={members}
-                  onSearch={handleSearch}
-                  onValidatedUsernames={handleValidatedUsernames}
-                  onValidationError={handleValidationError}
-                  removeMember={removeMember}
-                  removeAllMembers={removeAllMembers}
-                  collections={data.collections}
-                  isValidating={isValidating}
-                  pendingUsernames={pendingUsernames}
-                />
-              )}
-            </Box>
-          </Box>
-        )}
-
-        {/* Mobile Drawer */}
-        {!isLoading && data && (
-          <MobileDrawer
-            isOpen={isMobileMenuOpen}
-            onClose={onMobileMenuClose}
-            members={members}
-            collections={data.collections}
-            onSearch={handleSearch}
-            onValidatedUsernames={handleValidatedUsernames}
-            onValidationError={handleValidationError}
-            removeMember={removeMember}
-            removeAllMembers={removeAllMembers}
-            isValidating={isValidating}
-            pendingUsernames={pendingUsernames}
-          />
-        )}
       </FormProvider>
     </MemberProvider>
   );
