@@ -108,9 +108,15 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
         const noCollectionUsernames: string[] = [];
 
         data.forEach(result => {
-          if (result.validationData?.hasUser && result.validationData?.hasCollection) {
+          if (
+            result.validationData?.hasUser &&
+            result.validationData?.hasCollection
+          ) {
             validUsernames.push(result.username);
-          } else if (result.validationData?.hasUser && !result.validationData?.hasCollection) {
+          } else if (
+            result.validationData?.hasUser &&
+            !result.validationData?.hasCollection
+          ) {
             noCollectionUsernames.push(result.username);
           } else {
             invalidUsernames.push(result.username);
@@ -133,7 +139,9 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
           errorMessages.push(`User not found: ${invalidUsernames.join(", ")}`);
         }
         if (noCollectionUsernames.length > 0) {
-          errorMessages.push(`No board game collection found: ${noCollectionUsernames.join(", ")}`);
+          errorMessages.push(
+            `No board game collection found: ${noCollectionUsernames.join(", ")}`
+          );
         }
 
         if (errorMessages.length > 0) {

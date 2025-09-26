@@ -149,15 +149,14 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
     setCollapsedGroups(new Set());
   };
 
-  const checkedMembers = watchedMembers ? Object.keys(watchedMembers).reduce(
-    (accum: string[], key: string) => {
-      if (watchedMembers[key]) {
-        accum.push(key);
-      }
-      return accum;
-    },
-    []
-  ) : [];
+  const checkedMembers = watchedMembers
+    ? Object.keys(watchedMembers).reduce((accum: string[], key: string) => {
+        if (watchedMembers[key]) {
+          accum.push(key);
+        }
+        return accum;
+      }, [])
+    : [];
 
   // Sort the results first
   const sortedResults = sortGames(searchResults || [], orderBy as SortOption);
@@ -194,11 +193,12 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
                   {boardgames?.length || 0}{" "}
                   {boardgames?.length === 1 ? "game" : "games"}
                 </Badge>
-                {searchResults && searchResults.length !== boardgames?.length && (
-                  <Badge colorScheme="green" variant="outline" fontSize="sm">
-                    {searchResults.length} shown
-                  </Badge>
-                )}
+                {searchResults &&
+                  searchResults.length !== boardgames?.length && (
+                    <Badge colorScheme="green" variant="outline" fontSize="sm">
+                      {searchResults.length} shown
+                    </Badge>
+                  )}
               </Flex>
             </Flex>
 
@@ -275,18 +275,28 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
         <Box>
           {/* Results count display */}
           {sortedResults.length > 0 && (
-            <Box mb={4} p={3} bg="gray.50" borderRadius="md" border="1px solid" borderColor="gray.200">
+            <Box
+              mb={4}
+              p={3}
+              bg="gray.50"
+              borderRadius="md"
+              border="1px solid"
+              borderColor="gray.200"
+            >
               <Text fontSize="sm" color="gray.600">
-                Showing {sortedResults.length} of {boardgames?.length || 0} games
-                {searchResults && searchResults.length !== boardgames?.length && (
-                  <Text as="span" color="blue.600" fontWeight="medium">
-                    {" "}(filtered)
-                  </Text>
-                )}
+                Showing {sortedResults.length} of {boardgames?.length || 0}{" "}
+                games
+                {searchResults &&
+                  searchResults.length !== boardgames?.length && (
+                    <Text as="span" color="blue.600" fontWeight="medium">
+                      {" "}
+                      (filtered)
+                    </Text>
+                  )}
               </Text>
             </Box>
           )}
-          
+
           {/* Loading state removed as it's not being used */}
           {loading ? (
             <Grid columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }} gap={4}>
@@ -362,18 +372,28 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
         <VStack align="stretch" gap={6}>
           {/* Results count for grouped view */}
           {sortedResults.length > 0 && (
-            <Box mb={4} p={3} bg="gray.50" borderRadius="md" border="1px solid" borderColor="gray.200">
+            <Box
+              mb={4}
+              p={3}
+              bg="gray.50"
+              borderRadius="md"
+              border="1px solid"
+              borderColor="gray.200"
+            >
               <Text fontSize="sm" color="gray.600">
-                Showing {sortedResults.length} of {boardgames?.length || 0} games
-                {searchResults && searchResults.length !== boardgames?.length && (
-                  <Text as="span" color="blue.600" fontWeight="medium">
-                    {" "}(filtered)
-                  </Text>
-                )}
+                Showing {sortedResults.length} of {boardgames?.length || 0}{" "}
+                games
+                {searchResults &&
+                  searchResults.length !== boardgames?.length && (
+                    <Text as="span" color="blue.600" fontWeight="medium">
+                      {" "}
+                      (filtered)
+                    </Text>
+                  )}
               </Text>
             </Box>
           )}
-          
+
           {Object.entries(groupedResults).map(([groupName, games]) => (
             <CollapsibleGroup
               key={groupName}

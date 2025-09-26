@@ -120,7 +120,12 @@ export default function CTA() {
             position="relative"
             mt={{ base: 4, lg: 0 }}
           >
-            <Box position="relative" w="100%" maxW={{ base: "400px", md: "500px", lg: "600px" }} mx="auto">
+            <Box
+              position="relative"
+              w="100%"
+              maxW={{ base: "400px", md: "500px", lg: "600px" }}
+              mx="auto"
+            >
               <Box
                 position="relative"
                 overflow="hidden"
@@ -243,10 +248,10 @@ export default function CTA() {
                   opacity: 0.8,
                 }}
               >
-                <Flex 
-                  direction={{ base: "column", sm: "row" }} 
-                  align={{ base: "center", sm: "flex-start" }} 
-                  gap={{ base: 4, sm: 5 }} 
+                <Flex
+                  direction={{ base: "column", sm: "row" }}
+                  align={{ base: "center", sm: "flex-start" }}
+                  gap={{ base: 4, sm: 5 }}
                   mb={0}
                 >
                   <Box
@@ -264,7 +269,10 @@ export default function CTA() {
                     border="1px solid"
                     borderColor={`${step.color}20`}
                   >
-                    <Box as={step.icon} boxSize={{ base: "28px", md: "32px" }} />
+                    <Box
+                      as={step.icon}
+                      boxSize={{ base: "28px", md: "32px" }}
+                    />
                   </Box>
                   <Box flex="1" textAlign={{ base: "center", sm: "left" }}>
                     <Text

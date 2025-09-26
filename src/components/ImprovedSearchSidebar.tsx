@@ -165,7 +165,7 @@ const ImprovedSearchSidebar = React.memo(
       member => watchedMembers[member]
     ).length;
     const allSelected = members.length > 0 && selectedCount === members.length;
-    
+
     // Check for active filters without causing re-renders
     const hasActiveFilters = () => {
       const values = getValues();
