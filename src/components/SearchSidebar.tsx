@@ -52,7 +52,7 @@ const SearchSidebar = React.memo(
     collections,
     isOpenDrawer,
   }: SearchSidebarProps) => {
-    const { register, handleSubmit, setValue, getValues } = useFormContext();
+    const { register, handleSubmit, setValue, getValues, watch } = useFormContext();
     const { getMemberData } = useMembers();
 
     const onSubmit = (_: any, event: any) => {
@@ -327,6 +327,7 @@ const SearchSidebar = React.memo(
                     >
                       {members.map((member, index) => {
                         const memberData = getMemberData(member);
+                        const isSelected = watch(`members[${member}]`);
                         if (!memberData) return null;
 
                         return (
@@ -337,30 +338,23 @@ const SearchSidebar = React.memo(
                             p={3}
                             borderRadius="lg"
                             border="1px solid"
-                            borderColor="gray.200"
-                            bg={
-                              getValues(`members[${member}]`)
-                                ? "blue.50"
-                                : "white"
-                            }
+                            borderColor={isSelected ? "blue.300" : "gray.200"}
+                            bg={isSelected ? "blue.50" : "white"}
                             transition="all 0.2s"
                             _hover={{
                               borderColor: "blue.300",
-                              bg: getValues(`members[${member}]`)
-                                ? "blue.100"
-                                : "gray.50",
+                              bg: isSelected ? "blue.100" : "gray.50",
+                              transform: "translateY(-1px)",
+                              boxShadow: "sm",
                             }}
                           >
                             <HStack gap={3} width="100%">
                               <input
                                 type="checkbox"
                                 onChange={() => {
-                                  setValue(
-                                    `members[${member}]`,
-                                    !getValues(`members[${member}]`)
-                                  );
+                                  setValue(`members[${member}]`, !isSelected);
                                 }}
-                                checked={getValues(`members[${member}]`)}
+                                checked={isSelected}
                                 style={{
                                   width: "16px",
                                   height: "16px",
