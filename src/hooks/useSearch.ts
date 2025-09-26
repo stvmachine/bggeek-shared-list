@@ -71,11 +71,8 @@ export const filterByUsers = (
   boardgames: BggCollectionItem[],
   usernames: string[]
 ) =>
-  boardgames.filter(
-    (bg: BggCollectionItem) =>
-      bg.owners?.some((o: { username: string }) =>
-        usernames.includes(o.username)
-      )
+  boardgames.filter((bg: BggCollectionItem) =>
+    bg.owners?.some((o: { username: string }) => usernames.includes(o.username))
   );
 
 const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
