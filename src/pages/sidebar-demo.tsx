@@ -1,4 +1,4 @@
-import { Box, Flex, VStack, Text, Button } from "@chakra-ui/react";
+import { Box, Flex, VStack, Text, Button, useBreakpointValue } from "@chakra-ui/react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useState } from "react";
 import ImprovedSearchSidebar from "../components/ImprovedSearchSidebar";
@@ -10,6 +10,9 @@ const SidebarDemoContent = () => {
     { totalitems: 150, pubdate: "2024-01-01" },
     { totalitems: 200, pubdate: "2024-01-02" }
   ]);
+
+  // Responsive breakpoint
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const methods = useForm({
     defaultValues: {
@@ -51,8 +54,25 @@ const SidebarDemoContent = () => {
   return (
     <Box minHeight="100vh" bg="gray.50">
       <Flex height="100vh">
-        {/* Sidebar */}
-        <Box width="340px" bg="white" borderRight="1px solid" borderColor="gray.200">
+        {/* Desktop Sidebar */}
+        {!isMobile && (
+          <Box width="340px" bg="white" borderRight="1px solid" borderColor="gray.200">
+            <FormProvider {...methods}>
+              <ImprovedSearchSidebar
+                members={members}
+                collections={collections}
+                onSearch={handleSearch}
+                onValidatedUsernames={handleValidatedUsernames}
+                onValidationError={handleValidationError}
+                removeMember={handleRemoveMember}
+                removeAllMembers={handleRemoveAllMembers}
+              />
+            </FormProvider>
+          </Box>
+        )}
+
+        {/* Mobile Sidebar */}
+        {isMobile && (
           <FormProvider {...methods}>
             <ImprovedSearchSidebar
               members={members}
@@ -64,7 +84,7 @@ const SidebarDemoContent = () => {
               removeAllMembers={handleRemoveAllMembers}
             />
           </FormProvider>
-        </Box>
+        )}
 
         {/* Main Content */}
         <Box flex="1" p={8}>
@@ -75,6 +95,7 @@ const SidebarDemoContent = () => {
               </Text>
               <Text color="gray.600">
                 This demo showcases the enhanced sidebar with modern design and improved UX.
+                {isMobile && " On mobile, the sidebar appears as a drawer with a floating filter button."}
               </Text>
             </Box>
 
@@ -89,6 +110,7 @@ const SidebarDemoContent = () => {
                 <Text>👥 <strong>Improved Member Management:</strong> Better visual feedback and interactions</Text>
                 <Text>⚡ <strong>Quick Actions:</strong> Clear filters, refresh functionality</Text>
                 <Text>📱 <strong>Responsive:</strong> Works well on different screen sizes</Text>
+                <Text>🎯 <strong>Mobile Drawer:</strong> Floating filter button opens drawer on mobile</Text>
               </VStack>
             </Box>
 
