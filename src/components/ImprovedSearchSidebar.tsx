@@ -7,11 +7,12 @@ import {
   Icon,
   IconButton,
   Input,
+  NativeSelect,
   Text,
+  useBreakpointValue,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { NativeSelect } from "@chakra-ui/react";
 import React, { useCallback, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import {
@@ -22,7 +23,7 @@ import {
   FiSearch,
   FiSettings,
   FiUsers,
-  FiX
+  FiX,
 } from "react-icons/fi";
 
 // import { useMembers } from "../contexts/MemberContext";
@@ -43,6 +44,8 @@ type ImprovedSearchSidebarProps = {
   isOpenDrawer?: boolean;
   isValidating?: boolean;
   pendingUsernames?: string[];
+  onDrawerOpen?: () => void;
+  onDrawerClose?: () => void;
 };
 
 const hideVirtualKeyboard = (): void => {
@@ -85,6 +88,14 @@ const ImprovedSearchSidebar = React.memo(
     });
     const { open: isCollectorsOpen, onToggle: onCollectorsToggle } =
       useDisclosure({ defaultOpen: true });
+
+    // Mobile drawer disclosure
+    const { open: isDrawerOpen, onToggle: onDrawerToggle } = useDisclosure({
+      defaultOpen: false,
+    });
+
+    // Responsive breakpoint
+    const isMobile = useBreakpointValue({ base: true, md: false });
 
     // State for quick actions
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -158,19 +169,20 @@ const ImprovedSearchSidebar = React.memo(
 
     useKeydown(hideVirtualKeyboard);
 
-    return (
+    // Sidebar content component
+    const SidebarContent = () => (
       <form
         onSubmit={handleSubmit(onSubmit, onError)}
         style={{ height: "100%" }}
       >
         <VStack
-          width={isOpenDrawer ? "100%" : "340px"}
+          width={isOpenDrawer || isMobile ? "100%" : "340px"}
           gap={3}
           align="stretch"
-          p={isOpenDrawer ? 0 : 4}
+          p={isOpenDrawer || isMobile ? 4 : 4}
           height="100%"
           overflowY="auto"
-          pr={2}
+          pr={isMobile ? 0 : 2}
           css={{
             "&::-webkit-scrollbar": {
               width: "6px",
@@ -366,21 +378,21 @@ const ImprovedSearchSidebar = React.memo(
                   {/* Quick Actions */}
                   {members.length > 0 && (
                     <HStack gap={2} flexWrap="wrap">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          colorScheme="blue"
-                          onClick={
-                            allSelected ? handleDeselectAll : handleSelectAll
-                          }
-                          borderRadius="xl"
-                          fontSize="xs"
-                          flex="1"
-                          minWidth="100px"
-                        >
-                          <Icon as={allSelected ? FiX : FiPlus} mr={1} />
-                          {allSelected ? "Deselect All" : "Select All"}
-                        </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        colorScheme="blue"
+                        onClick={
+                          allSelected ? handleDeselectAll : handleSelectAll
+                        }
+                        borderRadius="xl"
+                        fontSize="xs"
+                        flex="1"
+                        minWidth="100px"
+                      >
+                        <Icon as={allSelected ? FiX : FiPlus} mr={1} />
+                        {allSelected ? "Deselect All" : "Select All"}
+                      </Button>
 
                       <Button
                         size="sm"
@@ -553,6 +565,73 @@ const ImprovedSearchSidebar = React.memo(
         </VStack>
       </form>
     );
+
+    // Mobile drawer trigger button
+    const MobileDrawerTrigger = () => (
+      <IconButton
+        aria-label="Open search filters"
+        onClick={onDrawerToggle}
+        colorScheme="blue"
+        variant="solid"
+        size="md"
+        borderRadius="xl"
+        position="fixed"
+        bottom={4}
+        right={4}
+        zIndex={1000}
+        boxShadow="lg"
+      >
+        <Icon as={FiFilter} />
+      </IconButton>
+    );
+
+    // Render mobile drawer or desktop sidebar
+    if (isMobile) {
+      return (
+        <>
+          <MobileDrawerTrigger />
+          {isDrawerOpen && (
+            <Box
+              position="fixed"
+              top={0}
+              left={0}
+              right={0}
+              bottom={0}
+              bg="white"
+              zIndex={1000}
+              overflowY="auto"
+              width="100vw"
+              height="100vh"
+            >
+              <Box p={4} borderBottom="1px solid" borderColor="gray.200">
+                <Flex align="center" justify="space-between">
+                  <Flex align="center" gap={2}>
+                    <Icon as={FiFilter} color="blue.500" boxSize={5} />
+                    <Text fontSize="lg" fontWeight="bold" color="gray.700">
+                      Search & Filters
+                    </Text>
+                  </Flex>
+                  <Button variant="ghost" size="sm" onClick={onDrawerToggle}>
+                    <Icon as={FiX} />
+                  </Button>
+                </Flex>
+              </Box>
+              <Box
+                width="100%"
+                height="calc(100vh - 80px)"
+                overflowY="auto"
+                p={0}
+              >
+                <SidebarContent />
+              </Box>
+            </Box>
+          )}
+        </>
+      );
+    }
+
+    // Desktop sidebar
+    return <SidebarContent />;
   }
 );
 
