@@ -66,8 +66,8 @@ const Index: NextPage<CollectionPageProps> = () => {
       // Update URL without triggering a page reload
       window.history.replaceState({}, "", permalink);
     } else {
-      // If no members, redirect to home page
-      window.history.replaceState({}, "", "/");
+      // If no members, clear query parameters but stay on collection page
+      window.history.replaceState({}, "", "/collection");
     }
   }, [members]);
 
@@ -197,7 +197,7 @@ const Index: NextPage<CollectionPageProps> = () => {
             px={{ base: 0, md: 4 }}
           >
             <Box position="relative">
-              {!isLoading && data ? (
+              {!isLoading ? (
                 <>
                   {/* Desktop Sidebar */}
                   <Box
@@ -225,7 +225,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                       onValidationError={handleValidationError}
                       removeMember={removeMember}
                       removeAllMembers={removeAllMembers}
-                      collections={data.collections}
+                      collections={data?.collections || []}
                       isValidating={isValidating}
                       pendingUsernames={pendingUsernames}
                     />
@@ -240,7 +240,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                       onValidationError={handleValidationError}
                       removeMember={removeMember}
                       removeAllMembers={removeAllMembers}
-                      collections={data.collections}
+                      collections={data?.collections || []}
                       isValidating={isValidating}
                       pendingUsernames={pendingUsernames}
                       isMobileDrawerOpen={open}
@@ -255,7 +255,37 @@ const Index: NextPage<CollectionPageProps> = () => {
                     pr={{ base: 4, md: 0 }}
                     width={{ base: "100%", md: `calc(100% - ${sidebarWidth})` }}
                   >
-                    <Results boardgames={data.boardgames} />
+                    {data && members.length > 0 ? (
+                      <Results boardgames={data.boardgames} />
+                    ) : members.length === 0 ? (
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        minH="400px"
+                        textAlign="center"
+                      >
+                        <Box>
+                          <Text fontSize="xl" color="gray.600" mb={4}>
+                            No collectors selected
+                          </Text>
+                          <Text fontSize="md" color="gray.500">
+                            Add some BoardGameGeek usernames to see their collections
+                          </Text>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        minH="400px"
+                      >
+                        <Text fontSize="lg" color="gray.500">
+                          Loading collections...
+                        </Text>
+                      </Box>
+                    )}
                   </Box>
                 </>
               ) : (
