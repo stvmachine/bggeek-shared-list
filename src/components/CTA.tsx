@@ -46,21 +46,21 @@ export default function CTA() {
   return (
     <Box
       bg={bgColor}
-      minH="100vh"
+      minH={{ base: "auto", md: "100vh" }}
       display="flex"
       alignItems="center"
       color={textColor}
       position="relative"
       overflow="hidden"
-      py={16}
+      py={{ base: 8, md: 16 }}
       px={{ base: 4, md: 8 }}
     >
-      <Container maxW="container.xl" px={8} h="100%">
+      <Container maxW="container.xl" px={{ base: 4, md: 8 }} h="100%">
         <Flex
           direction={{ base: "column", lg: "row" }}
           alignItems="center"
           justifyContent="space-between"
-          gap={{ base: 8, lg: 12 }}
+          gap={{ base: 6, md: 8, lg: 12 }}
           h="100%"
           position="relative"
           maxW="7xl"
@@ -71,23 +71,23 @@ export default function CTA() {
           <Box
             flex={{ base: "1 0 100%", lg: "0 0 45%" }}
             alignSelf="center"
-            pt={{ base: 8, lg: 12 }}
+            pt={{ base: 4, lg: 12 }}
             order={{ base: 1, lg: 1 }}
           >
             <Heading
               as="h1"
-              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+              fontSize={{ base: "2xl", sm: "3xl", md: "4xl", lg: "5xl" }}
               fontWeight="bold"
-              mb={6}
+              mb={{ base: 4, md: 6 }}
               lineHeight="1.2"
             >
               Discover, Organize, and Share Your Board Game Collection
             </Heading>
 
             <Text
-              fontSize="lg"
+              fontSize={{ base: "md", md: "lg" }}
               color={mutedTextColor}
-              mb={8}
+              mb={{ base: 6, md: 8 }}
               lineHeight="1.7"
               maxW="600px"
             >
@@ -100,7 +100,7 @@ export default function CTA() {
             <Box
               w="100%"
               maxW={{ base: "100%", lg: "90%" }}
-              mt={{ base: 8, lg: 0 }}
+              mt={{ base: 6, lg: 0 }}
             >
               <UsernameForm
                 onSearch={handleSearch}
@@ -118,19 +118,20 @@ export default function CTA() {
             alignItems="center"
             order={{ base: 2, lg: 2 }}
             position="relative"
+            mt={{ base: 4, lg: 0 }}
           >
-            <Box position="relative" w="100%" maxW="600px" mx="auto">
+            <Box position="relative" w="100%" maxW={{ base: "400px", md: "500px", lg: "600px" }} mx="auto">
               <Box
                 position="relative"
                 overflow="hidden"
-                rounded="lg"
-                shadow="xl"
+                rounded={{ base: "md", md: "lg" }}
+                shadow={{ base: "md", md: "xl" }}
                 border="1px solid"
                 borderColor="gray.200"
                 transition="all 0.3s ease-in-out"
                 _hover={{
-                  transform: "scale(1.02)",
-                  boxShadow: "2xl",
+                  transform: { base: "none", md: "scale(1.02)" },
+                  boxShadow: { base: "md", md: "2xl" },
                 }}
               >
                 <Image
@@ -147,9 +148,9 @@ export default function CTA() {
 
         {/* How to Get Started Section */}
         <Box
-          mt={{ base: 16, md: 24 }}
+          mt={{ base: 12, md: 16, lg: 24 }}
           textAlign="center"
-          px={{ base: 4, md: 8 }}
+          px={{ base: 2, md: 8 }}
         >
           <Box
             as="span"
@@ -179,11 +180,11 @@ export default function CTA() {
 
           <Flex
             direction={{ base: "column", md: "row" }}
-            gap={{ base: 6, md: 8, lg: 12 }}
+            gap={{ base: 4, md: 6, lg: 8 }}
             justify="center"
             maxW="7xl"
             mx="auto"
-            px={{ base: 4, md: 6 }}
+            px={{ base: 2, md: 6 }}
           >
             {[
               {
@@ -191,66 +192,94 @@ export default function CTA() {
                 title: "1. Add Friends",
                 description:
                   "Enter your friends' BoardGameGeek usernames to see their collections",
+                color: "blue.500",
+                bgGradient: "linear(to-br, blue.50, blue.100)",
               },
               {
                 icon: FaSearch,
                 title: "2. Discover Matches",
                 description:
                   "Instantly find games that everyone owns or wants to play",
+                color: "purple.500",
+                bgGradient: "linear(to-br, purple.50, purple.100)",
               },
               {
                 icon: FaGamepad,
                 title: "3. Play & Enjoy",
                 description:
                   "Start your game night with the perfect game for your group",
+                color: "green.500",
+                bgGradient: "linear(to-br, green.50, green.100)",
               },
             ].map((step, index) => (
               <Box
                 key={index}
                 bg="white"
-                p={{ base: 6, md: 8 }}
-                borderRadius="xl"
-                boxShadow="xl"
+                p={{ base: 5, md: 6, lg: 8 }}
+                borderRadius={{ base: "lg", md: "xl" }}
+                boxShadow={{ base: "md", md: "xl" }}
                 flex="1"
-                minW={{ base: "full", md: "300px" }}
-                maxW={{ base: "100%", md: "350px" }}
-                borderTop="4px solid"
-                borderTopColor={`blue.${300 + index * 100}`}
+                minW={{ base: "full", md: "280px" }}
+                maxW={{ base: "100%", md: "320px" }}
+                borderTop={{ base: "3px solid", md: "4px solid" }}
+                borderTopColor={step.color}
                 border="1px solid"
-                borderColor="gray.100"
+                borderColor="gray.200"
+                transition="all 0.2s ease-in-out"
+                _hover={{
+                  transform: { base: "none", md: "translateY(-2px)" },
+                  boxShadow: { base: "md", md: "2xl" },
+                }}
+                position="relative"
+                overflow="hidden"
+                _before={{
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: "3px",
+                  background: `linear-gradient(90deg, ${step.color}, ${step.color}88)`,
+                  opacity: 0.8,
+                }}
               >
-                <Flex direction="row" align="flex-start" gap={5} mb={4}>
+                <Flex 
+                  direction={{ base: "column", sm: "row" }} 
+                  align={{ base: "center", sm: "flex-start" }} 
+                  gap={{ base: 4, sm: 5 }} 
+                  mb={0}
+                >
                   <Box
-                    p={3}
-                    bg="gray.100"
-                    rounded="lg"
-                    color="gray.700"
+                    p={{ base: 3, md: 4 }}
+                    bgGradient={step.bgGradient}
+                    rounded={{ base: "xl", md: "2xl" }}
+                    color={step.color}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                     flexShrink={0}
-                    width="48px"
-                    height="48px"
-                    mt={1}
+                    width={{ base: "56px", md: "64px" }}
+                    height={{ base: "56px", md: "64px" }}
+                    boxShadow="sm"
+                    border="1px solid"
+                    borderColor={`${step.color}20`}
                   >
-                    <Box as={step.icon} boxSize="24px" color="gray.700" />
+                    <Box as={step.icon} boxSize={{ base: "28px", md: "32px" }} />
                   </Box>
-                  <Box flex="1">
+                  <Box flex="1" textAlign={{ base: "center", sm: "left" }}>
                     <Text
                       color={textColor}
-                      fontSize="lg"
-                      fontWeight="semibold"
+                      fontSize={{ base: "lg", md: "xl" }}
+                      fontWeight="bold"
                       lineHeight="shorter"
-                      mb={2}
-                      textAlign="left"
+                      mb={{ base: 2, md: 3 }}
                     >
                       {step.title}
                     </Text>
                     <Text
                       color={mutedTextColor}
-                      fontSize="md"
-                      textAlign="left"
-                      lineHeight="tall"
+                      fontSize={{ base: "sm", md: "md" }}
+                      lineHeight={{ base: "1.5", md: "1.6" }}
                     >
                       {step.description}
                     </Text>
