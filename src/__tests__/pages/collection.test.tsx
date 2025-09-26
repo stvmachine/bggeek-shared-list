@@ -1,5 +1,5 @@
 import { ChakraProvider, createSystem, defaultConfig } from "@chakra-ui/react";
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { useRouter } from "next/router";
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -51,34 +51,7 @@ jest.mock("../../components/Layout/Footer", () => () => (
 jest.mock("../../components/Results", () => () => (
   <div data-testid="results">Results</div>
 ));
-jest.mock(
-  "../../components/SearchSidebar",
-  () =>
-    ({ pendingUsernames, isValidating }: any) => (
-      <div data-testid="search-sidebar">
-        <div data-testid="pending-usernames">
-          {pendingUsernames?.length || 0} pending usernames
-        </div>
-        <div data-testid="is-validating">
-          {isValidating ? "validating" : "not validating"}
-        </div>
-      </div>
-    )
-);
-jest.mock(
-  "../../components/MobileDrawer",
-  () =>
-    ({ pendingUsernames, isValidating }: any) => (
-      <div data-testid="mobile-drawer">
-        <div data-testid="mobile-pending-usernames">
-          {pendingUsernames?.length || 0} pending usernames
-        </div>
-        <div data-testid="mobile-is-validating">
-          {isValidating ? "validating" : "not validating"}
-        </div>
-      </div>
-    )
-);
+// Removed mocks for deleted components: SearchSidebar and MobileDrawer
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -111,43 +84,9 @@ describe("Collection Page - Pending Usernames Logic", () => {
     jest.clearAllMocks();
   });
 
-  it("should initialize with empty pending usernames and not validating", async () => {
-    renderWithProviders(<Collection />);
+  // Removed test for deleted SearchSidebar component
 
-    // Wait for the component to load and data to be available
-    await screen.findByTestId("search-sidebar");
-
-    expect(screen.getByTestId("pending-usernames")).toHaveTextContent(
-      "0 pending usernames"
-    );
-    expect(screen.getByTestId("is-validating")).toHaveTextContent(
-      "not validating"
-    );
-  });
-
-  it("should pass pending state to SearchSidebar", async () => {
-    renderWithProviders(<Collection />);
-
-    // Wait for the component to load
-    await screen.findByTestId("search-sidebar");
-
-    // The SearchSidebar should receive the pending state props
-    expect(screen.getByTestId("search-sidebar")).toBeInTheDocument();
-    expect(screen.getByTestId("pending-usernames")).toBeInTheDocument();
-    expect(screen.getByTestId("is-validating")).toBeInTheDocument();
-  });
-
-  it("should pass pending state to MobileDrawer", async () => {
-    renderWithProviders(<Collection />);
-
-    // Wait for the component to load
-    await screen.findByTestId("mobile-drawer");
-
-    // The MobileDrawer should receive the pending state props
-    expect(screen.getByTestId("mobile-drawer")).toBeInTheDocument();
-    expect(screen.getByTestId("mobile-pending-usernames")).toBeInTheDocument();
-    expect(screen.getByTestId("mobile-is-validating")).toBeInTheDocument();
-  });
+  // Removed tests for deleted components: SearchSidebar and MobileDrawer
 
   it("should render without errors", () => {
     expect(() => renderWithProviders(<Collection />)).not.toThrow();
