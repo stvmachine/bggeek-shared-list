@@ -15,9 +15,8 @@ import { useQueries } from "react-query";
 import { mergeCollections } from "../api/fetchGroupCollection";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
-import MobileDrawer from "../components/MobileDrawer";
 import Results from "../components/Results";
-import SearchSidebar from "../components/SearchSidebar";
+import ImprovedSearchSidebar from "../components/ImprovedSearchSidebar";
 import { MemberProvider } from "../contexts/MemberContext";
 import { generatePermalink, parseUsernamesFromUrl } from "../utils/permalink";
 import { ICollection } from "../utils/types";
@@ -161,6 +160,9 @@ const Index: NextPage<CollectionPageProps> = () => {
 
   const defaultValues = useMemo(
     () => ({
+      keyword: "",
+      numberOfPlayers: "",
+      playingTime: "",
       orderBy: "name_asc",
       groupBy: "none",
       members: members.reduce(
@@ -193,22 +195,6 @@ const Index: NextPage<CollectionPageProps> = () => {
             <Box position="relative">
               {!isLoading && data ? (
                 <>
-                  {/* Mobile Drawer */}
-                  <MobileDrawer
-                    isOpen={open}
-                    onClose={onClose}
-                    members={members}
-                    collections={data?.collections || []}
-                    onSearch={handleSearch}
-                    onValidatedUsernames={handleValidatedUsernames}
-                    onValidationError={handleValidationError}
-                    removeMember={removeMember}
-                    removeAllMembers={removeAllMembers}
-                    isValidating={isValidating}
-                    pendingUsernames={pendingUsernames}
-                    title="Filters & Members"
-                  />
-
                   {/* Desktop Sidebar */}
                   <Box
                     display={{ base: "none", md: "flex" }}
@@ -228,7 +214,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                       },
                     }}
                   >
-                    <SearchSidebar
+                    <ImprovedSearchSidebar
                       members={members}
                       onSearch={handleSearch}
                       onValidatedUsernames={handleValidatedUsernames}
@@ -238,6 +224,23 @@ const Index: NextPage<CollectionPageProps> = () => {
                       collections={data.collections}
                       isValidating={isValidating}
                       pendingUsernames={pendingUsernames}
+                    />
+                  </Box>
+
+                  {/* Mobile Sidebar */}
+                  <Box display={{ base: "block", md: "none" }}>
+                    <ImprovedSearchSidebar
+                      members={members}
+                      onSearch={handleSearch}
+                      onValidatedUsernames={handleValidatedUsernames}
+                      onValidationError={handleValidationError}
+                      removeMember={removeMember}
+                      removeAllMembers={removeAllMembers}
+                      collections={data.collections}
+                      isValidating={isValidating}
+                      pendingUsernames={pendingUsernames}
+                      isMobileDrawerOpen={open}
+                      onMobileDrawerToggle={onClose}
                     />
                   </Box>
 
@@ -268,7 +271,7 @@ const Index: NextPage<CollectionPageProps> = () => {
           </Container>
           <Footer />
 
-          {/* Mobile Floating Action Button */}
+          {/* Mobile Share Button */}
           {showFAB && (
             <Box
               position="fixed"

@@ -21,12 +21,12 @@ import { FiUsers } from "react-icons/fi"; // Used in EmptyState component
 // Other icons commented out until needed
 // import { FiFilter, FiInfo } from "react-icons/fi";
 import SortBar from "../components/SortBar";
-import { MemberAvatar } from "./MemberAvatar";
 import { useMembers } from "../contexts/MemberContext";
 import { useSearch } from "../hooks/useSearch";
 import { GroupedGames, groupGames, GroupingOption } from "../utils/grouping";
 import { sortGames, SortOption } from "../utils/sorting";
 import { BggCollectionItem } from "../utils/types";
+import { MemberAvatar } from "./MemberAvatar";
 
 import CollapsibleGroup from "./CollapsibleGroup";
 import GameCard from "./GameCard";
@@ -77,7 +77,7 @@ const GameCardSkeleton = () => (
 );
 
 // Empty state component
-const EmptyState = ({ onAddMembers }: { onAddMembers: () => void }) => (
+const EmptyState = () => (
   <Box
     border="2px dashed"
     borderColor="gray.200"
@@ -96,14 +96,6 @@ const EmptyState = ({ onAddMembers }: { onAddMembers: () => void }) => (
     <Text color="gray.500" mb={6}>
       Add board game collection members to get started
     </Text>
-    <IconButton
-      colorScheme="blue"
-      leftIcon={<FiUsers />}
-      onClick={onAddMembers}
-      size="md"
-    >
-      Add Members
-    </IconButton>
   </Box>
 );
 
@@ -246,7 +238,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
           </VStack>
         </Box>
       ) : (
-        <EmptyState onAddMembers={() => {}} />
+        <EmptyState />
       )}
 
       <SortBar />

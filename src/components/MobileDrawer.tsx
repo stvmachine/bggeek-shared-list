@@ -3,7 +3,7 @@ import React from "react";
 
 import { ICollection } from "../utils/types";
 
-import SearchSidebar from "./SearchSidebar";
+import ImprovedSearchSidebar from "./ImprovedSearchSidebar";
 
 type MobileDrawerProps = {
   isOpen: boolean;
@@ -74,7 +74,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
           </Box>
         </Box>
         <Box p={0}>
-          <SearchSidebar
+          <ImprovedSearchSidebar
             members={members}
             onSearch={onSearch}
             onValidatedUsernames={onValidatedUsernames}

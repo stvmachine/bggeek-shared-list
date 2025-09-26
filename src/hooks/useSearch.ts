@@ -12,54 +12,55 @@ export interface IFuzzyClient<T> {
 
 export const filterByNumPlayers = (
   boardgames: BggCollectionItem[],
-  numberOfPlayers: number
+  numberOfPlayers: number | string
 ) =>
-  numberOfPlayers
+  numberOfPlayers && numberOfPlayers !== ""
     ? boardgames.filter(
         (bg: BggCollectionItem) =>
-          Number(bg.stats.maxplayers) >= numberOfPlayers &&
-          Number(bg.stats.minplayers) <= numberOfPlayers
+          Number(bg.stats.maxplayers) >= Number(numberOfPlayers) &&
+          Number(bg.stats.minplayers) <= Number(numberOfPlayers)
       )
     : boardgames;
 
 export const filterByPlayingTime = (
   boardgames: BggCollectionItem[],
-  playingTime: number
+  playingTime: number | string
 ) =>
-  playingTime
+  playingTime && playingTime !== ""
     ? boardgames.filter((bg: BggCollectionItem) => {
-        if (playingTime == 1 && bg.stats.maxplaytime <= 30) {
+        const time = Number(playingTime);
+        if (time == 1 && bg.stats.maxplaytime <= 30) {
           return true;
         }
         if (
-          playingTime == 2 &&
+          time == 2 &&
           bg.stats.maxplaytime > 30 &&
           bg.stats.maxplaytime <= 60
         ) {
           return true;
         }
         if (
-          playingTime == 3 &&
+          time == 3 &&
           bg.stats.maxplaytime > 60 &&
           bg.stats.maxplaytime <= 60 * 2
         ) {
           return true;
         }
         if (
-          playingTime == 4 &&
+          time == 4 &&
           bg.stats.maxplaytime > 60 * 2 &&
           bg.stats.maxplaytime <= 60 * 3
         ) {
           return true;
         }
         if (
-          playingTime == 5 &&
+          time == 5 &&
           bg.stats.maxplaytime > 60 * 3 &&
           bg.stats.maxplaytime <= 60 * 4
         ) {
           return true;
         }
-        if (playingTime == 6 && bg.stats.maxplaytime > 60 * 4) {
+        if (time == 6 && bg.stats.maxplaytime > 60 * 4) {
           return true;
         }
         return false;
@@ -163,11 +164,11 @@ export function useSearch<T>(
     ) as T[];
     currentResults = filterByPlayingTime(
       currentResults as BggCollectionItem[],
-      Number(playingTime)
+      playingTime
     ) as T[];
     currentResults = filterByNumPlayers(
       currentResults as BggCollectionItem[],
-      Number(numberOfPlayers)
+      numberOfPlayers
     ) as T[];
     currentResults = orderByFn(
       currentResults as BggCollectionItem[],
