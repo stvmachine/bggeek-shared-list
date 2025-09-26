@@ -10,7 +10,6 @@ export default class Document extends NextDocument {
             name="description"
             content="Shared Shelf - Organize and share your board game collection"
           />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta name="theme-color" content="#0B2540" />
 
           {/* Favicon */}
@@ -34,8 +33,6 @@ export default class Document extends NextDocument {
             content="Organize and share your board game collection"
           />
           <meta name="twitter:image" content="/img/logo.svg" />
-
-          <title>Shared Shelf</title>
         </Head>
         <body>
           <Analytics />

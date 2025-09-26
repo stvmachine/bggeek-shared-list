@@ -73,9 +73,9 @@ export const filterByUsers = (
 ) =>
   boardgames.filter(
     (bg: BggCollectionItem) =>
-      bg.owners?.filter((o: { username: string }) =>
+      bg.owners?.some((o: { username: string }) =>
         usernames.includes(o.username)
-      )?.length
+      )
   );
 
 const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
@@ -113,8 +113,11 @@ export function useSearch<T>(
   options: FuseOptions<T>
 ): IFuzzyClient<T> {
   const { watch } = useFormContext();
-  const watchAllFields = watch();
-  const { keyword, members, orderBy, ...otherFields } = watchAllFields;
+  const keyword = watch("keyword");
+  const members = watch("members");
+  const orderBy = watch("orderBy");
+  const playingTime = watch("playingTime");
+  const numberOfPlayers = watch("numberOfPlayers");
 
   const searcher = useMemo(() => {
     const defaultOptions = { tokenize: true, threshold: 0.2 };
@@ -126,16 +129,15 @@ export function useSearch<T>(
       data,
       keyword,
       orderBy,
-      otherFields.playingTime,
-      otherFields.numberOfPlayers,
+      playingTime,
+      numberOfPlayers,
       JSON.stringify(members),
     ],
-    500
+    800
   );
 
   const results = useMemo((): T[] => {
     let currentResults: T[] = [...data];
-    const { playingTime, numberOfPlayers } = otherFields;
 
     // Apply search if keyword exists
     if (keyword) {

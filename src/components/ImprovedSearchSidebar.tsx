@@ -73,7 +73,7 @@ const ImprovedSearchSidebar = React.memo(
     isMobileDrawerOpen,
     onMobileDrawerToggle,
   }: ImprovedSearchSidebarProps) => {
-    const { register, handleSubmit, setValue, getValues, watch, reset } =
+    const { register, handleSubmit, setValue, getValues, reset, watch } =
       useFormContext();
 
     const getMemberData = useCallback(
@@ -165,10 +165,12 @@ const ImprovedSearchSidebar = React.memo(
       member => watchedMembers[member]
     ).length;
     const allSelected = members.length > 0 && selectedCount === members.length;
-    const keyword = watch("keyword");
-    const numberOfPlayers = watch("numberOfPlayers");
-    const playingTime = watch("playingTime");
-    const hasActiveFilters = keyword || numberOfPlayers || playingTime;
+    
+    // Check for active filters without causing re-renders
+    const hasActiveFilters = () => {
+      const values = getValues();
+      return !!(values.keyword || values.numberOfPlayers || values.playingTime);
+    };
 
     useKeydown(hideVirtualKeyboard);
 
@@ -184,6 +186,7 @@ const ImprovedSearchSidebar = React.memo(
         isOpenDrawer?: boolean;
       }) => {
         const memberData = getMemberData(member);
+        const isSelected = watch(`members[${member}]`);
         if (!memberData) return null;
 
         return (
@@ -192,12 +195,12 @@ const ImprovedSearchSidebar = React.memo(
             p={3}
             borderRadius="xl"
             border="1px solid"
-            borderColor="gray.200"
-            bg={getValues(`members[${member}]`) ? "blue.50" : "white"}
+            borderColor={isSelected ? "blue.300" : "gray.200"}
+            bg={isSelected ? "blue.50" : "white"}
             transition="all 0.2s"
             _hover={{
               borderColor: "blue.300",
-              bg: getValues(`members[${member}]`) ? "blue.100" : "gray.50",
+              bg: isSelected ? "blue.100" : "gray.50",
               transform: "translateY(-1px)",
               boxShadow: "sm",
             }}
@@ -206,12 +209,9 @@ const ImprovedSearchSidebar = React.memo(
               <input
                 type="checkbox"
                 onChange={() => {
-                  setValue(
-                    `members[${member}]`,
-                    !getValues(`members[${member}]`)
-                  );
+                  setValue(`members[${member}]`, !isSelected);
                 }}
-                checked={getValues(`members[${member}]`)}
+                checked={isSelected}
                 style={{
                   width: "18px",
                   height: "18px",
@@ -350,7 +350,7 @@ const ImprovedSearchSidebar = React.memo(
                 <Text fontSize="lg" fontWeight="bold" color="gray.700">
                   Filters
                 </Text>
-                {hasActiveFilters && (
+                {hasActiveFilters() && (
                   <Badge colorScheme="blue" variant="solid" fontSize="xs">
                     Active
                   </Badge>
@@ -550,7 +550,7 @@ const ImprovedSearchSidebar = React.memo(
               colorScheme="gray"
               size="md"
               borderRadius="xl"
-              disabled={!hasActiveFilters}
+              disabled={!hasActiveFilters()}
             >
               <Icon as={FiX} mr={1} />
               Clear Filters
