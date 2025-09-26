@@ -13,7 +13,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   FiChevronDown,
@@ -21,7 +21,6 @@ import {
   FiFilter,
   FiPlus,
   FiSearch,
-  FiSettings,
   FiUsers,
   FiX,
 } from "react-icons/fi";
@@ -46,6 +45,9 @@ type ImprovedSearchSidebarProps = {
   pendingUsernames?: string[];
   onDrawerOpen?: () => void;
   onDrawerClose?: () => void;
+  // Mobile drawer control
+  isMobileDrawerOpen?: boolean;
+  onMobileDrawerToggle?: () => void;
 };
 
 const hideVirtualKeyboard = (): void => {
@@ -68,19 +70,23 @@ const ImprovedSearchSidebar = React.memo(
     removeAllMembers,
     collections,
     isOpenDrawer,
+    isMobileDrawerOpen,
+    onMobileDrawerToggle,
   }: ImprovedSearchSidebarProps) => {
     const { register, handleSubmit, setValue, getValues, watch, reset } =
       useFormContext();
 
-    // Mock getMemberData function for demo
-    const getMemberData = (username: string) => ({
-      username,
-      color: {
-        bg: `hsl(${username.length * 60}, 70%, 50%)`,
-        color: "white",
-      },
-      initial: username.charAt(0).toUpperCase(),
-    });
+    const getMemberData = useCallback(
+      (username: string) => ({
+        username,
+        color: {
+          bg: `hsl(${username.length * 60}, 70%, 50%)`,
+          color: "white",
+        },
+        initial: username.charAt(0).toUpperCase(),
+      }),
+      []
+    );
 
     // Disclosure hooks for collapsible sections
     const { open: isFiltersOpen, onToggle: onFiltersToggle } = useDisclosure({
@@ -89,16 +95,22 @@ const ImprovedSearchSidebar = React.memo(
     const { open: isCollectorsOpen, onToggle: onCollectorsToggle } =
       useDisclosure({ defaultOpen: true });
 
-    // Mobile drawer disclosure
-    const { open: isDrawerOpen, onToggle: onDrawerToggle } = useDisclosure({
-      defaultOpen: false,
-    });
+    // Mobile drawer disclosure - use external control if provided
+    const { open: internalDrawerOpen, onToggle: internalDrawerToggle } =
+      useDisclosure({
+        defaultOpen: false,
+      });
+
+    const isDrawerOpen =
+      isMobileDrawerOpen !== undefined
+        ? isMobileDrawerOpen
+        : internalDrawerOpen;
+    const onDrawerToggle = onMobileDrawerToggle || internalDrawerToggle;
 
     // Responsive breakpoint
     const isMobile = useBreakpointValue({ base: true, md: false });
 
-    // State for quick actions
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    // State for quick actions - removed unused state
 
     const onSubmit = (_: any, event: any) => {
       event.preventDefault();
@@ -119,14 +131,7 @@ const ImprovedSearchSidebar = React.memo(
       });
     }, [members, setValue]);
 
-    const handleRemoveMember = useCallback(
-      (member: string) => {
-        if (removeMember) {
-          removeMember(member);
-        }
-      },
-      [removeMember]
-    );
+    // Removed unused handleRemoveMember function
 
     const handleRemoveAllMembers = useCallback(() => {
       if (removeAllMembers) {
@@ -153,21 +158,109 @@ const ImprovedSearchSidebar = React.memo(
       });
     }, [reset]);
 
-    const handleRefresh = useCallback(async () => {
-      setIsRefreshing(true);
-      // Simulate refresh - in real app, this would refetch data
-      setTimeout(() => setIsRefreshing(false), 1000);
-    }, []);
+    // Removed unused handleRefresh function
 
     const watchedMembers = getValues("members") || {};
     const selectedCount = members.filter(
       member => watchedMembers[member]
     ).length;
     const allSelected = members.length > 0 && selectedCount === members.length;
-    const hasActiveFilters =
-      watch("keyword") || watch("numberOfPlayers") || watch("playingTime");
+    const keyword = watch("keyword");
+    const numberOfPlayers = watch("numberOfPlayers");
+    const playingTime = watch("playingTime");
+    const hasActiveFilters = keyword || numberOfPlayers || playingTime;
 
     useKeydown(hideVirtualKeyboard);
+
+    // Memoized member item component to prevent re-renders
+    const MemberItem = React.memo(
+      ({
+        member,
+        index,
+        isOpenDrawer,
+      }: {
+        member: string;
+        index: number;
+        isOpenDrawer?: boolean;
+      }) => {
+        const memberData = getMemberData(member);
+        if (!memberData) return null;
+
+        return (
+          <Box
+            key={`checkbox-${member}-${isOpenDrawer ? "-mobile" : ""}`}
+            p={3}
+            borderRadius="xl"
+            border="1px solid"
+            borderColor="gray.200"
+            bg={getValues(`members[${member}]`) ? "blue.50" : "white"}
+            transition="all 0.2s"
+            _hover={{
+              borderColor: "blue.300",
+              bg: getValues(`members[${member}]`) ? "blue.100" : "gray.50",
+              transform: "translateY(-1px)",
+              boxShadow: "sm",
+            }}
+          >
+            <HStack gap={3} width="100%">
+              <input
+                type="checkbox"
+                onChange={() => {
+                  setValue(
+                    `members[${member}]`,
+                    !getValues(`members[${member}]`)
+                  );
+                }}
+                checked={getValues(`members[${member}]`)}
+                style={{
+                  width: "18px",
+                  height: "18px",
+                  accentColor: "var(--chakra-colors-blue-500)",
+                }}
+              />
+              <Box
+                width="36px"
+                height="36px"
+                borderRadius="full"
+                bg={memberData.color.bg}
+                color={memberData.color.color}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                fontSize="sm"
+                fontWeight="bold"
+                flexShrink={0}
+                boxShadow="sm"
+              >
+                {memberData.initial}
+              </Box>
+              <Box flex="1" minWidth={0}>
+                <Text fontWeight="medium" fontSize="sm" truncate>
+                  {member}
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  {collections[index]?.totalitems || 0} games
+                </Text>
+              </Box>
+              {removeMember && (
+                <IconButton
+                  size="xs"
+                  variant="ghost"
+                  colorScheme="red"
+                  onClick={() => removeMember(member)}
+                  borderRadius="full"
+                  width="24px"
+                  height="24px"
+                  minWidth="24px"
+                >
+                  <Icon as={FiX} />
+                </IconButton>
+              )}
+            </HStack>
+          </Box>
+        );
+      }
+    );
 
     // Sidebar content component
     const SidebarContent = () => (
@@ -289,6 +382,9 @@ const ImprovedSearchSidebar = React.memo(
                         borderColor="gray.300"
                         _focus={{ borderColor: "blue.400" }}
                         _hover={{ borderColor: "gray.400" }}
+                        onChange={e => {
+                          setValue("numberOfPlayers", e.target.value);
+                        }}
                       >
                         {numberOfPlayersOptions?.map(item => (
                           <option
@@ -320,6 +416,9 @@ const ImprovedSearchSidebar = React.memo(
                         borderColor="gray.300"
                         _focus={{ borderColor: "blue.400" }}
                         _hover={{ borderColor: "gray.400" }}
+                        onChange={e => {
+                          setValue("playingTime", e.target.value);
+                        }}
                       >
                         {playingTimeOptions?.map(item => (
                           <option
@@ -429,90 +528,14 @@ const ImprovedSearchSidebar = React.memo(
                     maxHeight="300px"
                     overflowY="auto"
                   >
-                    {members.map((member, index) => {
-                      const memberData = getMemberData(member);
-                      if (!memberData) return null;
-
-                      return (
-                        <Box
-                          key={`checkbox-${member}-${isOpenDrawer ? "-mobile" : ""}`}
-                          p={3}
-                          borderRadius="xl"
-                          border="1px solid"
-                          borderColor="gray.200"
-                          bg={
-                            getValues(`members[${member}]`)
-                              ? "blue.50"
-                              : "white"
-                          }
-                          transition="all 0.2s"
-                          _hover={{
-                            borderColor: "blue.300",
-                            bg: getValues(`members[${member}]`)
-                              ? "blue.100"
-                              : "gray.50",
-                            transform: "translateY(-1px)",
-                            boxShadow: "sm",
-                          }}
-                        >
-                          <HStack gap={3} width="100%">
-                            <input
-                              type="checkbox"
-                              onChange={() => {
-                                setValue(
-                                  `members[${member}]`,
-                                  !getValues(`members[${member}]`)
-                                );
-                              }}
-                              checked={getValues(`members[${member}]`)}
-                              style={{
-                                width: "18px",
-                                height: "18px",
-                                accentColor: "var(--chakra-colors-blue-500)",
-                              }}
-                            />
-                            <Box
-                              width="36px"
-                              height="36px"
-                              borderRadius="full"
-                              bg={memberData.color.bg}
-                              color={memberData.color.color}
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                              fontSize="sm"
-                              fontWeight="bold"
-                              flexShrink={0}
-                              boxShadow="sm"
-                            >
-                              {memberData.initial}
-                            </Box>
-                            <Box flex="1" minWidth={0}>
-                              <Text fontWeight="medium" fontSize="sm" truncate>
-                                {member}
-                              </Text>
-                              <Text fontSize="xs" color="gray.500">
-                                {collections[index]?.totalitems || 0} games
-                              </Text>
-                            </Box>
-                            {removeMember && (
-                              <IconButton
-                                size="xs"
-                                variant="ghost"
-                                colorScheme="red"
-                                onClick={() => handleRemoveMember(member)}
-                                borderRadius="full"
-                                width="24px"
-                                height="24px"
-                                minWidth="24px"
-                              >
-                                <Icon as={FiX} />
-                              </IconButton>
-                            )}
-                          </HStack>
-                        </Box>
-                      );
-                    })}
+                    {members.map((member, index) => (
+                      <MemberItem
+                        key={`member-${member}-${index}`}
+                        member={member}
+                        index={index}
+                        isOpenDrawer={isOpenDrawer}
+                      />
+                    ))}
                   </VStack>
                 </VStack>
               </Box>
@@ -532,64 +555,18 @@ const ImprovedSearchSidebar = React.memo(
               <Icon as={FiX} mr={1} />
               Clear Filters
             </Button>
-
-            <Button
-              onClick={handleRefresh}
-              colorScheme="blue"
-              variant="solid"
-              size="md"
-              borderRadius="xl"
-              loading={isRefreshing}
-              loadingText="Refreshing..."
-              spinnerPlacement="start"
-            >
-              Apply Filters
-            </Button>
           </VStack>
-
-          {/* Footer */}
-          <Box pt={4} divideY={"12px"}>
-            <Flex
-              align="center"
-              justify="space-between"
-              color="gray.500"
-              fontSize="xs"
-            >
-              <Text>Made with ❤️</Text>
-              <HStack gap={1}>
-                <Icon as={FiSettings} boxSize={3} />
-                <Text>Settings</Text>
-              </HStack>
-            </Flex>
-          </Box>
         </VStack>
       </form>
     );
 
-    // Mobile drawer trigger button
-    const MobileDrawerTrigger = () => (
-      <IconButton
-        aria-label="Open search filters"
-        onClick={onDrawerToggle}
-        colorScheme="blue"
-        variant="solid"
-        size="md"
-        borderRadius="xl"
-        position="fixed"
-        bottom={4}
-        right={4}
-        zIndex={1000}
-        boxShadow="lg"
-      >
-        <Icon as={FiFilter} />
-      </IconButton>
-    );
+    // Mobile drawer trigger button - removed floating button
+    // The hamburger menu will be handled by the parent component
 
     // Render mobile drawer or desktop sidebar
     if (isMobile) {
       return (
         <>
-          <MobileDrawerTrigger />
           {isDrawerOpen && (
             <Box
               position="fixed"

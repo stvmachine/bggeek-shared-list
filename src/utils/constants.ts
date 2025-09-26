@@ -1,4 +1,5 @@
 export const numberOfPlayersOptions = [
+  { value: "", name: "Any number of players" },
   { value: 1, name: 1 },
   { value: 2, name: 2 },
   { value: 3, name: 3 },
@@ -12,6 +13,7 @@ export const numberOfPlayersOptions = [
 ];
 
 export const playingTimeOptions = [
+  { value: "", name: "Any playing time" },
   { value: 1, name: "<= 30min" },
   { value: 2, name: "30min-1h" },
   { value: 3, name: "1h-2h" },
