@@ -13,12 +13,16 @@ import { FiShare2 } from "react-icons/fi";
 import { useQueries } from "react-query";
 
 import { mergeCollections } from "../api/fetchGroupCollection";
+import ImprovedSearchSidebar from "../components/ImprovedSearchSidebar";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import Results from "../components/Results";
-import ImprovedSearchSidebar from "../components/ImprovedSearchSidebar";
 import { MemberProvider } from "../contexts/MemberContext";
-import { generatePermalink, parseUsernamesFromUrl } from "../utils/permalink";
+import {
+  copyToClipboard,
+  generatePermalink,
+  parseUsernamesFromUrl,
+} from "../utils/permalink";
 import { ICollection } from "../utils/types";
 
 type CollectionPageProps = {
@@ -283,20 +287,43 @@ const Index: NextPage<CollectionPageProps> = () => {
               <Box
                 as="button"
                 onClick={async () => {
+                  const url = window.location.href;
+
                   try {
-                    await navigator.clipboard.writeText(window.location.href);
+                    // Check if native share API is available and user is on mobile
                     if (isMobile && navigator.share) {
                       await navigator.share({
                         title: "My Board Game Collection",
                         text: "Check out my board game collection!",
-                        url: window.location.href,
+                        url: url,
                       });
                     } else {
-                      alert("Link copied to clipboard!");
+                      // Fallback to clipboard for desktop or browsers without share API
+                      const success = await copyToClipboard(url);
+                      if (success) {
+                        console.log("Link copied to clipboard!");
+                        alert("Link copied to clipboard!");
+                      } else {
+                        throw new Error("Clipboard copy failed");
+                      }
                     }
                   } catch (err) {
                     console.error("Failed to share:", err);
-                    alert("Failed to copy link. Please try again.");
+
+                    // If share fails, try clipboard as fallback
+                    try {
+                      const success = await copyToClipboard(url);
+                      if (success) {
+                        alert("Link copied to clipboard!");
+                      } else {
+                        throw new Error("Clipboard fallback failed");
+                      }
+                    } catch (clipboardErr) {
+                      console.error("Clipboard also failed:", clipboardErr);
+                      alert(
+                        "Failed to share. Please copy the URL manually: " + url
+                      );
+                    }
                   }
                 }}
                 aria-label="Share collection"
