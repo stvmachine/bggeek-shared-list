@@ -64,7 +64,6 @@ const GameCard: React.FC<GameCardProps> = ({
   id,
   name,
   thumbnail,
-  yearPublished,
   minPlayers = 0,
   maxPlayers = 0,
   playingTime = 0,
