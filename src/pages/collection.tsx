@@ -174,14 +174,16 @@ const Index: NextPage<CollectionPageProps> = () => {
         {}
       ),
     }),
-    [members]
+    [JSON.stringify(members)] // Use stringified members to prevent unnecessary recalculations
   );
+
   const methods = useForm({ defaultValues });
 
   // Reset form when members change
+  const membersString = JSON.stringify(members);
   useEffect(() => {
     methods.reset(defaultValues);
-  }, [members, methods, defaultValues]);
+  }, [membersString, methods, defaultValues]);
 
   const sidebarWidth = "300px";
 
@@ -270,7 +272,8 @@ const Index: NextPage<CollectionPageProps> = () => {
                             No collectors selected
                           </Text>
                           <Text fontSize="md" color="gray.500">
-                            Add some BoardGameGeek usernames to see their collections
+                            Add some BoardGameGeek usernames to see their
+                            collections
                           </Text>
                         </Box>
                       </Box>

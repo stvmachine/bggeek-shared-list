@@ -6,7 +6,6 @@ import {
   HStack,
   Icon,
   IconButton,
-  Input,
   NativeSelect,
   Text,
   useBreakpointValue,
@@ -24,6 +23,8 @@ import {
   FiUsers,
   FiX,
 } from "react-icons/fi";
+
+import { SearchInput } from "./SearchInput";
 
 // import { useMembers } from "../contexts/MemberContext";
 import useKeydown from "../hooks/useKeydown";
@@ -311,18 +312,7 @@ const ImprovedSearchSidebar = React.memo(
                 </Text>
               </Flex>
 
-              <Input
-                {...register("keyword")}
-                placeholder="🔍 Search by game name..."
-                size="md"
-                borderRadius="xl"
-                borderColor="gray.300"
-                _focus={{
-                  borderColor: "blue.400",
-                  boxShadow: "0 0 0 1px var(--chakra-colors-blue-400)",
-                }}
-                _hover={{ borderColor: "gray.400" }}
-              />
+              <SearchInput />
             </VStack>
           </Box>
 

@@ -4,29 +4,24 @@ import {
   Flex,
   Heading,
   IconButton,
-  Show,
-  SimpleGrid,
-  Text,
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
 
-import { BggCollectionItem } from "../utils/types";
-
-import GameCard from "./GameCard";
-
 type CollapsibleGroupProps = {
   groupName: string;
-  games: BggCollectionItem[];
   isCollapsed: boolean;
   onToggle: () => void;
+  count?: number;
+  children?: React.ReactNode;
 };
 
 const CollapsibleGroup: React.FC<CollapsibleGroupProps> = ({
   groupName,
-  games,
   isCollapsed,
   onToggle,
+  count = 0,
+  children,
 }) => {
   return (
     <Box
@@ -73,70 +68,18 @@ const CollapsibleGroup: React.FC<CollapsibleGroupProps> = ({
           >
             {groupName}
           </Heading>
-          <Badge colorScheme="blue" variant="subtle" fontSize="sm">
-            {games.length} {games.length === 1 ? "Game" : "Games"}
+          <Badge
+            colorScheme="blue"
+            variant="outline"
+            fontSize="sm"
+            minW="24px"
+            textAlign="center"
+          >
+            {count}
           </Badge>
         </Flex>
 
-        <Show when={!isCollapsed}>
-          {games.length > 0 ? (
-            <SimpleGrid
-              columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }}
-              gap={4}
-            >
-              {games.map((game: BggCollectionItem) => {
-                const gameData = {
-                  id: game.objectid,
-                  name:
-                    typeof game.name === "string"
-                      ? game.name
-                      : (game.name as any)?.text || "Unknown Game",
-                  thumbnail: game.thumbnail,
-                  yearPublished:
-                    typeof game.yearpublished === "string"
-                      ? game.yearpublished
-                      : (game.yearpublished as any)?.text || "",
-                  minPlayers:
-                    (game.stats as any)?.minplayers?.value ||
-                    (game.stats as any)?.minplayers ||
-                    0,
-                  maxPlayers:
-                    (game.stats as any)?.maxplayers?.value ||
-                    (game.stats as any)?.maxplayers ||
-                    0,
-                  playingTime:
-                    (game.stats as any)?.playingtime?.value ||
-                    (game.stats as any)?.playingtime ||
-                    0,
-                  averageRating:
-                    (game.stats as any)?.rating?.average?.value ||
-                    (game.stats as any)?.rating?.average ||
-                    0,
-                  owners: game.owners || [],
-                };
-
-                return (
-                  <GameCard
-                    key={gameData.id}
-                    id={gameData.id}
-                    name={gameData.name}
-                    thumbnail={gameData.thumbnail}
-                    yearPublished={gameData.yearPublished}
-                    minPlayers={gameData.minPlayers}
-                    maxPlayers={gameData.maxPlayers}
-                    playingTime={gameData.playingTime}
-                    averageRating={gameData.averageRating}
-                    owners={gameData.owners}
-                  />
-                );
-              })}
-            </SimpleGrid>
-          ) : (
-            <Text color="gray.500" fontSize="sm" textAlign="center" py={4}>
-              No games in this group
-            </Text>
-          )}
-        </Show>
+        {!isCollapsed && children}
       </VStack>
     </Box>
   );
