@@ -135,22 +135,6 @@ const GameCard: React.FC<GameCardProps> = ({
           )}
         </Box>
 
-        {/* Year Badge */}
-        {yearPublished && (
-          <Badge
-            position="absolute"
-            top={2}
-            right={2}
-            bg="rgba(0, 0, 0, 0.7)"
-            color="white"
-            borderRadius="full"
-            px={2}
-            fontSize="xs"
-          >
-            {yearPublished}
-          </Badge>
-        )}
-
         {/* Rating Badge */}
         {averageRating > 0 && (
           <Badge
