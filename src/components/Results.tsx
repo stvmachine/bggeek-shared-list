@@ -2,98 +2,60 @@ import {
   Badge,
   Box,
   Button,
-  ButtonProps,
   Flex,
   Heading,
   Icon,
   LinkBox,
   LinkOverlay,
   SimpleGrid,
-  SimpleGridProps,
-  Skeleton,
   Text,
   VStack,
   Wrap,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { FiUsers } from "react-icons/fi"; // Used in EmptyState component
-// Other icons commented out until needed
-// import { FiFilter, FiInfo } from "react-icons/fi";
-import SortBar from "../components/SortBar";
+import { FiUsers } from "react-icons/fi";
 import { useMembers } from "../contexts/MemberContext";
-import { useSearch } from "../hooks/useSearch";
+import { useFuzzySearch } from "../hooks/useFuzzySearch";
 import { GroupedGames, groupGames, GroupingOption } from "../utils/grouping";
-import { sortGames, SortOption } from "../utils/sorting";
+import {
+  filterByNumPlayers,
+  filterByPlayingTime,
+  orderByFn,
+} from "../utils/search";
 import { BggCollectionItem } from "../utils/types";
-import { MemberAvatar } from "./MemberAvatar";
-
 import CollapsibleGroup from "./CollapsibleGroup";
 import GameCard from "./GameCard";
-
-// Type-safe Button with leftIcon
-const IconButton = React.forwardRef<
-  HTMLButtonElement,
-  ButtonProps & { leftIcon?: React.ReactElement }
->(({ leftIcon, children, ...rest }, ref) => {
-  // Create a new props object without leftIcon to avoid TypeScript errors
-  const buttonProps = { ...rest } as any;
-
-  // Only add leftIcon if it's provided
-  if (leftIcon) {
-    buttonProps.leftIcon = leftIcon;
-  }
-
-  // Use Chakra UI's Button with the spread props
-  return (
-    <Button ref={ref} {...buttonProps}>
-      {children}
-    </Button>
-  );
-});
-IconButton.displayName = "IconButton";
+import { MemberAvatar } from "./MemberAvatar";
+import SortBar from "./SortBar";
 
 // Type-safe SimpleGrid with gap
-const Grid: React.FC<SimpleGridProps & { gap?: number }> = ({
+const Grid = ({
   gap = 4,
   ...rest
-}) => <SimpleGrid spacing={`${gap * 0.25}rem`} {...rest} />;
-
-// Skeleton loader for game cards
-const GameCardSkeleton = () => (
-  <Box
-    bg="white"
-    borderRadius="lg"
-    overflow="hidden"
-    boxShadow="sm"
-    borderWidth="1px"
-  >
-    <Skeleton height="200px" />
-    <Box p={4}>
-      <Skeleton height="20px" mb={2} width="80%" />
-      <Skeleton height="16px" width="60%" />
-    </Box>
-  </Box>
+}: { gap?: number } & React.ComponentProps<typeof SimpleGrid>) => (
+  <SimpleGrid
+    columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
+    spacing={gap}
+    {...rest}
+  />
 );
 
 // Empty state component
 const EmptyState = () => (
   <Box
-    border="2px dashed"
-    borderColor="gray.200"
+    border="1px dashed"
+    borderColor="gray.300"
     borderRadius="lg"
     p={8}
     textAlign="center"
     bg="white"
-    maxW="500px"
-    mx="auto"
-    my={8}
   >
-    <Icon as={FiUsers} boxSize={10} color="blue.500" mb={4} />
-    <Heading as="h3" size="md" mb={2} color="gray.700">
-      No Members Selected
-    </Heading>
-    <Text color="gray.500" mb={6}>
+    <Icon as={FiUsers} boxSize={8} color="gray.400" mb={3} />
+    <Text fontSize="lg" color="gray.600" mb={2}>
+      No collection members added yet
+    </Text>
+    <Text color="gray.500" fontSize="sm">
       Add board game collection members to get started
     </Text>
   </Box>
@@ -103,24 +65,62 @@ type ResultsProps = {
   boardgames?: BggCollectionItem[];
 };
 
-const Results = React.memo(({ boardgames }: ResultsProps) => {
-  // Get search results
-  const { results: searchResults } = useSearch<BggCollectionItem>(
-    boardgames || [],
-    {
-      keys: ["name.text"],
-    }
-  );
+const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
   const { watch } = useFormContext();
   const { getMemberData } = useMembers();
-  const watchedMembers = watch("members");
-  const groupBy = watch("groupBy") || "none";
-  const orderBy = watch("orderBy") || "name_asc";
-  const loading = false;
+
+  // Form values
+  const keyword = watch("keyword", "");
+  const watchedMembers = watch("members", {});
+  const groupBy = watch("groupBy", "none");
+  const orderBy = watch("orderBy", "name_asc");
+  const playingTime = watch("playingTime", "");
+  const numberOfPlayers = watch("numberOfPlayers", "");
 
   // State for collapsed groups
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
     new Set()
+  );
+
+  // Use the simplified fuzzy search hook with debouncing
+  const searchResults = useFuzzySearch<BggCollectionItem>(boardgames, keyword, {
+    keys: ["name.text", "originalname"],
+    threshold: 0.3,
+    debounceTime: 300, // 300ms debounce time
+    minSearchLength: 2, // Minimum characters to start searching
+  });
+
+  // Apply filters and sorting
+  const filteredResults = useMemo(() => {
+    if (!searchResults) return [];
+
+    let results = [...searchResults];
+
+    // Filter by members who have the game
+    const filteredMembers = Object.entries(watchedMembers || {})
+      .filter(([_, isSelected]) => isSelected)
+      .map(([username]) => username);
+
+    if (filteredMembers.length > 0) {
+      results = results.filter(game =>
+        game.owners?.some((owner: { username: string }) =>
+          filteredMembers.includes(owner.username)
+        )
+      );
+    }
+
+    // Apply other filters
+    results = filterByPlayingTime(results, playingTime);
+    results = filterByNumPlayers(results, numberOfPlayers);
+
+    // Apply sorting
+    return orderByFn(results, orderBy);
+  }, [searchResults, watchedMembers, playingTime, numberOfPlayers, orderBy]);
+
+  // Group the results based on the selected grouping option
+  const groupedResults: GroupedGames = groupGames(
+    filteredResults,
+    groupBy as GroupingOption
   );
 
   // Helper functions for managing collapsed groups
@@ -149,27 +149,19 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
     setCollapsedGroups(new Set());
   };
 
-  const checkedMembers = watchedMembers
-    ? Object.keys(watchedMembers).reduce((accum: string[], key: string) => {
-        if (watchedMembers[key]) {
-          accum.push(key);
-        }
-        return accum;
-      }, [])
-    : [];
-
-  // Sort the results first
-  const sortedResults = sortGames(searchResults || [], orderBy as SortOption);
-
-  // Group the sorted results based on the selected grouping option
-  const groupedResults: GroupedGames = groupGames(
-    sortedResults,
-    groupBy as GroupingOption
+  const checkedMembers = useMemo(
+    () =>
+      watchedMembers && typeof watchedMembers === "object"
+        ? Object.entries(watchedMembers)
+            .filter(([_, isSelected]) => isSelected)
+            .map(([username]) => username)
+        : [],
+    [watchedMembers]
   );
 
   return (
     <Box flex="1" p={{ base: 2, md: 4 }}>
-      {checkedMembers?.length > 0 ? (
+      {checkedMembers.length > 0 ? (
         <Box
           border="1px solid"
           borderColor="gray.200"
@@ -193,12 +185,11 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
                   {boardgames?.length || 0}{" "}
                   {boardgames?.length === 1 ? "game" : "games"}
                 </Badge>
-                {searchResults &&
-                  searchResults.length !== boardgames?.length && (
-                    <Badge colorScheme="green" variant="outline" fontSize="sm">
-                      {searchResults.length} shown
-                    </Badge>
-                  )}
+                {filteredResults.length !== boardgames?.length && (
+                  <Badge colorScheme="green" variant="outline" fontSize="sm">
+                    {filteredResults.length} shown
+                  </Badge>
+                )}
               </Flex>
             </Flex>
 
@@ -207,12 +198,12 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
                 Displaying games owned by:
               </Text>
               <Wrap gap={2}>
-                {checkedMembers.map((member, index) => {
+                {checkedMembers.map(member => {
                   const memberData = getMemberData(member);
                   if (!memberData) return null;
 
                   return (
-                    <LinkBox key={`${member}_${index}`}>
+                    <LinkBox key={member}>
                       <LinkOverlay
                         href={`https://boardgamegeek.com/user/${member}`}
                         target="_blank"
@@ -273,8 +264,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
 
       {groupBy === "none" ? (
         <Box>
-          {/* Results count display */}
-          {sortedResults.length > 0 && (
+          {filteredResults.length > 0 && (
             <Box
               mb={4}
               p={3}
@@ -284,7 +274,7 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
               borderColor="gray.200"
             >
               <Text fontSize="sm" color="gray.600">
-                Showing {sortedResults.length} of {boardgames?.length || 0}{" "}
+                Showing {filteredResults.length} of {boardgames?.length || 0}{" "}
                 games
                 {searchResults &&
                   searchResults.length !== boardgames?.length && (
@@ -296,114 +286,41 @@ const Results = React.memo(({ boardgames }: ResultsProps) => {
               </Text>
             </Box>
           )}
-
-          {/* Loading state removed as it's not being used */}
-          {loading ? (
-            <Grid columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }} gap={4}>
-              {[...Array(12)].map((_, i) => (
-                <GameCardSkeleton key={i} />
-              ))}
-            </Grid>
-          ) : sortedResults.length > 0 ? (
-            <Grid columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }} gap={4}>
-              {sortedResults.map((game: BggCollectionItem) => {
-                const gameData = {
-                  id: game.objectid,
-                  name:
-                    typeof game.name === "string"
-                      ? game.name
-                      : (game.name as any)?.text || "Unknown Game",
-                  thumbnail: game.thumbnail,
-                  yearPublished:
-                    typeof game.yearpublished === "string"
-                      ? game.yearpublished
-                      : (game.yearpublished as any)?.text || "",
-                  minPlayers:
-                    (game.stats as any)?.minplayers?.value ||
-                    (game.stats as any)?.minplayers ||
-                    0,
-                  maxPlayers:
-                    (game.stats as any)?.maxplayers?.value ||
-                    (game.stats as any)?.maxplayers ||
-                    0,
-                  playingTime:
-                    (game.stats as any)?.playingtime?.value ||
-                    (game.stats as any)?.playingtime ||
-                    0,
-                  averageRating:
-                    (game.stats as any)?.rating?.average?.value ||
-                    (game.stats as any)?.rating?.average ||
-                    0,
-                  owners: game.owners || [],
-                };
-
-                return (
-                  <GameCard
-                    key={gameData.id}
-                    id={gameData.id}
-                    name={gameData.name}
-                    thumbnail={gameData.thumbnail}
-                    yearPublished={gameData.yearPublished}
-                    minPlayers={gameData.minPlayers}
-                    maxPlayers={gameData.maxPlayers}
-                    playingTime={gameData.playingTime}
-                    averageRating={gameData.averageRating}
-                    owners={gameData.owners}
-                  />
-                );
-              })}
-            </Grid>
-          ) : (
-            <Box
-              border="1px solid"
-              borderColor="gray.200"
-              borderRadius="lg"
-              p={8}
-              textAlign="center"
-              bg="white"
-            >
-              <Text color="gray.500" fontSize="lg">
-                No games found matching your criteria
-              </Text>
-            </Box>
-          )}
+          <Grid gap={4}>
+            {filteredResults.map(game => (
+              <GameCard
+                key={game.objectid}
+                id={game.objectid}
+                name={game.name.text}
+                thumbnail={game.thumbnail}
+                yearPublished={game.yearpublished?.toString()}
+                minPlayers={game.stats?.minplayers}
+                maxPlayers={game.stats?.maxplayers}
+                playingTime={game.stats?.playingtime}
+                averageRating={game.stats?.rating.average.value}
+                owners={game.owners || []}
+              />
+            ))}
+          </Grid>
         </Box>
       ) : (
-        <VStack align="stretch" gap={6}>
-          {/* Results count for grouped view */}
-          {sortedResults.length > 0 && (
-            <Box
-              mb={4}
-              p={3}
-              bg="gray.50"
-              borderRadius="md"
-              border="1px solid"
-              borderColor="gray.200"
-            >
-              <Text fontSize="sm" color="gray.600">
-                Showing {sortedResults.length} of {boardgames?.length || 0}{" "}
-                games
-                {searchResults &&
-                  searchResults.length !== boardgames?.length && (
-                    <Text as="span" color="blue.600" fontWeight="medium">
-                      {" "}
-                      (filtered)
-                    </Text>
-                  )}
-              </Text>
-            </Box>
-          )}
-
+        <Box>
           {Object.entries(groupedResults).map(([groupName, games]) => (
             <CollapsibleGroup
               key={groupName}
               groupName={groupName}
-              games={games}
               isCollapsed={isGroupCollapsed(groupName)}
               onToggle={() => toggleGroup(groupName)}
-            />
+              count={games.length}
+            >
+              <Grid gap={4} mt={4}>
+                {games.map(game => (
+                  <GameCard key={game.objectid} game={game} />
+                ))}
+              </Grid>
+            </CollapsibleGroup>
           ))}
-        </VStack>
+        </Box>
       )}
     </Box>
   );
