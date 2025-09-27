@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback } from "react";
-import { Input, InputProps } from "@chakra-ui/react";
+import { Input } from "@chakra-ui/react";
 import { useFormContext } from "react-hook-form";
 
 interface SearchInputProps {
@@ -8,12 +8,17 @@ interface SearchInputProps {
 
 export const SearchInput = React.memo(
   ({ placeholder = "🔍 Search by game name..." }: SearchInputProps) => {
-    const { register, watch } = useFormContext();
+    const { setValue, watch } = useFormContext();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const searchValue = watch("keyword");
 
-    // Register the field with react-hook-form
-    const { ref: formRef, ...rest } = register("keyword");
+    // Handle input change
+    const handleChange = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue("keyword", event.target.value);
+      },
+      [setValue]
+    );
 
     // Maintain focus on the input when the value changes
     useEffect(() => {
@@ -22,21 +27,11 @@ export const SearchInput = React.memo(
       }
     }, [searchValue]);
 
-    // Create a callback ref that handles both the form ref and our local ref
-    const setRefs = useCallback(
-      (element: HTMLInputElement | null) => {
-        // Update the form ref
-        formRef(element);
-        // Update our local ref
-        inputRef.current = element;
-      },
-      [formRef]
-    );
-
     return (
       <Input
-        {...(rest as InputProps)}
-        ref={setRefs}
+        ref={inputRef}
+        value={searchValue || ""}
+        onChange={handleChange}
         placeholder={placeholder}
         size="md"
         borderRadius="xl"
