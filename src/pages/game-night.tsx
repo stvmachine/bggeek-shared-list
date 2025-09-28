@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Heading, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
@@ -24,15 +24,18 @@ export async function getStaticProps() {
 
 const GameNightPage: NextPage<GameNightPageProps> = () => {
   const router = useRouter();
-  const { usernames } = router.query;
+  const { usernames: urlUsernames, username } = router.query;
 
-  // Parse usernames from URL
+  // Parse usernames from URL - handle both usernames and username parameters
   const members = useMemo(() => {
-    if (usernames) {
-      return parseUsernamesFromUrl(usernames);
+    if (urlUsernames) {
+      return parseUsernamesFromUrl(urlUsernames);
+    }
+    if (username) {
+      return parseUsernamesFromUrl(username);
     }
     return [];
-  }, [usernames]);
+  }, [urlUsernames, username]);
 
   // Fetch collections for all members
   const results = useQueries(
@@ -99,13 +102,21 @@ const GameNightPage: NextPage<GameNightPageProps> = () => {
               minH="400px"
               textAlign="center"
             >
-              <Box>
+              <Box maxW="md">
                 <Heading fontSize="xl" color="gray.600" mb={4}>
-                  No collectors selected
+                  🎲 Ready to Plan Your Game Night?
                 </Heading>
-                <Text fontSize="md" color="gray.500">
-                  Add some BoardGameGeek usernames to plan your game night
+                <Text fontSize="md" color="gray.500" mb={6}>
+                  Add some BoardGameGeek usernames to get personalized game
+                  recommendations for your group!
                 </Text>
+                <Button
+                  colorScheme="blue"
+                  size="lg"
+                  onClick={() => router.push("/collection")}
+                >
+                  Go to Collections
+                </Button>
               </Box>
             </Box>
           ) : data && data.boardgames ? (
