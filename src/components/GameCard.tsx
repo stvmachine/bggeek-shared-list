@@ -113,7 +113,7 @@ const GameCard: React.FC<GameCardProps> = ({
       onClick={handleCardClick}
     >
       {/* Game Image */}
-      <Box position="relative" pt="75%" bg="gray.50">
+      <Box position="relative" pt="75%" bg="gray.100">
         <Box position="absolute" top={0} left={0} right={0} bottom={0}>
           {thumbnail ? (
             <Image
