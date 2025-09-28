@@ -53,10 +53,10 @@ const EmptyState = () => (
   >
     <Icon as={FiUsers} boxSize={8} color="gray.400" mb={3} />
     <Text fontSize="lg" color="gray.600" mb={2}>
-      No collection members added yet
+      No collection members selected
     </Text>
     <Text color="gray.500" fontSize="sm">
-      Add board game collection members to get started
+      Select some collection members to see their games
     </Text>
   </Box>
 );
@@ -101,13 +101,17 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
       .filter(([_, isSelected]) => isSelected)
       .map(([username]) => username);
 
-    if (filteredMembers.length > 0) {
-      results = results.filter(game =>
-        game.owners?.some((owner: { username: string }) =>
-          filteredMembers.includes(owner.username)
-        )
-      );
+    // If no members are selected, show no games
+    if (filteredMembers.length === 0) {
+      return [];
     }
+
+    // Filter games by selected members
+    results = results.filter(game =>
+      game.owners?.some((owner: { username: string }) =>
+        filteredMembers.includes(owner.username)
+      )
+    );
 
     // Apply other filters
     results = filterByPlayingTime(results, playingTime);
