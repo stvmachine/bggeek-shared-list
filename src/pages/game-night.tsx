@@ -113,7 +113,10 @@ const GameNightPage: NextPage<GameNightPageProps> = () => {
                 <Button
                   colorScheme="blue"
                   size="lg"
-                  onClick={() => router.push("/collection")}
+                  onClick={() => router.push({
+                    pathname: "/collection",
+                    query: router.query,
+                  })}
                 >
                   Go to Collections
                 </Button>

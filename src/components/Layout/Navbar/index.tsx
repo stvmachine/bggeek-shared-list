@@ -10,6 +10,15 @@ type NavbarProps = {
 
 const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
   const router = useRouter();
+  
+  // Helper function to navigate while preserving query parameters
+  const navigateWithParams = (path: string) => {
+    const currentQuery = router.query;
+    router.push({
+      pathname: path,
+      query: currentQuery,
+    });
+  };
 
   return (
     <Box
@@ -42,7 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push("/collection")}
+            onClick={() => navigateWithParams("/collection")}
             color="gray.600"
             _hover={{ color: "blue.500", bg: "blue.50" }}
           >
@@ -51,7 +60,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push("/game-night")}
+            onClick={() => navigateWithParams("/game-night")}
             color="gray.600"
             _hover={{ color: "blue.500", bg: "blue.50" }}
           >

@@ -12,12 +12,18 @@ type GroupSize = "2-4" | "5-6" | "7+";
 type PlayTime = "30-60min" | "1-2hrs" | "2+hrs";
 type Quality = "any" | "good" | "excellent";
 type GameType = "strategy" | "party" | "cooperative" | "competitive" | "all";
+type SessionDuration = "2hrs" | "3hrs" | "4hrs" | "5hrs" | "6hrs" | "8hrs";
+type NumberOfGames = "3" | "5" | "6" | "8" | "10" | "12";
+type SortMethod = "rating" | "random" | "time";
 
 const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
   const [groupSize, setGroupSize] = useState<GroupSize>("2-4");
   const [playTime, setPlayTime] = useState<PlayTime>("30-60min");
   const [quality, setQuality] = useState<Quality>("any");
   const [gameType, setGameType] = useState<GameType>("all");
+  const [sessionDuration, setSessionDuration] = useState<SessionDuration>("3hrs");
+  const [numberOfGames, setNumberOfGames] = useState<NumberOfGames>("6");
+  const [sortMethod, setSortMethod] = useState<SortMethod>("rating");
 
   // Filter games based on criteria
   const filteredGames = useMemo(() => {
@@ -60,22 +66,41 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
     });
   }, [games, groupSize, playTime, quality, gameType]);
 
-  // Get top 6 recommended games
+  // Get recommended games based on user preferences
   const recommendedGames = useMemo(() => {
-    return filteredGames
-      .sort((a, b) => {
+    let sortedGames = [...filteredGames];
+    
+    // Sort based on user preference
+    if (sortMethod === "rating") {
+      sortedGames.sort((a, b) => {
         const ratingA = a.stats?.rating?.average?.value || 0;
         const ratingB = b.stats?.rating?.average?.value || 0;
         return ratingB - ratingA;
-      })
-      .slice(0, 6);
-  }, [filteredGames]);
+      });
+    } else if (sortMethod === "time") {
+      sortedGames.sort((a, b) => {
+        const timeA = a.stats?.playingtime || 0;
+        const timeB = b.stats?.playingtime || 0;
+        return timeA - timeB; // Shorter games first
+      });
+    } else if (sortMethod === "random") {
+      // Shuffle the array
+      sortedGames.sort(() => Math.random() - 0.5);
+    }
+    
+    // Take the requested number of games
+    const gameCount = parseInt(numberOfGames);
+    return sortedGames.slice(0, gameCount);
+  }, [filteredGames, sortMethod, numberOfGames]);
 
   const clearFilters = () => {
     setGroupSize("2-4");
     setPlayTime("30-60min");
     setQuality("any");
     setGameType("all");
+    setSessionDuration("3hrs");
+    setNumberOfGames("6");
+    setSortMethod("rating");
   };
 
   return (
@@ -173,6 +198,93 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
             </Box>
           </Wrap>
 
+          {/* Session Planning Controls */}
+          <Box mt={6} p={4} bg="blue.50" borderRadius="lg" border="1px solid" borderColor="blue.200">
+            <Text fontSize="md" fontWeight="semibold" mb={4} color="blue.700">
+              🎯 Session Planning
+            </Text>
+            
+            <Wrap spacing={4}>
+              {/* Session Duration */}
+              <Box minW="200px">
+                <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.600">
+                  <Icon as={FaClock} mr={2} />
+                  Session Duration
+                </Text>
+                <select
+                  value={sessionDuration}
+                  onChange={e => setSessionDuration(e.target.value as SessionDuration)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    fontSize: "14px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <option value="2hrs">2 hours</option>
+                  <option value="3hrs">3 hours</option>
+                  <option value="4hrs">4 hours</option>
+                  <option value="5hrs">5 hours</option>
+                  <option value="6hrs">6 hours</option>
+                  <option value="8hrs">8 hours</option>
+                </select>
+              </Box>
+
+              {/* Number of Games */}
+              <Box minW="200px">
+                <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.600">
+                  <Icon as={FaGamepad} mr={2} />
+                  Number of Games
+                </Text>
+                <select
+                  value={numberOfGames}
+                  onChange={e => setNumberOfGames(e.target.value as NumberOfGames)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    fontSize: "14px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <option value="3">3 games</option>
+                  <option value="5">5 games</option>
+                  <option value="6">6 games</option>
+                  <option value="8">8 games</option>
+                  <option value="10">10 games</option>
+                  <option value="12">12 games</option>
+                </select>
+              </Box>
+
+              {/* Sort Method */}
+              <Box minW="200px">
+                <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.600">
+                  <Icon as={FaStar} mr={2} />
+                  Sort By
+                </Text>
+                <select
+                  value={sortMethod}
+                  onChange={e => setSortMethod(e.target.value as SortMethod)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    fontSize: "14px",
+                    backgroundColor: "white",
+                  }}
+                >
+                  <option value="rating">Highest Rated</option>
+                  <option value="time">Shortest Time</option>
+                  <option value="random">Random</option>
+                </select>
+              </Box>
+            </Wrap>
+          </Box>
+
           <Flex justify="space-between" align="center">
             <Text fontSize="sm" color="gray.500">
               Found {filteredGames.length} games matching your criteria
@@ -186,8 +298,14 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
         {/* Recommended Games */}
         {recommendedGames.length > 0 && (
           <Box>
-            <Text fontSize="lg" fontWeight="semibold" mb={4} color="gray.700">
+            <Text fontSize="lg" fontWeight="semibold" mb={2} color="gray.700">
               🎯 Recommended Games for Your Group
+            </Text>
+            <Text fontSize="sm" color="gray.600" mb={4}>
+              Showing {recommendedGames.length} games for your {sessionDuration} session
+              {sortMethod === "random" && " (randomized)"}
+              {sortMethod === "rating" && " (highest rated first)"}
+              {sortMethod === "time" && " (shortest games first)"}
             </Text>
             <Box
               display="grid"
