@@ -10,13 +10,13 @@ interface GameNightPlannerProps {
 
 type GroupSize = "2-4" | "5-6" | "7+";
 type PlayTime = "30-60min" | "1-2hrs" | "2+hrs";
-type Complexity = "beginner" | "intermediate" | "advanced";
+type Quality = "any" | "good" | "excellent";
 type GameType = "strategy" | "party" | "cooperative" | "competitive" | "all";
 
 const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
   const [groupSize, setGroupSize] = useState<GroupSize>("2-4");
   const [playTime, setPlayTime] = useState<PlayTime>("30-60min");
-  const [complexity, setComplexity] = useState<Complexity>("beginner");
+  const [quality, setQuality] = useState<Quality>("any");
   const [gameType, setGameType] = useState<GameType>("all");
 
   // Filter games based on criteria
@@ -46,31 +46,19 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
         return false;
       }
 
-      // Complexity filter (based on play time and player count)
-      const complexityGameTime = game.stats?.playingtime || 0;
-      const minPlayers = game.stats?.minplayers || 0;
-      const maxPlayers = game.stats?.maxplayers || 0;
+      // Quality filter (based on BGG rating)
+      const rating = game.stats?.rating?.average?.value || 0;
 
-      // Simple complexity heuristic: longer games with more players tend to be more complex
-      const complexityScore =
-        complexityGameTime / 30 + (maxPlayers - minPlayers) / 2;
-
-      if (complexity === "beginner" && complexityScore > 3) {
+      if (quality === "good" && rating < 7.0) {
         return false;
       }
-      if (
-        complexity === "intermediate" &&
-        (complexityScore < 2 || complexityScore > 6)
-      ) {
-        return false;
-      }
-      if (complexity === "advanced" && complexityScore < 4) {
+      if (quality === "excellent" && rating < 8.0) {
         return false;
       }
 
       return true;
     });
-  }, [games, groupSize, playTime, complexity, gameType]);
+  }, [games, groupSize, playTime, quality, gameType]);
 
   // Get top 6 recommended games
   const recommendedGames = useMemo(() => {
@@ -86,7 +74,7 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
   const clearFilters = () => {
     setGroupSize("2-4");
     setPlayTime("30-60min");
-    setComplexity("beginner");
+    setQuality("any");
     setGameType("all");
   };
 
@@ -160,15 +148,15 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
               </select>
             </Box>
 
-            {/* Complexity */}
+            {/* Rating */}
             <Box minW="200px">
               <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.600">
                 <Icon as={FaStar} mr={2} />
-                Game Complexity
+                Rating
               </Text>
               <select
-                value={complexity}
-                onChange={e => setComplexity(e.target.value as Complexity)}
+                value={quality}
+                onChange={e => setQuality(e.target.value as Quality)}
                 style={{
                   width: "100%",
                   padding: "8px 12px",
@@ -178,9 +166,9 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
                   backgroundColor: "white",
                 }}
               >
-                <option value="beginner">Quick & Simple</option>
-                <option value="intermediate">Moderate Complexity</option>
-                <option value="advanced">Complex & Deep</option>
+                <option value="any">Any Rating</option>
+                <option value="good">Good (7.0+)</option>
+                <option value="excellent">Excellent (8.0+)</option>
               </select>
             </Box>
           </Wrap>
