@@ -366,7 +366,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                 );
                 const isValidating = isValidatingAny;
                 const validationError = result?.error as Error | null;
-                const isValid = result?.userData?.id;
+                const isValid = result?.validationData?.userData?.id;
 
                 return (
                   <Badge
