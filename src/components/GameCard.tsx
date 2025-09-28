@@ -113,7 +113,7 @@ const GameCard: React.FC<GameCardProps> = ({
       onClick={handleCardClick}
     >
       {/* Game Image */}
-      <Box position="relative" pt="100%" bg="gray.50">
+      <Box position="relative" pt="75%" bg="gray.50">
         <Box position="absolute" top={0} left={0} right={0} bottom={0}>
           {thumbnail ? (
             <Image
@@ -122,12 +122,13 @@ const GameCard: React.FC<GameCardProps> = ({
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               style={{
-                objectFit: "cover",
+                objectFit: "contain",
                 width: "100%",
                 height: "100%",
               }}
               unoptimized={!thumbnail.includes("boardgamegeek.com")}
               priority={false}
+              quality={90}
             />
           ) : (
             <Skeleton height="100%" width="100%" />
