@@ -96,14 +96,17 @@ const GameCard: React.FC<GameCardProps> = ({
     <Box
       as="article"
       bg="white"
-      borderRadius="lg"
+      borderRadius="xl"
       overflow="hidden"
-      boxShadow="sm"
+      boxShadow="0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)"
       borderWidth="1px"
-      transition="all 0.2s"
+      borderColor="gray.100"
+      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
       _hover={{
-        transform: "translateY(-4px)",
-        boxShadow: "lg",
+        transform: "translateY(-6px)",
+        boxShadow:
+          "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        borderColor: "blue.200",
       }}
       h="100%"
       display="flex"
@@ -139,19 +142,22 @@ const GameCard: React.FC<GameCardProps> = ({
         {averageRating > 0 && (
           <Badge
             position="absolute"
-            bottom={2}
-            right={2}
-            bg="rgba(0, 0, 0, 0.7)"
+            top={3}
+            right={3}
+            bg="rgba(0, 0, 0, 0.8)"
             color="white"
             borderRadius="full"
-            px={2}
-            py={0.5}
+            px={3}
+            py={1}
             display="flex"
             alignItems="center"
-            gap={1}
+            gap={1.5}
+            backdropFilter="blur(4px)"
+            border="1px solid rgba(255, 255, 255, 0.1)"
+            boxShadow="0 4px 6px -1px rgba(0, 0, 0, 0.1)"
           >
-            <Icon as={FaStar} color="yellow.300" boxSize={2.5} />
-            <Text as="span" fontSize="xs">
+            <Icon as={FaStar} color="yellow.300" boxSize={3} />
+            <Text as="span" fontSize="xs" fontWeight="semibold">
               {averageRating.toFixed(1)}
             </Text>
           </Badge>
