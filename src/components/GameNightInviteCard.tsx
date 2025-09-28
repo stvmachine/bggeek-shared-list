@@ -6,7 +6,9 @@ interface GameNightInviteCardProps {
   onInviteClick?: () => void;
 }
 
-const GameNightInviteCard: React.FC<GameNightInviteCardProps> = ({ onInviteClick }) => {
+const GameNightInviteCard: React.FC<GameNightInviteCardProps> = ({
+  onInviteClick,
+}) => {
   return (
     <Box
       position="relative"
@@ -101,7 +103,7 @@ const GameNightInviteCard: React.FC<GameNightInviteCardProps> = ({ onInviteClick
               2-8 PLAYERS
             </Text>
           </VStack>
-          
+
           <VStack spacing={1}>
             <FaStar color="#ff00ff" size="24px" />
             <Text fontSize="sm" color="pink.300" fontFamily="mono">
@@ -111,7 +113,7 @@ const GameNightInviteCard: React.FC<GameNightInviteCardProps> = ({ onInviteClick
               LEGENDARY
             </Text>
           </VStack>
-          
+
           <VStack spacing={1}>
             <FaGamepad color="#00ff00" size="24px" />
             <Text fontSize="sm" color="green.300" fontFamily="mono">
@@ -132,8 +134,9 @@ const GameNightInviteCard: React.FC<GameNightInviteCardProps> = ({ onInviteClick
             fontFamily="mono"
             letterSpacing="0.5px"
           >
-            A unique digital collectible granting access to exclusive board game nights. 
-            Each NFT represents a verified ticket to the ultimate gaming experience.
+            A unique digital collectible granting access to exclusive board game
+            nights. Each NFT represents a verified ticket to the ultimate gaming
+            experience.
           </Text>
         </Box>
 
@@ -151,7 +154,8 @@ const GameNightInviteCard: React.FC<GameNightInviteCardProps> = ({ onInviteClick
           borderColor="white"
           _hover={{
             transform: "scale(1.05)",
-            boxShadow: "0 0 20px rgba(255, 0, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.5)",
+            boxShadow:
+              "0 0 20px rgba(255, 0, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.5)",
           }}
           _active={{
             transform: "scale(0.95)",

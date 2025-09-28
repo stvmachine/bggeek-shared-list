@@ -10,7 +10,7 @@ type NavbarProps = {
 
 const Navbar: React.FC<NavbarProps> = ({ onMobileMenuOpen }) => {
   const router = useRouter();
-  
+
   // Helper function to navigate while preserving query parameters
   const navigateWithParams = (path: string) => {
     const currentQuery = router.query;

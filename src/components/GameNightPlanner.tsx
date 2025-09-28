@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { FaClock, FaUsers, FaStar, FaGamepad } from "react-icons/fa";
 import { BggCollectionItem } from "../utils/types";
 import GameCard from "./GameCard";
+import GameNFTCollection from "./GameNFTCollection";
 
 interface GameNightPlannerProps {
   games: BggCollectionItem[];
@@ -21,7 +22,8 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
   const [playTime, setPlayTime] = useState<PlayTime>("30-60min");
   const [quality, setQuality] = useState<Quality>("any");
   const [gameType, setGameType] = useState<GameType>("all");
-  const [sessionDuration, setSessionDuration] = useState<SessionDuration>("3hrs");
+  const [sessionDuration, setSessionDuration] =
+    useState<SessionDuration>("3hrs");
   const [numberOfGames, setNumberOfGames] = useState<NumberOfGames>("6");
   const [sortMethod, setSortMethod] = useState<SortMethod>("rating");
 
@@ -69,7 +71,7 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
   // Get recommended games based on user preferences
   const recommendedGames = useMemo(() => {
     let sortedGames = [...filteredGames];
-    
+
     // Sort based on user preference
     if (sortMethod === "rating") {
       sortedGames.sort((a, b) => {
@@ -87,7 +89,7 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
       // Shuffle the array
       sortedGames.sort(() => Math.random() - 0.5);
     }
-    
+
     // Take the requested number of games
     const gameCount = parseInt(numberOfGames);
     return sortedGames.slice(0, gameCount);
@@ -199,11 +201,18 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
           </Wrap>
 
           {/* Session Planning Controls */}
-          <Box mt={6} p={4} bg="blue.50" borderRadius="lg" border="1px solid" borderColor="blue.200">
+          <Box
+            mt={6}
+            p={4}
+            bg="blue.50"
+            borderRadius="lg"
+            border="1px solid"
+            borderColor="blue.200"
+          >
             <Text fontSize="md" fontWeight="semibold" mb={4} color="blue.700">
               🎯 Session Planning
             </Text>
-            
+
             <Wrap spacing={4}>
               {/* Session Duration */}
               <Box minW="200px">
@@ -213,7 +222,9 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
                 </Text>
                 <select
                   value={sessionDuration}
-                  onChange={e => setSessionDuration(e.target.value as SessionDuration)}
+                  onChange={e =>
+                    setSessionDuration(e.target.value as SessionDuration)
+                  }
                   style={{
                     width: "100%",
                     padding: "8px 12px",
@@ -240,7 +251,9 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
                 </Text>
                 <select
                   value={numberOfGames}
-                  onChange={e => setNumberOfGames(e.target.value as NumberOfGames)}
+                  onChange={e =>
+                    setNumberOfGames(e.target.value as NumberOfGames)
+                  }
                   style={{
                     width: "100%",
                     padding: "8px 12px",
@@ -295,6 +308,15 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
           </Flex>
         </Box>
 
+        {/* Game NFT Collection */}
+        {recommendedGames.length > 0 && (
+          <GameNFTCollection
+            games={recommendedGames}
+            sessionDuration={sessionDuration}
+            sortMethod={sortMethod}
+          />
+        )}
+
         {/* Recommended Games */}
         {recommendedGames.length > 0 && (
           <Box>
@@ -302,7 +324,8 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
               🎯 Recommended Games for Your Group
             </Text>
             <Text fontSize="sm" color="gray.600" mb={4}>
-              Showing {recommendedGames.length} games for your {sessionDuration} session
+              Showing {recommendedGames.length} games for your {sessionDuration}{" "}
+              session
               {sortMethod === "random" && " (randomized)"}
               {sortMethod === "rating" && " (highest rated first)"}
               {sortMethod === "time" && " (shortest games first)"}
