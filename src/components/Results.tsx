@@ -163,6 +163,22 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
     [watchedMembers]
   );
 
+  // Get actual owners of filtered games
+  const actualOwners = useMemo(() => {
+    if (filteredResults.length === 0) return [];
+    
+    const owners = new Set<string>();
+    filteredResults.forEach(game => {
+      game.owners?.forEach((owner: { username: string }) => {
+        if (checkedMembers.includes(owner.username)) {
+          owners.add(owner.username);
+        }
+      });
+    });
+    
+    return Array.from(owners);
+  }, [filteredResults, checkedMembers]);
+
   return (
     <Box flex="1" p={{ base: 2, md: 4 }}>
       {checkedMembers.length > 0 ? (
@@ -202,7 +218,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
                 Displaying games owned by:
               </Text>
               <Wrap gap={2}>
-                {checkedMembers.map(member => {
+                {actualOwners.map(member => {
                   const memberData = getMemberData(member);
                   if (!memberData) return null;
 
