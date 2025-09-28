@@ -166,7 +166,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
   // Get actual owners of filtered games
   const actualOwners = useMemo(() => {
     if (filteredResults.length === 0) return [];
-    
+
     const owners = new Set<string>();
     filteredResults.forEach(game => {
       game.owners?.forEach((owner: { username: string }) => {
@@ -175,7 +175,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
         }
       });
     });
-    
+
     return Array.from(owners);
   }, [filteredResults, checkedMembers]);
 
