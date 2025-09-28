@@ -46,28 +46,25 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
         return false;
       }
 
-      // Complexity filter (based on average rating)
-      const rating = game.stats?.rating?.average?.value || 0;
-      const complexityThresholds = {
-        beginner: 6.0,
-        intermediate: 7.0,
-        advanced: 8.0,
-      };
+      // Complexity filter (based on play time and player count)
+      const complexityGameTime = game.stats?.playingtime || 0;
+      const minPlayers = game.stats?.minplayers || 0;
+      const maxPlayers = game.stats?.maxplayers || 0;
 
-      if (complexity === "beginner" && rating > complexityThresholds.beginner) {
+      // Simple complexity heuristic: longer games with more players tend to be more complex
+      const complexityScore =
+        complexityGameTime / 30 + (maxPlayers - minPlayers) / 2;
+
+      if (complexity === "beginner" && complexityScore > 3) {
         return false;
       }
       if (
         complexity === "intermediate" &&
-        (rating < complexityThresholds.beginner ||
-          rating > complexityThresholds.intermediate)
+        (complexityScore < 2 || complexityScore > 6)
       ) {
         return false;
       }
-      if (
-        complexity === "advanced" &&
-        rating < complexityThresholds.intermediate
-      ) {
+      if (complexity === "advanced" && complexityScore < 4) {
         return false;
       }
 
@@ -167,7 +164,7 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
             <Box minW="200px">
               <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.600">
                 <Icon as={FaStar} mr={2} />
-                Complexity
+                Game Complexity
               </Text>
               <select
                 value={complexity}
@@ -181,9 +178,9 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
                   backgroundColor: "white",
                 }}
               >
-                <option value="beginner">Beginner Friendly</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
+                <option value="beginner">Quick & Simple</option>
+                <option value="intermediate">Moderate Complexity</option>
+                <option value="advanced">Complex & Deep</option>
               </select>
             </Box>
           </Wrap>
@@ -210,26 +207,34 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
               gap={4}
             >
               {recommendedGames.map(game => (
-                <Box key={game.objectid} p={4} bg="white" borderRadius="lg" border="1px solid" borderColor="gray.200" boxShadow="sm">
+                <Box
+                  key={game.objectid}
+                  p={4}
+                  bg="white"
+                  borderRadius="lg"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  boxShadow="sm"
+                >
                   <Text fontWeight="bold" fontSize="lg" mb={2} color="gray.800">
                     {game.name?.text || "Unknown Game"}
                   </Text>
                   <Text fontSize="sm" color="gray.600" mb={3}>
-                    Players: {game.stats?.minplayers}-{game.stats?.maxplayers} | 
-                    Time: {game.stats?.playingtime}min | 
-                    Rating: {game.stats?.rating?.average?.value?.toFixed(1) || "N/A"}
+                    Players: {game.stats?.minplayers}-{game.stats?.maxplayers} |
+                    Time: {game.stats?.playingtime}min | Rating:{" "}
+                    {game.stats?.rating?.average?.value?.toFixed(1) || "N/A"}
                   </Text>
                   {game.thumbnail && (
                     <Box mb={3}>
-                      <img 
-                        src={game.thumbnail} 
-                        alt={game.name?.text || "Game"} 
-                        style={{ 
-                          width: "100%", 
-                          height: "120px", 
-                          objectFit: "cover", 
-                          borderRadius: "8px" 
-                        }} 
+                      <img
+                        src={game.thumbnail}
+                        alt={game.name?.text || "Game"}
+                        style={{
+                          width: "100%",
+                          height: "120px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
                       />
                     </Box>
                   )}
