@@ -2,7 +2,7 @@ import { Box, Button, Flex, Icon, Text, VStack, Wrap } from "@chakra-ui/react";
 import React, { useMemo, useState } from "react";
 import { FaClock, FaUsers, FaStar, FaGamepad } from "react-icons/fa";
 import { BggCollectionItem } from "../utils/types";
-// import GameCard from "./GameCard";
+import GameCard from "./GameCard";
 
 interface GameNightPlannerProps {
   games: BggCollectionItem[];
@@ -195,38 +195,18 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
               gap={4}
             >
               {recommendedGames.map(game => (
-                <Box
+                <GameCard
                   key={game.objectid}
-                  p={4}
-                  bg="white"
-                  borderRadius="lg"
-                  border="1px solid"
-                  borderColor="gray.200"
-                  boxShadow="sm"
-                >
-                  <Text fontWeight="bold" fontSize="lg" mb={2} color="gray.800">
-                    {game.name?.text || "Unknown Game"}
-                  </Text>
-                  <Text fontSize="sm" color="gray.600" mb={3}>
-                    Players: {game.stats?.minplayers}-{game.stats?.maxplayers} |
-                    Time: {game.stats?.playingtime}min | Rating:{" "}
-                    {game.stats?.rating?.average?.value?.toFixed(1) || "N/A"}
-                  </Text>
-                  {game.thumbnail && (
-                    <Box mb={3}>
-                      <img
-                        src={game.thumbnail}
-                        alt={game.name?.text || "Game"}
-                        style={{
-                          width: "100%",
-                          height: "120px",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                        }}
-                      />
-                    </Box>
-                  )}
-                </Box>
+                  id={game.objectid}
+                  name={game.name?.text || "Unknown Game"}
+                  thumbnail={game.thumbnail}
+                  yearPublished={game.yearpublished?.toString()}
+                  minPlayers={game.stats?.minplayers}
+                  maxPlayers={game.stats?.maxplayers}
+                  playingTime={game.stats?.playingtime}
+                  averageRating={game.stats?.rating?.average?.value}
+                  owners={game.owners || []}
+                />
               ))}
             </Box>
           </Box>
