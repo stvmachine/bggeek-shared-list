@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { fetchCollection } from "../../api/fetchGroupCollection";
+import {
+  fetchCollectionsGraphQL,
+  mergeCollectionsGraphQL,
+} from "../../api/fetchGroupCollection";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,7 +21,15 @@ export default async function handler(
 
   try {
     console.log(`Fetching collection for username: ${username}`);
-    const collectionData = await fetchCollection(username);
+    const collections = await fetchCollectionsGraphQL([username]);
+    const mergedData = mergeCollectionsGraphQL(collections, [username]);
+
+    // Transform to match the expected format
+    const collectionData = {
+      totalitems: mergedData.collections[0]?.totalitems || 0,
+      item: mergedData.boardgames,
+    };
+
     console.log(`Collection data received:`, {
       totalitems: collectionData.totalitems,
       hasItem: !!collectionData.item,

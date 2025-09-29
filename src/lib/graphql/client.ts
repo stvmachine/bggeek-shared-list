@@ -1,7 +1,8 @@
-import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { HttpLink } from "@apollo/client/link/http";
 
-const httpLink = createHttpLink({
-  uri: "https://bgg-graphql-proxy-9baf44927986.herokuapp.com/graphql",
+const httpLink = new HttpLink({
+  uri: "https://bgg-graphql-proxy.vercel.app/graphql",
 });
 
 export const apolloClient = new ApolloClient({

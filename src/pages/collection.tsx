@@ -12,7 +12,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { FiShare2 } from "react-icons/fi";
 import { useQueries } from "react-query";
 
-import { mergeCollections } from "../api/fetchGroupCollection";
+import { mergeCollectionsGraphQL } from "../api/fetchGroupCollection";
 import ImprovedSearchSidebar from "../components/ImprovedSearchSidebar";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
@@ -150,7 +150,7 @@ const Index: NextPage<CollectionPageProps> = () => {
 
     if (dataArray.length === 0) return undefined;
 
-    const merged = mergeCollections(dataArray, members);
+    const merged = mergeCollectionsGraphQL(dataArray, members);
     return merged;
   }, [results, members]);
 

@@ -11,9 +11,9 @@ jest.mock("next/router", () => ({
 }));
 
 // Mock the API functions to return mock data
-jest.mock("../../api/fetchGroupCollection", () => ({
-  fetchCollection: jest.fn().mockResolvedValue({ item: [] }),
-  mergeCollections: jest.fn().mockReturnValue({
+jest.mock("../../api/fetchGroupCollectionGraphQL", () => ({
+  fetchCollectionsGraphQL: jest.fn().mockResolvedValue([{ items: [] }]),
+  mergeCollectionsGraphQL: jest.fn().mockReturnValue({
     boardgames: [
       {
         objectid: "1",

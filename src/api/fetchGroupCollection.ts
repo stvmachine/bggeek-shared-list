@@ -1,69 +1,65 @@
-import {
-  getBggCollection,
-  BggCollectionParams,
-  BggCollectionResponse,
-} from "bgg-xml-api-client";
+import { apolloClient } from "../lib/graphql/client";
+import { GET_USER_COLLECTION } from "../lib/graphql/queries";
+import { GetUserCollectionQuery } from "../lib/graphql/generated/types";
 
-export const fetchCollections = async (
-  usernames: string[],
-  options?: Partial<BggCollectionParams>
-): Promise<BggCollectionResponse[]> =>
-  Promise.all(usernames.map(username => fetchCollection(username, options)));
+export const fetchCollectionsGraphQL = async (
+  usernames: string[]
+): Promise<any[]> => {
+  try {
+    // Fetch collections individually since the schema doesn't support multiple collections in one query
+    const collections = await Promise.all(
+      usernames.map(async username => {
+        const { data, error } =
+          await apolloClient.query<GetUserCollectionQuery>({
+            query: GET_USER_COLLECTION,
+            variables: { username },
+            errorPolicy: "all",
+          });
 
-export const fetchCollection = async (
-  username: string,
-  options?: Partial<BggCollectionParams>
-): Promise<BggCollectionResponse> => {
-  const params: BggCollectionParams = {
-    username,
-    own: 1,
-    subtype: "boardgame",
-    stats: 1,
-    ...options,
-  };
+        if (error) {
+          console.error(`GraphQL errors for ${username}:`, error);
+        }
 
-  const collectionResponse: BggCollectionResponse = await getBggCollection(
-    params,
-    {
-      maxRetries: 3,
-      retryInterval: 2000,
+        return data?.userCollection;
+      })
+    );
+
+    const validCollections = collections.filter(Boolean);
+
+    if (validCollections.length === 0) {
+      throw new Error("No collections data received");
     }
-  );
 
-  console.log("Collection response for", username, ":", {
-    totalitems: collectionResponse.totalitems,
-    hasItem: !!collectionResponse.item,
-    itemType: typeof collectionResponse.item,
-    itemIsArray: Array.isArray(collectionResponse.item),
-    itemLength: collectionResponse.item?.length,
-  });
-
-  return collectionResponse;
+    return validCollections;
+  } catch (error) {
+    console.error("Error fetching collections via GraphQL:", error);
+    throw error;
+  }
 };
 
-export const mergeCollections = (
-  rawData: BggCollectionResponse[],
+export const mergeCollectionsGraphQL = (
+  rawData: any[],
   usernames: string[] = []
 ): {
   boardgames: any[];
   collections: { totalitems: number; pubdate: string }[];
 } => {
-  const collections = rawData.map((item: BggCollectionResponse) => {
-    const { totalitems, pubdate } = item || {};
+  const collections = rawData.map((collection: any) => {
+    const { totalItems, pubDate } = collection || {};
     return {
-      totalitems,
-      pubdate,
+      totalitems: totalItems,
+      pubdate: pubDate,
     };
   });
 
   // Create a map to track which games belong to which users
   const gameOwnersMap = new Map<string, string[]>();
 
-  rawData.forEach((collection: BggCollectionResponse, collectionIndex) => {
+  rawData.forEach((collection: any, collectionIndex) => {
     const username = usernames[collectionIndex];
-    if (collection && collection.item && Array.isArray(collection.item)) {
-      collection.item.forEach((game: any) => {
-        const gameId = String(game.objectid);
+    if (collection && collection.items && Array.isArray(collection.items)) {
+      collection.items.forEach((game: any) => {
+        const gameId = String(game.objectId);
         if (!gameOwnersMap.has(gameId)) {
           gameOwnersMap.set(gameId, []);
         }
@@ -76,24 +72,33 @@ export const mergeCollections = (
 
   const boardgames = rawData
     .filter(
-      (collection: BggCollectionResponse) =>
-        collection && collection.item && Array.isArray(collection.item)
+      (collection: any) =>
+        collection && collection.items && Array.isArray(collection.items)
     )
     .reduce(
-      (accum: any[], collection: BggCollectionResponse) => [
+      (accum: any[], collection: any) => [
         ...accum,
-        ...(collection.item || []),
+        ...(collection.items || []),
       ],
       []
     )
     .reduce((accum, bgg) => {
-      const gameId = String(bgg.objectid);
+      const gameId = String(bgg.objectId);
       const owners = gameOwnersMap.get(gameId) || [];
 
       return {
         ...accum,
         [gameId]: {
           ...bgg,
+          objectid: bgg.objectId, // Ensure objectid is set correctly
+          name: {
+            text: bgg.name,
+          },
+          thumbnail: bgg.thumbnail,
+          image: bgg.image,
+          yearpublished: bgg.yearPublished,
+          numplays: bgg.numPlays,
+          status: bgg.status,
           owners: owners.map(username => ({
             username,
             status: { own: 1 }, // Default status

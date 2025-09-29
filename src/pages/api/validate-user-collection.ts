@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { fetchUser } from "../../api/fetchUser";
-import { fetchCollection } from "../../api/fetchGroupCollection";
+import {
+  fetchCollectionsGraphQL,
+  mergeCollectionsGraphQL,
+} from "../../api/fetchGroupCollection";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,7 +33,14 @@ export default async function handler(
 
     // Then, check if user has collection data
     try {
-      const collectionData = await fetchCollection(username);
+      const collections = await fetchCollectionsGraphQL([username]);
+      const mergedData = mergeCollectionsGraphQL(collections, [username]);
+
+      // Transform to match the expected format
+      const collectionData = {
+        totalitems: mergedData.collections[0]?.totalitems || 0,
+        item: mergedData.boardgames,
+      };
 
       // Check if user has any board games in their collection
       const hasCollection =
@@ -44,8 +54,8 @@ export default async function handler(
         hasCollection,
         userData: {
           id: userData.id,
-          name: userData.name,
-          yearregistered: userData.yearregistered,
+          name: userData.username,
+          yearregistered: userData.dateRegistered,
         },
         collectionData: {
           totalitems: collectionData?.totalitems || 0,
@@ -59,8 +69,8 @@ export default async function handler(
         hasCollection: false,
         userData: {
           id: userData.id,
-          name: userData.name,
-          yearregistered: userData.yearregistered,
+          name: userData.username,
+          yearregistered: userData.dateRegistered,
         },
         collectionData: {
           totalitems: 0,

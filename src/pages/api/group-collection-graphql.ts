@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import {
   fetchCollectionsGraphQL,
   mergeCollectionsGraphQL,
-} from "../../api/fetchGroupCollectionGraphQL";
+} from "../../api/fetchGroupCollection";
 
 export default async function handler(
   req: NextApiRequest,
