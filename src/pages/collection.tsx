@@ -126,7 +126,7 @@ const Index: NextPage<CollectionPageProps> = () => {
       queryKey: ["collection", member],
       queryFn: async () => {
         const response = await fetch(
-          `/api/collection?username=${encodeURIComponent(member)}`
+          `/api/collection-graphql?username=${encodeURIComponent(member)}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

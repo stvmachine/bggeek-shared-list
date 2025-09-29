@@ -45,23 +45,6 @@ export const GET_USER = gql`
         city
         isoCountry
       }
-      guilds {
-        id
-        name
-      }
-      microbadges {
-        id
-        name
-        imageSrc
-      }
-      top {
-        boardgame {
-          rank
-          id
-          type
-          name
-        }
-      }
     }
   }
 `;

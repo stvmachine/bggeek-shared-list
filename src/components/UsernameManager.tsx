@@ -55,19 +55,19 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
     async () => {
       if (usernamesToValidate.length === 0) return [];
 
-      // Validate all usernames in parallel using the enhanced validation API
+      // Validate all usernames in parallel using the GraphQL user API
       const validationPromises = usernamesToValidate.map(async username => {
         try {
           const response = await fetch(
-            `/api/validate-user-collection?username=${encodeURIComponent(username)}`
+            `/api/user-graphql?username=${encodeURIComponent(username)}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          const validationData = await response.json();
-          return { username, validationData, error: null };
+          const userData = await response.json();
+          return { username, userData, error: null };
         } catch (error) {
-          return { username, validationData: null, error };
+          return { username, userData: null, error };
         }
       });
 
@@ -105,25 +105,18 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
         // Process validation results
         const validUsernames: string[] = [];
         const invalidUsernames: string[] = [];
-        const noCollectionUsernames: string[] = [];
 
         data.forEach(result => {
-          if (
-            result.validationData?.hasUser &&
-            result.validationData?.hasCollection
-          ) {
+          if (result.userData && !result.error) {
+            // User exists (we got user data back)
             validUsernames.push(result.username);
-          } else if (
-            result.validationData?.hasUser &&
-            !result.validationData?.hasCollection
-          ) {
-            noCollectionUsernames.push(result.username);
           } else {
+            // User doesn't exist or error occurred
             invalidUsernames.push(result.username);
           }
         });
 
-        // Add valid usernames (users with collections) to internal state only
+        // Add valid usernames to internal state
         if (validUsernames.length > 0) {
           const newUsernames = [...usernames, ...validUsernames];
           setUsernames(newUsernames);
@@ -133,15 +126,10 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
           }
         }
 
-        // Show errors for different types of invalid usernames
+        // Show errors for invalid usernames
         const errorMessages: string[] = [];
         if (invalidUsernames.length > 0) {
           errorMessages.push(`User not found: ${invalidUsernames.join(", ")}`);
-        }
-        if (noCollectionUsernames.length > 0) {
-          errorMessages.push(
-            `No board game collection found: ${noCollectionUsernames.join(", ")}`
-          );
         }
 
         if (errorMessages.length > 0) {
@@ -366,7 +354,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                 );
                 const isValidating = isValidatingAny;
                 const validationError = result?.error as Error | null;
-                const isValid = result?.validationData?.userData?.id;
+                const isValid = result?.userData?.id;
 
                 return (
                   <Badge
