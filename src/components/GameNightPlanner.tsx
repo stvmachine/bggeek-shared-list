@@ -314,6 +314,7 @@ const GameNightPlanner: React.FC<GameNightPlannerProps> = ({ games }) => {
             games={recommendedGames}
             sessionDuration={sessionDuration}
             sortMethod={sortMethod}
+            fullCollection={games}
           />
         )}
 

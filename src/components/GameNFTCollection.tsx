@@ -8,7 +8,7 @@ import {
   Button,
   useMediaQuery,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FaStar,
   FaUsers,
@@ -19,6 +19,8 @@ import {
   FaDiscord,
   FaTelegram,
   FaWhatsapp,
+  FaDice,
+  FaMagic,
 } from "react-icons/fa";
 import { BggCollectionItem } from "../utils/types";
 
@@ -26,92 +28,241 @@ interface GameNFTCollectionProps {
   games: BggCollectionItem[];
   sessionDuration: string;
   sortMethod: string;
+  fullCollection?: BggCollectionItem[]; // Full collection for randomization
 }
+
+// Animation keyframes
+const spin = `
+  0% { transform: rotateY(0deg) scale(1); }
+  50% { transform: rotateY(180deg) scale(1.1); }
+  100% { transform: rotateY(360deg) scale(1); }
+`;
+
+const pulse = `
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+`;
+
+const holographicGlow = `
+  0%, 100% { 
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff, 0 0 60px #00ffff;
+    transform: translateZ(0);
+  }
+  50% { 
+    box-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff, 0 0 90px #ff00ff;
+    transform: translateZ(10px);
+  }
+`;
+
+const popupAnimation = `
+  0% { 
+    transform: scale(0) rotateY(0deg);
+    opacity: 0;
+  }
+  50% { 
+    transform: scale(1.2) rotateY(180deg);
+    opacity: 0.8;
+  }
+  100% { 
+    transform: scale(1) rotateY(360deg);
+    opacity: 1;
+  }
+`;
+
+const shimmer = `
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+`;
 
 const GameNFTCollection: React.FC<GameNFTCollectionProps> = ({
   games,
   sessionDuration,
   sortMethod,
+  fullCollection,
 }) => {
   const [_isSharing, setIsSharing] = useState(false);
   const [isMobile] = useMediaQuery(["(max-width: 768px)"]);
+  const [isRandomizing, setIsRandomizing] = useState(false);
+  const [selectedGames, setSelectedGames] = useState<BggCollectionItem[]>([]);
+  const [displayedGames, setDisplayedGames] = useState<BggCollectionItem[]>(games);
+  const [showPopup, setShowPopup] = useState(false);
+  const [randomizeCount, setRandomizeCount] = useState(0);
+  const [pickCount, setPickCount] = useState(5); // Default to picking 5 games
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   if (games.length === 0) return null;
 
-  const generateCoolInvite = () => {
-    const rarityCounts = games.reduce(
-      (acc, game) => {
-        const rating = game.stats?.rating?.average?.value || 0;
-        if (rating >= 8.5) acc.legendary++;
-        else if (rating >= 8.0) acc.epic++;
-        else if (rating >= 7.5) acc.rare++;
-        else if (rating >= 7.0) acc.uncommon++;
-        else acc.common++;
-        return acc;
-      },
-      { legendary: 0, epic: 0, rare: 0, uncommon: 0, common: 0 }
-    );
+  // Function to determine grid columns based on number of games
+  const getGridColumns = (gameCount: number) => {
+    // Mobile responsive behavior
+    if (isMobile) {
+      if (gameCount <= 2) return "repeat(2, 1fr)";
+      if (gameCount <= 4) return "repeat(2, 1fr)";
+      if (gameCount <= 6) return "repeat(3, 1fr)";
+      return "repeat(auto-fit, minmax(180px, 1fr))";
+    }
+    
+    // Desktop behavior
+    if (gameCount <= 3) return "repeat(3, 1fr)"; // 1 row for 3 games
+    if (gameCount <= 5) return "repeat(5, 1fr)"; // 1 row for 5 games
+    if (gameCount <= 7) return "repeat(4, 1fr)"; // 2 rows for 7 games (4+3)
+    if (gameCount <= 10) return "repeat(5, 1fr)"; // 2 rows for 10 games (5+5)
+    return "repeat(auto-fit, minmax(250px, 1fr))"; // Fallback for more games
+  };
 
-    const invite = `🎮🎲 GAME NIGHT NFT COLLECTION 🎲🎮
+  // Initialize displayed games
+  useEffect(() => {
+    setDisplayedGames(games);
+  }, [games]);
 
-🔥 COLLECTION STATS:
-• ${games.length} UNIQUE DIGITAL COLLECTIBLES
-• Session Duration: ${sessionDuration.toUpperCase()}
-• Sort Method: ${sortMethod === "random" ? "MYSTERY" : sortMethod === "rating" ? "LEGENDARY" : "OPTIMIZED"}
+  // Create audio context for sound effects
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Create a simple beep sound using Web Audio API
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioRef.current = {
+        play: () => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+          
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.3);
+        }
+      } as HTMLAudioElement;
+    }
+  }, []);
 
-💎 RARITY BREAKDOWN:
-${rarityCounts.legendary > 0 ? `• ${rarityCounts.legendary} LEGENDARY (8.5+)` : ""}
-${rarityCounts.epic > 0 ? `• ${rarityCounts.epic} EPIC (8.0+)` : ""}
-${rarityCounts.rare > 0 ? `• ${rarityCounts.rare} RARE (7.5+)` : ""}
-${rarityCounts.uncommon > 0 ? `• ${rarityCounts.uncommon} UNCOMMON (7.0+)` : ""}
-${rarityCounts.common > 0 ? `• ${rarityCounts.common} COMMON (<7.0)` : ""}
+  const handleRandomPick = async () => {
+    if (isRandomizing) return;
+    
+    setIsRandomizing(true);
+    setShowPopup(false);
+    setSelectedGames([]);
+    setRandomizeCount(0);
 
-🎯 GAME COLLECTION:
-${games
-  .map((game, index) => {
-    const rating = game.stats?.rating?.average?.value || 0;
-    const players = `${game.stats?.minplayers || 0}-${game.stats?.maxplayers || 0}`;
-    const time = `${game.stats?.playingtime || 0}m`;
-    return `${index + 1}. ${game.name?.text || "Unknown Game"} (${rating.toFixed(1)}⭐ ${players}👥 ${time}⏱️)`;
-  })
-  .join("\n")}`;
-    return invite;
+    // Use full collection if available, otherwise fall back to games
+    const collectionToUse = fullCollection || games;
+
+    // Play randomization sound
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+
+    // Animate through different random selections from the ENTIRE collection
+    const animationDuration = 2000; // 2 seconds
+    const intervalTime = 100; // Change every 100ms
+    const totalSteps = animationDuration / intervalTime;
+    
+    for (let i = 0; i < totalSteps; i++) {
+      // Pick X random games from the entire collection
+      const shuffledGames = [...collectionToUse].sort(() => Math.random() - 0.5);
+      const randomSelection = shuffledGames.slice(0, pickCount);
+      
+      // Show the randomly selected games
+      setDisplayedGames(randomSelection);
+      setRandomizeCount(i + 1);
+      
+      await new Promise(resolve => setTimeout(resolve, intervalTime));
+    }
+
+    // Final selection - pick X final random games from the entire collection
+    const shuffledGames = [...collectionToUse].sort(() => Math.random() - 0.5);
+    const finalSelection = shuffledGames.slice(0, pickCount);
+    setSelectedGames(finalSelection);
+    
+    // Show the selected games prominently
+    setDisplayedGames(finalSelection);
+    
+    // Show popup animation
+    setTimeout(() => {
+      setShowPopup(true);
+      // Play success sound
+      if (audioRef.current) {
+        audioRef.current.play();
+      }
+    }, 500);
+
+    setIsRandomizing(false);
+  };
+
+  const generateShareableLink = async () => {
+    try {
+      const response = await fetch('/api/collections/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          usernames: [], // TODO: Get usernames from context/props
+          sessionDuration,
+          numberOfGames: games.length.toString(),
+          sortMethod,
+          filters: {
+            // Store the original filters that were used to generate this collection
+            groupSize: games.length > 0 ? games[0].stats?.minplayers : 0,
+            // Add other relevant filters here
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create collection');
+      }
+
+      const data = await response.json();
+      return data.shareUrl;
+    } catch (error) {
+      console.error('Error creating shareable link:', error);
+      throw error;
+    }
   };
 
   const handleShare = async (platform?: string) => {
     setIsSharing(true);
-    const invite = generateCoolInvite();
-    const shortInvite = `🎮🎲 GAME NIGHT NFT COLLECTION 🎲🎮\n\n${games.length} UNIQUE DIGITAL COLLECTIBLES\nSession: ${sessionDuration}\n\n${games.map(game => `• ${game.name?.text || "Unknown Game"}`).join("\n")}`;
-
+    
     try {
+      // Generate shareable link
+      const shareUrl = await generateShareableLink();
+      const caption = `🎮🎲 GAME NIGHT NFT COLLECTION 🎲🎮\n\n${games.length} UNIQUE DIGITAL COLLECTIBLES\nSession: ${sessionDuration}\n\nCheck out my collection: ${shareUrl}\n\n#GameNight #BoardGames #NFT #BGG`;
+      
       if (platform === "twitter") {
-        const tweetText = encodeURIComponent(shortInvite);
+        const tweetText = encodeURIComponent(caption);
         window.open(
           `https://twitter.com/intent/tweet?text=${tweetText}`,
           "_blank"
         );
       } else if (platform === "discord") {
-        await navigator.clipboard.writeText(invite);
+        await navigator.clipboard.writeText(caption);
         alert("Discord invite copied to clipboard! 🎮");
       } else if (platform === "telegram") {
-        const telegramText = encodeURIComponent(shortInvite);
+        const telegramText = encodeURIComponent(caption);
         window.open(
-          `https://t.me/share/url?url=&text=${telegramText}`,
+          `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${telegramText}`,
           "_blank"
         );
       } else if (platform === "whatsapp") {
-        const whatsappText = encodeURIComponent(shortInvite);
+        const whatsappText = encodeURIComponent(caption);
         window.open(`https://wa.me/?text=${whatsappText}`, "_blank");
       } else if (isMobile && navigator.share) {
         // Mobile: Use native sharing
         await navigator.share({
           title: "🎮 Game Night NFT Collection",
-          text: invite,
+          text: caption,
+          url: shareUrl,
         });
       } else {
-        // Desktop or fallback: Copy to clipboard
-        await navigator.clipboard.writeText(invite);
-        alert("NFT Collection copied to clipboard! 🎮");
+        // Desktop fallback: Copy to clipboard
+        await navigator.clipboard.writeText(caption);
+        alert("NFT Collection link copied to clipboard! 🎮");
       }
     } catch (error) {
       console.error("Error sharing:", error);
@@ -121,14 +272,35 @@ ${games
   };
 
   return (
-    <Box
-      bg="linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)"
-      borderRadius="2xl"
-      p={8}
-      mb={6}
-      position="relative"
-      overflow="hidden"
-    >
+    <>
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes spin {
+          ${spin}
+        }
+        @keyframes pulse {
+          ${pulse}
+        }
+        @keyframes holographicGlow {
+          ${holographicGlow}
+        }
+        @keyframes popupAnimation {
+          ${popupAnimation}
+        }
+        @keyframes shimmer {
+          ${shimmer}
+        }
+      `}</style>
+      
+      <Box
+        data-nft-collection
+        bg="linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)"
+        borderRadius="2xl"
+        p={8}
+        mb={6}
+        position="relative"
+        overflow="hidden"
+      >
       {/* Header */}
       <VStack spacing={4} position="relative" zIndex={2}>
         <VStack spacing={2}>
@@ -169,20 +341,102 @@ ${games
           </Text>
         </VStack>
 
+        {/* Random Pick Button */}
+        <Box mt={4}>
+          <VStack spacing={3}>
+            <Text
+              fontSize="sm"
+              color="cyan.300"
+              textAlign="center"
+              fontFamily="mono"
+              letterSpacing="1px"
+            >
+              PICKING {pickCount} GAMES FROM {(fullCollection || games).length} TOTAL
+            </Text>
+            
+            {/* Pick Count Selector */}
+            <HStack spacing={2} wrap="wrap" justify="center">
+              {[3, 5, 7, 10].map((count) => (
+                <Button
+                  key={count}
+                  size="sm"
+                  variant={pickCount === count ? "solid" : "outline"}
+                  colorScheme={pickCount === count ? "cyan" : "gray"}
+                  onClick={() => setPickCount(count)}
+                  disabled={isRandomizing}
+                  fontFamily="mono"
+                  fontSize="xs"
+                >
+                  {count}
+                </Button>
+              ))}
+            </HStack>
+            
+            <Button
+            onClick={handleRandomPick}
+            disabled={isRandomizing}
+            bg="linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff)"
+            bgSize="200% 200%"
+            color="black"
+            fontWeight="bold"
+            fontSize="lg"
+            px={8}
+            py={4}
+            borderRadius="full"
+            border="3px solid"
+            borderColor="white"
+            _hover={{
+              transform: "scale(1.05)",
+              boxShadow: "0 0 30px rgba(255, 0, 255, 0.8), 0 0 60px rgba(0, 255, 255, 0.8)",
+              animation: `${holographicGlow} 2s ease-in-out infinite`,
+            }}
+            _active={{
+              transform: "scale(0.95)",
+            }}
+            _disabled={{
+              opacity: 0.6,
+              cursor: "not-allowed",
+            }}
+            transition="all 0.3s"
+            textShadow="0 0 5px rgba(0, 0, 0, 0.8)"
+            fontFamily="mono"
+            letterSpacing="1px"
+            animation={isRandomizing ? `spin 0.5s linear infinite` : "none"}
+            position="relative"
+            overflow="hidden"
+            _before={{
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: "-100%",
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)",
+              animation: isRandomizing ? "shimmer 1.5s infinite" : "none",
+            }}
+          >
+            <Icon as={isRandomizing ? FaMagic : FaDice} mr={2} />
+            {isRandomizing ? `RANDOMIZING... ${randomizeCount}/20` : `🎲 PICK ${pickCount} RANDOM GAMES 🎲`}
+          </Button>
+          </VStack>
+        </Box>
+
         {/* Game NFT Cards Grid */}
         <Box
           display="grid"
-          gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))"
+          gridTemplateColumns={getGridColumns(displayedGames.length)}
           gap={4}
           w="100%"
           mt={6}
         >
-          {games.map((game, index) => (
+          {displayedGames.map((game, index) => (
             <GameNFTCard
               key={game.objectid}
               game={game}
               index={index + 1}
-              total={games.length}
+              total={displayedGames.length}
+              isSelected={selectedGames.some(selected => selected.objectid === game.objectid)}
+              showPopup={showPopup && selectedGames.some(selected => selected.objectid === game.objectid)}
             />
           ))}
         </Box>
@@ -201,10 +455,10 @@ ${games
             <VStack spacing={1}>
               <Icon as={FaGamepad} color="#00ffff" boxSize="20px" />
               <Text fontSize="sm" color="cyan.300" fontFamily="mono">
-                COLLECTION SIZE
+                {selectedGames.length > 0 ? "SELECTED GAMES" : "COLLECTION SIZE"}
               </Text>
               <Text fontSize="lg" color="white" fontWeight="bold">
-                {games.length} GAMES
+                {selectedGames.length > 0 ? `${selectedGames.length} PICKED` : `${games.length} TOTAL`}
               </Text>
             </VStack>
 
@@ -387,6 +641,7 @@ ${games
         </Box>
       </VStack>
     </Box>
+    </>
   );
 };
 
@@ -394,9 +649,11 @@ interface GameNFTCardProps {
   game: BggCollectionItem;
   index: number;
   total: number;
+  isSelected?: boolean;
+  showPopup?: boolean;
 }
 
-const GameNFTCard: React.FC<GameNFTCardProps> = ({ game }) => {
+const GameNFTCard: React.FC<GameNFTCardProps> = ({ game, isSelected = false, showPopup = false }) => {
   const rating = game.stats?.rating?.average?.value || 0;
   const playingTime = game.stats?.playingtime || 0;
   const minPlayers = game.stats?.minplayers || 0;
@@ -420,23 +677,80 @@ const GameNFTCard: React.FC<GameNFTCardProps> = ({ game }) => {
   return (
     <Box
       position="relative"
-      bg="linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
+      bg={isSelected 
+        ? "linear-gradient(135deg, #ff00ff 0%, #00ffff 50%, #ff00ff 100%)"
+        : "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)"
+      }
       borderRadius="lg"
       p={3}
-      border="2px solid"
-      borderColor={rarity.color}
-      boxShadow={`0 0 15px ${rarity.glow}40, inset 0 0 15px ${rarity.glow}20`}
+      border={isSelected ? "3px solid" : "2px solid"}
+      borderColor={isSelected ? "#ffffff" : rarity.color}
+      boxShadow={isSelected 
+        ? "0 0 30px #ff00ff, 0 0 60px #00ffff, 0 0 90px #ff00ff, inset 0 0 30px rgba(255, 255, 255, 0.3)"
+        : `0 0 15px ${rarity.glow}40, inset 0 0 15px ${rarity.glow}20`
+      }
       overflow="hidden"
+      transform={isSelected ? "translateZ(20px) scale(1.1)" : "translateZ(0) scale(1)"}
+      animation={isSelected 
+        ? `holographicGlow 2s ease-in-out infinite, pulse 1s ease-in-out infinite` 
+        : showPopup 
+          ? `popupAnimation 1s ease-out` 
+          : "none"
+      }
       _hover={{
-        transform: "scale(1.02)",
-        boxShadow: `0 0 25px ${rarity.glow}60, inset 0 0 25px ${rarity.glow}30`,
+        transform: isSelected ? "translateZ(30px) scale(1.15)" : "scale(1.02)",
+        boxShadow: isSelected 
+          ? "0 0 40px #ff00ff, 0 0 80px #00ffff, 0 0 120px #ff00ff, inset 0 0 40px rgba(255, 255, 255, 0.4)"
+          : `0 0 25px ${rarity.glow}60, inset 0 0 25px ${rarity.glow}30`,
       }}
       transition="all 0.3s ease"
+      zIndex={isSelected ? 10 : 1}
+      style={{
+        perspective: "1000px",
+        transformStyle: "preserve-3d",
+      }}
     >
+      {/* Selected Game Overlay */}
+      {isSelected && (
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="linear-gradient(45deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3))"
+          borderRadius="lg"
+          zIndex={1}
+          animation={`pulse 1s ease-in-out infinite`}
+        />
+      )}
+
+      {/* Selected Game Badge */}
+      {isSelected && (
+        <Box
+          position="absolute"
+          top={-2}
+          right={-2}
+          bg="linear-gradient(45deg, #ff00ff, #00ffff)"
+          color="black"
+          fontSize="xs"
+          fontWeight="bold"
+          px={2}
+          py={1}
+          borderRadius="full"
+          zIndex={2}
+          animation={`spin 2s linear infinite`}
+          fontFamily="mono"
+          letterSpacing="1px"
+        >
+          ⭐ PICKED ⭐
+        </Box>
+      )}
+
       {/* Game Image */}
       <Box
         w="100%"
-        h="80px"
+        h="160px"
         bg="gray.800"
         borderRadius="md"
         mb={2}
@@ -463,7 +777,7 @@ const GameNFTCard: React.FC<GameNFTCardProps> = ({ game }) => {
             justify="center"
             color="gray.400"
           >
-            <Icon as={FaGamepad} boxSize="32px" />
+            <Icon as={FaGamepad} boxSize="48px" />
           </Flex>
         )}
       </Box>
