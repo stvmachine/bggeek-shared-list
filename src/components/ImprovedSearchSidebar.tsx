@@ -38,7 +38,11 @@ type ImprovedSearchSidebarProps = {
   collections: ICollection[];
   onSearch?: (_usernames: string[]) => void;
   onValidatedUsernames?: (_usernames: string[]) => void;
-  onValidationError?: () => void;
+  onValidationError?: (error: {
+    type: string;
+    usernames: string[];
+    message: string;
+  }) => void;
   removeMember?: (_member: string) => void;
   removeAllMembers?: () => void;
   isOpenDrawer?: boolean;

@@ -9,18 +9,24 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
-import { useQuery } from "react-query";
+import { useUserValidation } from "../hooks/useUserValidation";
 
 type FormData = {
   username: string;
 };
 
+type ValidationError = {
+  type: "user_not_found" | "network_error" | "unknown";
+  usernames: string[];
+  message: string;
+};
+
 type UsernameManagerProps = {
   onUsernamesChange: (_usernames: string[]) => void;
   onValidatedUsernames?: (_usernames: string[]) => void;
-  onValidationError?: () => void;
+  onValidationError?: (error: ValidationError) => void;
   initialUsernames?: string[];
   showRemoveAll?: boolean;
   onRemoveAll?: () => void;
@@ -49,102 +55,82 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
 
   const { handleSubmit, setError, clearErrors, reset } = methods;
 
-  // Use a single query with all usernames to validate
-  const { data: validationData, isLoading: isValidatingAny } = useQuery(
-    ["validateUsers", usernamesToValidate],
-    async () => {
-      if (usernamesToValidate.length === 0) return [];
+  // Use Apollo Client for user validation
+  const {
+    results: validationResults,
+    validUsernames,
+    invalidUsernames,
+    isLoading: isValidatingAny,
+    hasErrors,
+  } = useUserValidation(usernamesToValidate);
 
-      // Validate all usernames in parallel using the GraphQL user API
-      const validationPromises = usernamesToValidate.map(async username => {
-        try {
-          const response = await fetch(
-            `/api/user-graphql?username=${encodeURIComponent(username)}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const userData = await response.json();
-          return { username, userData, error: null };
-        } catch (error) {
-          return { username, userData: null, error };
-        }
-      });
+  // Handle validation results
+  useEffect(() => {
+    if (usernamesToValidate.length === 0) return;
 
-      return Promise.all(validationPromises);
-    },
-    {
-      enabled: usernamesToValidate.length > 0,
-      retry: (failureCount, error: any) => {
-        // Don't retry on 404 or user not found errors
-        if (error?.response?.status === 404) {
-          return false;
-        }
-        // Don't retry if the error suggests user doesn't exist
-        if (
-          error?.message?.includes("not found") ||
-          error?.message?.includes("404")
-        ) {
-          return false;
-        }
-        // Only retry network errors once
-        return failureCount < 1;
-      },
-      retryDelay: 1000, // 1 second delay between retries
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
-      onError: (error: any) => {
-        console.error("Validation error:", error);
-        // Clear validation queue and notify parent of error
-        setUsernamesToValidate([]);
-        if (onValidationError) {
-          onValidationError();
-        }
-      },
-      onSuccess: data => {
-        // Process validation results
-        const validUsernames: string[] = [];
-        const invalidUsernames: string[] = [];
+    // Check if all validations are complete (not loading)
+    const allComplete = validationResults.every(result => !result.loading);
+    if (!allComplete) return;
 
-        data.forEach(result => {
-          if (result.userData && !result.error) {
-            // User exists (we got user data back)
-            validUsernames.push(result.username);
-          } else {
-            // User doesn't exist or error occurred
-            invalidUsernames.push(result.username);
-          }
-        });
-
-        // Add valid usernames to internal state
-        if (validUsernames.length > 0) {
-          const newUsernames = [...usernames, ...validUsernames];
-          setUsernames(newUsernames);
-          // Notify parent of validated usernames
-          if (onValidatedUsernames) {
-            onValidatedUsernames(newUsernames);
-          }
-        }
-
-        // Show errors for invalid usernames
-        const errorMessages: string[] = [];
-        if (invalidUsernames.length > 0) {
-          errorMessages.push(`User not found: ${invalidUsernames.join(", ")}`);
-        }
-
-        if (errorMessages.length > 0) {
-          setError("username", {
-            type: "manual",
-            message: errorMessages.join(". "),
-          });
-        }
-
-        // Clear validation queue
-        setUsernamesToValidate([]);
-        reset();
-      },
+    // Process results
+    if (validUsernames.length > 0) {
+      const newUsernames = [...usernames, ...validUsernames];
+      setUsernames(newUsernames);
+      // Notify parent of validated usernames
+      if (onValidatedUsernames) {
+        onValidatedUsernames(newUsernames);
+      }
     }
-  );
+
+    // Show errors for invalid usernames
+    const errorMessages: string[] = [];
+    let validationError: ValidationError | null = null;
+
+    if (invalidUsernames.length > 0) {
+      errorMessages.push(`User not found: ${invalidUsernames.join(", ")}`);
+      validationError = {
+        type: "user_not_found",
+        usernames: invalidUsernames,
+        message: `User not found: ${invalidUsernames.join(", ")}`,
+      };
+    }
+
+    // Check for general errors (network issues, etc.)
+    if (hasErrors && invalidUsernames.length === 0) {
+      errorMessages.push("Network error occurred during validation");
+      validationError = {
+        type: "network_error",
+        usernames: usernamesToValidate,
+        message: "Network error occurred during validation",
+      };
+    }
+
+    if (errorMessages.length > 0) {
+      setError("username", {
+        type: "manual",
+        message: errorMessages.join(". "),
+      });
+      // Call the validation error callback with detailed error info
+      if (onValidationError && validationError) {
+        onValidationError(validationError);
+      }
+    }
+
+    // Clear validation queue
+    setUsernamesToValidate([]);
+    reset();
+  }, [
+    validationResults,
+    validUsernames,
+    invalidUsernames,
+    hasErrors,
+    usernamesToValidate,
+    usernames,
+    onValidatedUsernames,
+    onValidationError,
+    setError,
+    reset,
+  ]);
 
   const onSubmit = (data: FormData) => {
     clearErrors();
@@ -348,17 +334,14 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
               Validating usernames:
             </Text>
             <Flex wrap="wrap" gap={2}>
-              {usernamesToValidate.map(username => {
-                const result = validationData?.find(
-                  r => r.username === username
-                );
-                const isValidating = isValidatingAny;
-                const validationError = result?.error as Error | null;
-                const isValid = result?.userData?.id;
+              {validationResults.map(result => {
+                const isValidating = result.loading;
+                const validationError = result.error;
+                const isValid = result.userData?.id;
 
                 return (
                   <Badge
-                    key={username}
+                    key={result.username}
                     colorPalette={
                       validationError
                         ? "red"
@@ -374,7 +357,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                     borderRadius="full"
                   >
                     <HStack gap={2}>
-                      <Text>{username}</Text>
+                      <Text>{result.username}</Text>
                       {isValidating && <Text>⏳</Text>}
                       {isValid && <Text>✓</Text>}
                       {validationError && <Text>✗</Text>}
