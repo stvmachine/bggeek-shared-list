@@ -1,7 +1,7 @@
-import { useQuery } from "@apollo/client/react";
+import { useLazyQuery } from "@apollo/client/react";
 import { GET_USER_COLLECTION } from "../lib/graphql/queries";
 import { GetUserCollectionQuery } from "../lib/graphql/generated/types";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 
 const mergeCollectionsGraphQL = (
   rawData: any[],
@@ -81,59 +81,101 @@ const mergeCollectionsGraphQL = (
 };
 
 export const useCollections = (usernames: string[]) => {
-  // Use Apollo's useQuery for each username
-  const collectionQueries = usernames.map(username =>
-    useQuery<GetUserCollectionQuery>(GET_USER_COLLECTION, {
-      variables: { username },
-      skip: !username, // Skip if no username
+  const [results, setResults] = useState<
+    Record<
+      string,
+      {
+        data: any;
+        error: any;
+        loading: boolean;
+      }
+    >
+  >({});
+
+  const [getCollection, { loading, error }] =
+    useLazyQuery<GetUserCollectionQuery>(GET_USER_COLLECTION, {
       errorPolicy: "all",
-      notifyOnNetworkStatusChange: true,
-    })
-  );
+    });
 
-  // Check if any query is loading
-  const isLoading = useMemo(
-    () => collectionQueries.some(query => query.loading),
-    [collectionQueries]
-  );
+  useEffect(() => {
+    if (usernames.length === 0) {
+      setResults({});
+      return;
+    }
 
-  // Check if any query has errors
-  const hasErrors = useMemo(
-    () => collectionQueries.some(query => query.error),
-    [collectionQueries]
-  );
+    // Initialize results with loading state
+    const initialResults: Record<
+      string,
+      { data: any; error: any; loading: boolean }
+    > = {};
+    usernames.forEach(username => {
+      initialResults[username] = {
+        data: null,
+        error: null,
+        loading: true,
+      };
+    });
+    setResults(initialResults);
+
+    // Fetch each collection sequentially
+    const fetchCollections = async () => {
+      const newResults: Record<
+        string,
+        { data: any; error: any; loading: boolean }
+      > = {};
+
+      for (const username of usernames) {
+        try {
+          const result = await getCollection({
+            variables: { username },
+          });
+          newResults[username] = {
+            data: result.data?.userCollection || null,
+            error: result.error || null,
+            loading: false,
+          };
+        } catch (err) {
+          newResults[username] = {
+            data: null,
+            error: err,
+            loading: false,
+          };
+        }
+      }
+      setResults(newResults);
+    };
+
+    fetchCollections();
+  }, [usernames, getCollection]);
+
+  // Use Apollo's built-in states
+  const isLoading =
+    loading || Object.values(results).some(result => result.loading);
+  const hasErrors =
+    !!error || Object.values(results).some(result => result.error);
 
   // Get all errors
-  const errors = useMemo(
-    () =>
-      collectionQueries
-        .map((query, index) => ({
-          username: usernames[index],
-          error: query.error,
-        }))
-        .filter(({ error }) => error),
-    [collectionQueries, usernames]
-  );
+  const errors = Object.entries(results)
+    .filter(([_, result]) => result.error)
+    .map(([username, result]) => ({ username, error: result.error }));
 
   // Process and merge the data
   const data = useMemo(() => {
     if (isLoading || hasErrors) return undefined;
 
-    const collectionsData = collectionQueries
-      .map(query => query.data?.userCollection)
+    const collectionsData = Object.values(results)
+      .map(result => result.data)
       .filter(Boolean);
 
     if (collectionsData.length === 0) return undefined;
 
     return mergeCollectionsGraphQL(collectionsData, usernames);
-  }, [collectionQueries, usernames, isLoading, hasErrors]);
+  }, [results, usernames, isLoading, hasErrors]);
 
   return {
     data,
     isLoading,
     hasErrors,
     errors,
-    // Individual query states for debugging
-    queries: collectionQueries,
   };
 };

@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useUserValidation } from "../hooks/useUserValidation";
 
@@ -64,12 +64,20 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
     hasErrors,
   } = useUserValidation(usernamesToValidate);
 
+  // Memoize validation results as array for easier iteration
+  const validationResultsArray = useMemo(
+    () => Object.entries(validationResults),
+    [validationResults]
+  );
+
   // Handle validation results
   useEffect(() => {
     if (usernamesToValidate.length === 0) return;
 
     // Check if all validations are complete (not loading)
-    const allComplete = validationResults.every(result => !result.loading);
+    const allComplete = validationResultsArray.every(
+      ([_, result]) => !result.loading
+    );
     if (!allComplete) return;
 
     // Process results
@@ -120,7 +128,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
     setUsernamesToValidate([]);
     reset();
   }, [
-    validationResults,
+    validationResultsArray,
     validUsernames,
     invalidUsernames,
     hasErrors,
@@ -334,14 +342,14 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
               Validating usernames:
             </Text>
             <Flex wrap="wrap" gap={2}>
-              {validationResults.map(result => {
+              {validationResultsArray.map(([username, result]) => {
                 const isValidating = result.loading;
                 const validationError = result.error;
                 const isValid = result.userData?.id;
 
                 return (
                   <Badge
-                    key={result.username}
+                    key={username}
                     colorPalette={
                       validationError
                         ? "red"
@@ -357,7 +365,7 @@ const UsernameManager: React.FC<UsernameManagerProps> = ({
                     borderRadius="full"
                   >
                     <HStack gap={2}>
-                      <Text>{result.username}</Text>
+                      <Text>{username}</Text>
                       {isValidating && <Text>⏳</Text>}
                       {isValid && <Text>✓</Text>}
                       {validationError && <Text>✗</Text>}
