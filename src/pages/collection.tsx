@@ -10,9 +10,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { FiShare2 } from "react-icons/fi";
-import { useQueries } from "react-query";
-
-import { mergeCollectionsGraphQL } from "../api/fetchGroupCollection";
+import { useCollections } from "../hooks/useCollections";
 import ImprovedSearchSidebar from "../components/ImprovedSearchSidebar";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
@@ -102,12 +100,16 @@ const Index: NextPage<CollectionPageProps> = () => {
     [members]
   );
 
-  const handleValidationError = useCallback(() => {
-    // This is called when validation fails
-    // Clear pending state and stop validation
-    setPendingUsernames([]);
-    setIsValidating(false);
-  }, []);
+  const handleValidationError = useCallback(
+    (error: { type: string; usernames: string[]; message: string }) => {
+      // This is called when validation fails
+      console.log("Validation error:", error);
+      // Clear pending state and stop validation
+      setPendingUsernames([]);
+      setIsValidating(false);
+    },
+    []
+  );
 
   const removeMember = useCallback(
     (memberToRemove: string) => {
@@ -121,46 +123,7 @@ const Index: NextPage<CollectionPageProps> = () => {
     setMembers([]);
   }, []);
 
-  const results = useQueries(
-    members.map(member => ({
-      queryKey: ["collection", member],
-      queryFn: async () => {
-        const response = await fetch(
-          `/api/collection-graphql?username=${encodeURIComponent(member)}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      },
-      refetchOnWindowFocus: false,
-    }))
-  );
-
-  const rawData = useMemo(() => {
-    const isLoading = results.reduce(
-      (acc, next) => next.isLoading || acc,
-      false
-    );
-    if (isLoading) return undefined;
-
-    const dataArray = results
-      .map((result: any) => result?.data)
-      .filter(Boolean);
-
-    if (dataArray.length === 0) return undefined;
-
-    const merged = mergeCollectionsGraphQL(dataArray, members);
-    return merged;
-  }, [results, members]);
-
-  const isLoading = useMemo(
-    () => results.reduce((acc, next) => next.isLoading || acc, false),
-    [results]
-  );
-
-  // Use rawData directly as data
-  const data = rawData;
+  const { data, isLoading } = useCollections(members);
 
   const defaultValues = useMemo(
     () => ({

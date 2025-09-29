@@ -1,7 +1,9 @@
 import { ChakraProvider, createSystem, defaultConfig } from "@chakra-ui/react";
 import { render } from "@testing-library/react";
 import { useRouter } from "next/router";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { ApolloProvider } from "@apollo/client/react";
+import { apolloClient } from "../../lib/graphql/client";
+import "@testing-library/jest-dom";
 
 import Collection from "../../pages/collection";
 
@@ -10,21 +12,30 @@ jest.mock("next/router", () => ({
   useRouter: jest.fn(),
 }));
 
-// Mock the API functions to return mock data
-jest.mock("../../api/fetchGroupCollectionGraphQL", () => ({
-  fetchCollectionsGraphQL: jest.fn().mockResolvedValue([{ items: [] }]),
-  mergeCollectionsGraphQL: jest.fn().mockReturnValue({
-    boardgames: [
-      {
-        objectid: "1",
-        name: { text: "Test Game" },
-        thumbnail: "test.jpg",
-        owners: [{ username: "testuser", status: {}, collid: "1" }],
-      },
-    ],
-    collections: [{ totalitems: 1, pubdate: "2023-01-01" }],
+// Mock the hooks to return mock data
+jest.mock("../../hooks/useCollections", () => ({
+  useCollections: jest.fn().mockReturnValue({
+    data: {
+      boardgames: [
+        {
+          objectid: "1",
+          name: { text: "Test Game" },
+          thumbnail: "test.jpg",
+          owners: [{ username: "testuser", status: {}, collid: "1" }],
+        },
+      ],
+      collections: [{ totalitems: 1, pubdate: "2023-01-01" }],
+    },
+    isLoading: false,
+    hasErrors: false,
+    errors: [],
   }),
 }));
+
+// Mock the ImprovedSearchSidebar component
+jest.mock("../../components/ImprovedSearchSidebar", () => () => (
+  <div data-testid="improved-search-sidebar">ImprovedSearchSidebar</div>
+));
 
 // Mock the permalink utilities
 jest.mock("../../utils/permalink", () => ({
@@ -53,22 +64,12 @@ jest.mock("../../components/Results", () => () => (
 ));
 // Removed mocks for deleted components: SearchSidebar and MobileDrawer
 
-const createTestQueryClient = () =>
-  new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
 const renderWithProviders = (component: React.ReactElement) => {
-  const queryClient = createTestQueryClient();
   const system = createSystem(defaultConfig);
   return render(
-    <QueryClientProvider client={queryClient}>
+    <ApolloProvider client={apolloClient}>
       <ChakraProvider value={system}>{component}</ChakraProvider>
-    </QueryClientProvider>
+    </ApolloProvider>
   );
 };
 
@@ -90,5 +91,15 @@ describe("Collection Page - Pending Usernames Logic", () => {
 
   it("should render without errors", () => {
     expect(() => renderWithProviders(<Collection />)).not.toThrow();
+  });
+
+  it("should render ImprovedSearchSidebar component", () => {
+    const { getByTestId } = renderWithProviders(<Collection />);
+    expect(getByTestId("improved-search-sidebar")).toBeInTheDocument();
+  });
+
+  it("should render Results component when data is available", () => {
+    const { getByTestId } = renderWithProviders(<Collection />);
+    expect(getByTestId("results")).toBeInTheDocument();
   });
 });
