@@ -56,6 +56,8 @@ type ImprovedSearchSidebarProps = {
   invalidUsers?: string[];
   totalUsers?: number;
   validUserCount?: number;
+  // Disabled state for loading
+  disabled?: boolean;
 };
 
 const hideVirtualKeyboard = (): void => {
@@ -81,6 +83,7 @@ const ImprovedSearchSidebar = React.memo(
     isMobileDrawerOpen,
     onMobileDrawerToggle,
     isValidating = false,
+    disabled = false,
   }: ImprovedSearchSidebarProps) => {
     const {
       register,
@@ -271,7 +274,11 @@ const ImprovedSearchSidebar = React.memo(
     const SidebarContent = () => (
       <form
         onSubmit={formHandleSubmit(onSubmit, onError)}
-        style={{ height: "100%" }}
+        style={{
+          height: "100%",
+          opacity: disabled ? 0.6 : 1,
+          pointerEvents: disabled ? "none" : "auto",
+        }}
       >
         <VStack
           width={isOpenDrawer || isMobile ? "100%" : "340px"}
