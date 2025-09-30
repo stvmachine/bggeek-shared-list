@@ -65,3 +65,17 @@ export const GET_GAME_DETAILS = gql`
     }
   }
 `;
+
+// Query to get hot games
+export const GET_HOT_GAMES = gql`
+  query GetHotGames($type: ThingType) {
+    hotItems(type: $type) {
+      id
+      name
+      type
+      yearPublished
+      image
+      thumbnail
+    }
+  }
+`;

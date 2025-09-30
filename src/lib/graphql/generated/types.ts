@@ -595,3 +595,20 @@ export type GetGameDetailsQuery = {
     thumbnail?: string | null;
   } | null;
 };
+
+export type GetHotGamesQueryVariables = Exact<{
+  type?: InputMaybe<ThingType>;
+}>;
+
+export type GetHotGamesQuery = {
+  __typename?: "Query";
+  hotItems: Array<{
+    __typename?: "Thing";
+    id: string;
+    name: string;
+    type: ThingType;
+    yearPublished?: number | null;
+    image?: string | null;
+    thumbnail?: string | null;
+  }>;
+};

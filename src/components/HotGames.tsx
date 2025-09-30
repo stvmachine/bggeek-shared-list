@@ -8,13 +8,10 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import { BggHotResponse } from "bgg-xml-api-client";
+import { useHotGames } from "../hooks/useHotGames";
 
-type HotGamesProps = {
-  collectionData: BggHotResponse;
-};
-
-const HotGames = ({ collectionData }: HotGamesProps) => {
+const HotGames = () => {
+  const { data: hotGames, loading, error } = useHotGames("boardgame");
   const bgGradient = "linear(to-br, blue.50, purple.50)";
 
   return (
@@ -40,11 +37,16 @@ const HotGames = ({ collectionData }: HotGamesProps) => {
         </VStack>
 
         <Wrap gap={4} justify="center">
-          {collectionData?.item &&
-            collectionData.item.length > 0 &&
-            collectionData.item.map(({ thumbnail, id }: any) => (
-              <WrapItem key={id}>
-                {thumbnail?.value && (
+          {loading ? (
+            <Text color="gray.500">Loading hot games...</Text>
+          ) : error ? (
+            <Text color="red.500">Failed to load hot games</Text>
+          ) : (
+            hotGames &&
+            hotGames.length > 0 &&
+            hotGames.slice(0, 30).map((game: any) => (
+              <WrapItem key={game.id}>
+                {game.thumbnail && (
                   <Box
                     borderRadius="lg"
                     overflow="hidden"
@@ -58,13 +60,14 @@ const HotGames = ({ collectionData }: HotGamesProps) => {
                     <Image
                       boxSize={["100px", "120px", "140px"]}
                       objectFit="cover"
-                      src={thumbnail.value}
-                      alt="Board game thumbnail"
+                      src={game.thumbnail}
+                      alt={`${game.name} thumbnail`}
                     />
                   </Box>
                 )}
               </WrapItem>
-            ))}
+            ))
+          )}
         </Wrap>
       </Container>
     </Box>

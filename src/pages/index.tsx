@@ -1,4 +1,3 @@
-import { BggHotResponse, getBggHot } from "bgg-xml-api-client";
 import { NextPage } from "next";
 
 import { Container } from "../components/Container";
@@ -9,48 +8,19 @@ import Main from "../components/Layout/Main";
 import Navbar from "../components/Layout/Navbar";
 
 export async function getStaticProps() {
-  try {
-    const results: BggHotResponse = await getBggHot({
-      type: "boardgame",
-    });
-
-    const collectionData = {
-      ...results,
-      item: results.item.sort(() => 0.5 - Math.random()).slice(0, 30),
-    };
-
-    return {
-      props: {
-        collectionData,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching hot games:", error);
-
-    // Return empty data structure as fallback
-    return {
-      props: {
-        collectionData: {
-          item: [],
-        },
-      },
-    };
-  }
+  return {
+    props: {},
+  };
 }
 
-type IndexPageProps = {
-  collectionData: BggHotResponse;
-  [prop: string]: any;
-};
-
-const Index: NextPage<IndexPageProps> = ({ collectionData }) => {
+const Index: NextPage = () => {
   return (
     <>
       <Navbar />
       <Container height="100vh">
         <Main>
           <CTA />
-          <HotGames collectionData={collectionData} />
+          <HotGames />
         </Main>
         <Footer />
       </Container>
