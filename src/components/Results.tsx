@@ -84,11 +84,10 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
 
   // Use the simplified fuzzy search hook with debouncing
   const searchResults = useFuzzySearch<ICollectionItem>(boardgames, keyword, {
-    // keys: ["name.text", "originalname"], TODO: Good idea to keep originalName
-    keys: ["name.text"],
+    keys: ["name", "name.text", "originalname"],
     threshold: 0.3,
     debounceTime: 300, // 300ms debounce time
-    minSearchLength: 2, // Minimum characters to start searching
+    minSearchLength: 0, // Allow searching from the first character
   });
 
   // Apply filters and sorting
