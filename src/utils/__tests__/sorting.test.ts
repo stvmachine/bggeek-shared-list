@@ -1,10 +1,10 @@
 import { sortGames } from "../sorting";
-import { BggCollectionItem } from "../types";
+import { CollectionItem } from "../../lib/graphql/generated/types";
 
 // Mock game data for testing
-const mockGames: BggCollectionItem[] = [
+const mockGames: CollectionItem[] = [
   {
-    objectid: "1",
+    objectId: "1",
     name: { text: "Zebra Game", sortIndex: "1" },
     stats: {
       minplayers: 1,
@@ -33,7 +33,7 @@ const mockGames: BggCollectionItem[] = [
     owners: [{ username: "testuser", status: {}, collid: "1" }],
   },
   {
-    objectid: "2",
+    objectId: "2",
     name: { text: "Alpha Game", sortIndex: "2" },
     stats: {
       minplayers: 2,
@@ -62,7 +62,7 @@ const mockGames: BggCollectionItem[] = [
     owners: [{ username: "testuser", status: {}, collid: "2" }],
   },
   {
-    objectid: "3",
+    objectId: "3",
     name: { text: "Beta Game", sortIndex: "3" },
     stats: {
       minplayers: 3,
@@ -90,7 +90,7 @@ const mockGames: BggCollectionItem[] = [
     thumbnail: "",
     owners: [{ username: "testuser", status: {}, collid: "3" }],
   },
-] as BggCollectionItem[];
+] as CollectionItem[];
 
 describe("Sorting Utilities", () => {
   describe("sortGames", () => {

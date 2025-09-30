@@ -13,6 +13,14 @@ export const GET_USER_COLLECTION = gql`
         image
         yearPublished
         numPlays
+        stats {
+          minPlayers
+          maxPlayers
+          minPlayTime
+          maxPlayTime
+          playingTime
+          average
+        }
       }
     }
   }
@@ -37,9 +45,6 @@ export const GET_USER = gql`
     }
   }
 `;
-
-// Note: Multiple collections query doesn't exist in the schema
-// We'll need to make multiple individual calls
 
 // Query to search for games
 export const SEARCH_GAMES = gql`

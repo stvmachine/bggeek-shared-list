@@ -56,7 +56,7 @@ const mergeCollectionsGraphQL = (
         ...accum,
         [gameId]: {
           ...bgg,
-          objectid: bgg.objectId, // Ensure objectid is set correctly
+          objectId: bgg.objectId, // Ensure objectId is set correctly
           name: {
             text: bgg.name,
           },

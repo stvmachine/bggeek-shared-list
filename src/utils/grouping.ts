@@ -1,19 +1,17 @@
-import { BggCollectionItem } from "./types";
+import { CollectionItem } from "../types";
 
 export type GroupingOption = "none" | "players" | "rating" | "bestPlayers";
 
 export interface GroupedGames {
-  [key: string]: BggCollectionItem[];
+  [key: string]: CollectionItem[];
 }
 
-export const groupGamesByPlayers = (
-  games: BggCollectionItem[]
-): GroupedGames => {
+export const groupGamesByPlayers = (games: CollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
 
   games.forEach(game => {
-    const minPlayers = Number(game.stats?.minplayers) || 1;
-    const maxPlayers = Number(game.stats?.maxplayers) || minPlayers;
+    const minPlayers = Number(game.stats.minPlayers) || 1;
+    const maxPlayers = Number(game.stats.maxPlayers) || minPlayers;
 
     // Create a range string for the group key
     const groupKey =
@@ -42,11 +40,11 @@ export const groupGamesByPlayers = (
   return sortedGroups;
 };
 
-export const groupGamesByYear = (games: BggCollectionItem[]): GroupedGames => {
+export const groupGamesByYear = (games: CollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
 
   games.forEach(game => {
-    const year = game.yearpublished || "Unknown";
+    const year = game.yearPublished || "Unknown";
     const groupKey = `${year}`;
 
     if (!groups[groupKey]) {
@@ -70,9 +68,7 @@ export const groupGamesByYear = (games: BggCollectionItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByRating = (
-  games: BggCollectionItem[]
-): GroupedGames => {
+export const groupGamesByRating = (games: CollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {
     "9.0+ (Excellent)": [],
     "8.0-8.9 (Very Good)": [],
@@ -83,7 +79,7 @@ export const groupGamesByRating = (
   };
 
   games.forEach(game => {
-    const rating = game.stats?.rating?.average?.value || 0;
+    const rating = game.stats.average || 0;
 
     if (rating === 0) {
       groups["Unrated"].push(game);
@@ -111,13 +107,13 @@ export const groupGamesByRating = (
 };
 
 export const groupGamesByBestPlayers = (
-  games: BggCollectionItem[]
+  games: CollectionItem[]
 ): GroupedGames => {
   const groups: GroupedGames = {};
 
   games.forEach(game => {
-    const minPlayers = game.stats?.minplayers || 0;
-    const maxPlayers = game.stats?.maxplayers || 0;
+    const minPlayers = game.stats.minPlayers || 0;
+    const maxPlayers = game.stats.maxPlayers || 0;
 
     // Calculate the "best with" player count
     // For most games, this is often the middle of the range or slightly towards the higher end
@@ -161,7 +157,7 @@ export const groupGamesByBestPlayers = (
 };
 
 export const groupGames = (
-  games: BggCollectionItem[],
+  games: CollectionItem[],
   groupBy: GroupingOption
 ): GroupedGames => {
   switch (groupBy) {

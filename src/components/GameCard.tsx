@@ -11,11 +11,7 @@ import { MemberAvatar } from "./MemberAvatar";
 import Image from "next/image";
 import React from "react";
 import { FaClock, FaStar, FaUsers } from "react-icons/fa";
-export interface GameOwner {
-  username: string;
-  status: string | number;
-  collid: string;
-}
+import { GameOwner } from "../types";
 
 export interface GameCardProps {
   id: string;

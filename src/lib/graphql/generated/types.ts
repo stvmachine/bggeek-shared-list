@@ -95,11 +95,31 @@ export type CollectionItem = {
   objectId: Scalars["ID"]["output"];
   objectType: Scalars["String"]["output"];
   preordered: Scalars["String"]["output"];
+  stats?: Maybe<CollectionItemStats>;
   status: Status;
   subtype: Scalars["String"]["output"];
   thumbnail: Scalars["String"]["output"];
   wantPartsList: Scalars["String"]["output"];
   yearPublished: Scalars["Int"]["output"];
+};
+
+export type CollectionItemStats = {
+  __typename?: "CollectionItemStats";
+  average?: Maybe<Scalars["Float"]["output"]>;
+  averageWeight?: Maybe<Scalars["Float"]["output"]>;
+  bayesAverage?: Maybe<Scalars["Float"]["output"]>;
+  maxPlayTime?: Maybe<Scalars["Int"]["output"]>;
+  maxPlayers?: Maybe<Scalars["Int"]["output"]>;
+  minAge?: Maybe<Scalars["Int"]["output"]>;
+  minPlayTime?: Maybe<Scalars["Int"]["output"]>;
+  minPlayers?: Maybe<Scalars["Int"]["output"]>;
+  numComments?: Maybe<Scalars["Int"]["output"]>;
+  numWeights?: Maybe<Scalars["Int"]["output"]>;
+  playingTime?: Maybe<Scalars["Int"]["output"]>;
+  usersOwned?: Maybe<Scalars["Int"]["output"]>;
+  usersRated?: Maybe<Scalars["Int"]["output"]>;
+  usersWanting?: Maybe<Scalars["Int"]["output"]>;
+  usersWishing?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export enum CollectionSubtype {
@@ -536,6 +556,15 @@ export type GetUserCollectionQuery = {
       image: string;
       yearPublished: number;
       numPlays: number;
+      stats?: {
+        __typename?: "CollectionItemStats";
+        minPlayers?: number | null;
+        maxPlayers?: number | null;
+        minPlayTime?: number | null;
+        maxPlayTime?: number | null;
+        playingTime?: number | null;
+        average?: number | null;
+      } | null;
     }>;
   } | null;
 };

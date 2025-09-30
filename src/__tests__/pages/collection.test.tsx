@@ -18,7 +18,7 @@ jest.mock("../../hooks/useCollections", () => ({
     data: {
       boardgames: [
         {
-          objectid: "1",
+          objectId: "1",
           name: { text: "Test Game" },
           thumbnail: "test.jpg",
           owners: [{ username: "testuser", status: {}, collid: "1" }],

@@ -25,17 +25,14 @@ import {
 } from "react-icons/fi";
 
 import { SearchInput } from "./SearchInput";
-
-// import { useMembers } from "../contexts/MemberContext";
 import useKeydown from "../hooks/useKeydown";
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
-import { ICollection } from "../utils/types";
 
 import UsernameManager from "./UsernameManager";
 
 type ImprovedSearchSidebarProps = {
   members: string[];
-  collections: ICollection[];
+  collections: { totalitems: number; pubdate: string }[];
   onSearch?: (_usernames: string[]) => void;
   onValidatedUsernames?: (_usernames: string[]) => void;
   onValidationError?: (error: {

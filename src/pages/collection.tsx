@@ -21,10 +21,10 @@ import {
   generatePermalink,
   parseUsernamesFromUrl,
 } from "../utils/permalink";
-import { ICollection } from "../utils/types";
+import { GetUserCollectionQuery } from "../lib/graphql/generated/types";
 
 type CollectionPageProps = {
-  initialData?: ICollection[];
+  initialData?: GetUserCollectionQuery["userCollection"][];
 };
 
 export async function getStaticProps() {

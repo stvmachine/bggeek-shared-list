@@ -23,7 +23,7 @@ import {
   filterByPlayingTime,
   orderByFn,
 } from "../utils/search";
-import { BggCollectionItem } from "../utils/types";
+import { CollectionItem } from "../types";
 import CollapsibleGroup from "./CollapsibleGroup";
 import GameCard from "./GameCard";
 import { MemberAvatar } from "./MemberAvatar";
@@ -62,7 +62,7 @@ const EmptyState = () => (
 );
 
 type ResultsProps = {
-  boardgames?: BggCollectionItem[];
+  boardgames?: CollectionItem[];
 };
 
 const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
@@ -83,7 +83,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
   );
 
   // Use the simplified fuzzy search hook with debouncing
-  const searchResults = useFuzzySearch<BggCollectionItem>(boardgames, keyword, {
+  const searchResults = useFuzzySearch<CollectionItem>(boardgames, keyword, {
     keys: ["name.text", "originalname"],
     threshold: 0.3,
     debounceTime: 300, // 300ms debounce time
@@ -309,15 +309,15 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
           <Grid gap={4}>
             {filteredResults.map(game => (
               <GameCard
-                key={game.objectid}
-                id={game.objectid}
-                name={game.name.text}
+                key={game.objectId}
+                id={game.objectId}
+                name={game.name}
                 thumbnail={game.thumbnail}
-                yearPublished={game.yearpublished?.toString()}
-                minPlayers={game.stats?.minplayers}
-                maxPlayers={game.stats?.maxplayers}
-                playingTime={game.stats?.playingtime}
-                averageRating={game.stats?.rating.average.value}
+                yearPublished={game.yearPublished?.toString()}
+                minPlayers={game.stats?.minPlayers}
+                maxPlayers={game.stats?.maxPlayers}
+                playingTime={game.stats?.playingTime}
+                averageRating={game.stats?.average}
                 owners={game.owners || []}
               />
             ))}
@@ -337,9 +337,9 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
                 {games.map((game: any) => {
                   // Safely extract values with proper type checking
                   const id =
-                    typeof game.objectid === "number"
-                      ? game.objectid.toString()
-                      : String(game.objectid || "");
+                    typeof game.objectId === "number"
+                      ? game.objectId.toString()
+                      : String(game.objectId || "");
                   const name =
                     game.name?.text || game.originalname || "Unknown Game";
                   const thumbnail = game.thumbnail || "";
