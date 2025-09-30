@@ -1,20 +1,21 @@
+import React from "react";
 import { ChakraProvider, createSystem, defaultConfig } from "@chakra-ui/react";
 import { render } from "@testing-library/react";
 import { useRouter } from "next/router";
 import { ApolloProvider } from "@apollo/client/react";
 import { apolloClient } from "../../lib/graphql/client";
-import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
 import Collection from "../../pages/collection";
 
 // Mock Next.js router
-jest.mock("next/router", () => ({
-  useRouter: jest.fn(),
+vi.mock("next/router", () => ({
+  useRouter: vi.fn(),
 }));
 
 // Mock the hooks to return mock data
-jest.mock("../../hooks/useCollections", () => ({
-  useCollections: jest.fn().mockReturnValue({
+vi.mock("../../hooks/useCollections", () => ({
+  useCollections: vi.fn().mockReturnValue({
     data: {
       boardgames: [
         {
@@ -33,35 +34,35 @@ jest.mock("../../hooks/useCollections", () => ({
 }));
 
 // Mock the ImprovedSearchSidebar component
-jest.mock("../../components/ImprovedSearchSidebar", () => () => (
-  <div data-testid="improved-search-sidebar">ImprovedSearchSidebar</div>
-));
+vi.mock("../../components/ImprovedSearchSidebar", () => ({
+  default: () => <div data-testid="improved-search-sidebar">ImprovedSearchSidebar</div>
+}));
 
 // Mock the permalink utilities
-jest.mock("../../utils/permalink", () => ({
-  parseUsernamesFromUrl: jest.fn().mockReturnValue(["testuser"]),
-  generatePermalink: jest.fn().mockReturnValue("/"),
-  copyToClipboard: jest.fn().mockResolvedValue(true),
+vi.mock("../../utils/permalink", () => ({
+  parseUsernamesFromUrl: vi.fn().mockReturnValue(["testuser"]),
+  generatePermalink: vi.fn().mockReturnValue("/"),
+  copyToClipboard: vi.fn().mockResolvedValue(true),
 }));
 
 // Mock fetch for API calls
-global.fetch = jest.fn(() =>
+global.fetch = vi.fn(() =>
   Promise.resolve({
     ok: true,
     json: () => Promise.resolve({ item: [] }),
   })
-) as jest.Mock;
+) as any;
 
 // Mock all the components to simplify testing
-jest.mock("../../components/Layout/Navbar", () => () => (
-  <div data-testid="navbar">Navbar</div>
-));
-jest.mock("../../components/Layout/Footer", () => () => (
-  <div data-testid="footer">Footer</div>
-));
-jest.mock("../../components/Results", () => () => (
-  <div data-testid="results">Results</div>
-));
+vi.mock("../../components/Layout/Navbar", () => ({
+  default: () => <div data-testid="navbar">Navbar</div>
+}));
+vi.mock("../../components/Layout/Footer", () => ({
+  default: () => <div data-testid="footer">Footer</div>
+}));
+vi.mock("../../components/Results", () => ({
+  default: () => <div data-testid="results">Results</div>
+}));
 // Removed mocks for deleted components: SearchSidebar and MobileDrawer
 
 const renderWithProviders = (component: React.ReactElement) => {
@@ -76,13 +77,13 @@ const renderWithProviders = (component: React.ReactElement) => {
 describe("Collection Page - Pending Usernames Logic", () => {
   const mockRouter = {
     query: { usernames: "testuser" },
-    push: jest.fn(),
-    replace: jest.fn(),
+    push: vi.fn(),
+    replace: vi.fn(),
   };
 
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    jest.clearAllMocks();
+    (useRouter as vi.Mock).mockReturnValue(mockRouter);
+    vi.clearAllMocks();
   });
 
   // Removed test for deleted SearchSidebar component
@@ -94,8 +95,9 @@ describe("Collection Page - Pending Usernames Logic", () => {
   });
 
   it("should render ImprovedSearchSidebar component", () => {
-    const { getByTestId } = renderWithProviders(<Collection />);
-    expect(getByTestId("improved-search-sidebar")).toBeInTheDocument();
+    const { getAllByTestId } = renderWithProviders(<Collection />);
+    const sidebars = getAllByTestId("improved-search-sidebar");
+    expect(sidebars).toHaveLength(2); // Desktop and mobile versions
   });
 
   it("should render Results component when data is available", () => {

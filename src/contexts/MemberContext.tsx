@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useMemo } from "react";
+import React, { createContext, ReactNode, useContext, useMemo } from "react";
 
 import { getMemberColor, getMemberInitial } from "../utils/memberColors";
 
