@@ -1,12 +1,16 @@
-"use client";
+"use client"
 
-// Simple toast implementation
-export const toaster = {
-  create: (options: { title?: string; description?: string; type?: string; duration?: number }) => {
-    console.log("Toast:", options.title, options.description);
-  }
-};
+import {
+  Toaster,
+  createToaster,
+  type CreateToasterReturn,
+} from "@chakra-ui/react"
 
-export const Toaster = () => {
-  return null;
-};
+export const toaster : CreateToasterReturn= createToaster({
+  placement: "bottom-end",
+  pauseOnPageIdle: true,
+})
+
+export function AppToaster() {
+  return <Toaster /> 
+}
