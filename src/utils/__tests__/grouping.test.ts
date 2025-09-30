@@ -10,7 +10,7 @@ import {
 const mockGames: ICollectionItem[] = [
   {
     objectId: "1",
-    name: { text: "Game 1", sortIndex: "1" },
+    name: "Game 1",
     stats: {
       minPlayers: 1,
       maxPlayers: 4,
@@ -31,7 +31,7 @@ const mockGames: ICollectionItem[] = [
   } as ICollectionItem,
   {
     objectId: "2",
-    name: { text: "Game 2", sortIndex: "2" },
+    name: "Game 2",
     stats: {
       minPlayers: 2,
       maxPlayers: 2,
@@ -52,7 +52,7 @@ const mockGames: ICollectionItem[] = [
   } as ICollectionItem,
   {
     objectId: "3",
-    name: { text: "Game 3", sortIndex: "3" },
+    name: "Game 3",
     stats: {
       minPlayers: 3,
       maxPlayers: 6,
