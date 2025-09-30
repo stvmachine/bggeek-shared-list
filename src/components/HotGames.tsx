@@ -11,7 +11,7 @@ import {
 import { useHotGames } from "../hooks/useHotGames";
 
 const HotGames = () => {
-  const { data: hotGames, loading, error } = useHotGames("boardgame");
+  const { data: hotGames, loading, error } = useHotGames("BOARDGAME");
   const bgGradient = "linear(to-br, blue.50, purple.50)";
 
   return (
