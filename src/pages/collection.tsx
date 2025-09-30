@@ -75,7 +75,11 @@ const Index: NextPage<CollectionPageProps> = () => {
 
       const trimmedUsername = username.trim();
       if (usernames.includes(trimmedUsername)) {
-        console.log(`Username ${trimmedUsername} is already in the list`);
+        toast.error(
+          <p>
+            Username <b>{trimmedUsername}</b> is already in the list
+          </p>
+        );
         return;
       }
 
@@ -89,19 +93,23 @@ const Index: NextPage<CollectionPageProps> = () => {
 
           // Check if there are GraphQL errors or if user doesn't exist
           if (result.error) {
-            throw new Error(`User ${trimmedUsername} not found on BoardGameGeek`);
+            throw new Error(
+              `User ${trimmedUsername} not found on BoardGameGeek`
+            );
           }
 
           if (!result.data || !(result.data as any).user) {
-            throw new Error(`User ${trimmedUsername} not found on BoardGameGeek`);
+            throw new Error(
+              `User ${trimmedUsername} not found on BoardGameGeek`
+            );
           }
 
           // If validation passes, add the username
           setUsernames(prev => [...prev, trimmedUsername]);
         },
         {
-          loading: "Validating username...",
-          success: <b>Username added successfully!</b>,
+          loading: `Validating username ${trimmedUsername}...`,
+          success: <b>Username {trimmedUsername} added successfully!</b>,
           error: err => (
             <b>{err?.message || "Username not found on BoardGameGeek"}</b>
           ),
