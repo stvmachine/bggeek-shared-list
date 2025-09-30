@@ -74,7 +74,6 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
   const orderBy = watch("orderBy", "name_asc");
   const playingTime = watch("playingTime", "");
   const numberOfPlayers = watch("numberOfPlayers", "");
-  const hideExpansions = watch("hideExpansions", false);
 
   // Memoize the filtered members to prevent unnecessary re-renders
   const filteredMembers = useMemo(() => {
@@ -118,11 +117,6 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
     results = filterByPlayingTime(results, playingTime);
     results = filterByNumPlayers(results, numberOfPlayers);
 
-    // Filter out expansions if hideExpansions is true
-    if (hideExpansions) {
-      results = results.filter(game => game.subtype !== "BOARDGAMEEXPANSION");
-    }
-
     // Apply sorting
     return orderByFn(results, orderBy);
   }, [
@@ -131,7 +125,6 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
     playingTime,
     numberOfPlayers,
     orderBy,
-    hideExpansions,
   ]);
 
   // Group the results based on the selected grouping option

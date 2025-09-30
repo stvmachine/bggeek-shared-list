@@ -434,34 +434,6 @@ const ImprovedSearchSidebar = React.memo(
                       <NativeSelect.Indicator />
                     </NativeSelect.Root>
                   </Box>
-
-                  <Box>
-                    <Text
-                      fontSize="sm"
-                      fontWeight="medium"
-                      color="gray.600"
-                      mb={2}
-                    >
-                      Content Type
-                    </Text>
-                    <HStack spacing={3}>
-                      <input
-                        type="checkbox"
-                        checked={watch("hideExpansions") || false}
-                        onChange={e =>
-                          setValue("hideExpansions", e.target.checked)
-                        }
-                        style={{
-                          width: "16px",
-                          height: "16px",
-                          accentColor: "#3182ce",
-                        }}
-                      />
-                      <Text fontSize="sm" color="gray.600">
-                        Hide Expansions
-                      </Text>
-                    </HStack>
-                  </Box>
                 </VStack>
               </Box>
             )}

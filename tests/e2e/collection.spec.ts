@@ -64,24 +64,6 @@ test.describe("Collection Page", () => {
     }
   });
 
-  test("should have hide expansions filter", async ({ page }) => {
-    // Look for the hide expansions checkbox/switch
-    const hideExpansionsControl = page
-      .locator('input[type="checkbox"], [role="switch"]')
-      .first();
-
-    if (await hideExpansionsControl.isVisible()) {
-      // Check that it's initially unchecked
-      await expect(hideExpansionsControl).not.toBeChecked();
-
-      // Click to toggle
-      await hideExpansionsControl.click();
-
-      // Verify it's now checked
-      await expect(hideExpansionsControl).toBeChecked();
-    }
-  });
-
   test("should handle URL parameters", async ({ page }) => {
     // Test with usernames in URL
     await page.goto("/collection?usernames=testuser1,testuser2");

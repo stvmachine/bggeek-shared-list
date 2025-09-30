@@ -220,23 +220,6 @@ test.describe("Collection Functionality", () => {
     }
   });
 
-  test("should have hide expansions toggle", async ({ page }) => {
-    // Look for hide expansions checkbox/switch
-    const hideExpansionsControl = page
-      .locator('input[type="checkbox"], [role="switch"]')
-      .first();
-
-    if (await hideExpansionsControl.isVisible()) {
-      // Test toggle functionality
-      await expect(hideExpansionsControl).not.toBeChecked();
-
-      await hideExpansionsControl.click();
-      await expect(hideExpansionsControl).toBeChecked();
-
-      await hideExpansionsControl.click();
-      await expect(hideExpansionsControl).not.toBeChecked();
-    }
-  });
 
   test("should handle URL parameters correctly", async ({ page }) => {
     // Test with usernames in URL

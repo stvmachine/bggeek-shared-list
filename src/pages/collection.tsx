@@ -105,7 +105,6 @@ const Index: NextPage<CollectionPageProps> = () => {
       playingTime: "",
       orderBy: "name_asc",
       groupBy: "none",
-      hideExpansions: false,
       members: usernames.reduce(
         (accum, username) => ({ ...accum, [username]: true }),
         {}
