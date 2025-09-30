@@ -17,15 +17,15 @@ export const sortGames = (
   switch (sortBy) {
     case "name_asc":
       return sortedGames.sort((a, b) => {
-        const nameA = typeof a.name === "string" ? a.name : a.name?.text || "";
-        const nameB = typeof b.name === "string" ? b.name : b.name?.text || "";
+        const nameA = typeof a.name === "string" ? a.name : (a.name as any)?.text || "";
+        const nameB = typeof b.name === "string" ? b.name : (b.name as any)?.text || "";
         return nameA.localeCompare(nameB);
       });
 
     case "name_desc":
       return sortedGames.sort((a, b) => {
-        const nameA = typeof a.name === "string" ? a.name : a.name?.text || "";
-        const nameB = typeof b.name === "string" ? b.name : b.name?.text || "";
+        const nameA = typeof a.name === "string" ? a.name : (a.name as any)?.text || "";
+        const nameB = typeof b.name === "string" ? b.name : (b.name as any)?.text || "";
         return nameB.localeCompare(nameA);
       });
 

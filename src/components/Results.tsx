@@ -76,6 +76,14 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
   const orderBy = watch("orderBy", "name_asc");
   const playingTime = watch("playingTime", "");
   const numberOfPlayers = watch("numberOfPlayers", "");
+  const hideExpansions = watch("hideExpansions", false);
+
+  // Memoize the filtered members to prevent unnecessary re-renders
+  const filteredMembers = useMemo(() => {
+    return Object.entries(watchedMembers || {})
+      .filter(([_, isSelected]) => isSelected)
+      .map(([username]) => username);
+  }, [watchedMembers]);
 
   // State for collapsed groups
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
@@ -96,11 +104,6 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
 
     let results = [...searchResults];
 
-    // Filter by members who have the game
-    const filteredMembers = Object.entries(watchedMembers || {})
-      .filter(([_, isSelected]) => isSelected)
-      .map(([username]) => username);
-
     // If no members are selected, show no games
     if (filteredMembers.length === 0) {
       return [];
@@ -117,9 +120,21 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
     results = filterByPlayingTime(results, playingTime);
     results = filterByNumPlayers(results, numberOfPlayers);
 
+    // Filter out expansions if hideExpansions is true
+    if (hideExpansions) {
+      results = results.filter(game => game.subtype !== "BOARDGAMEEXPANSION");
+    }
+
     // Apply sorting
     return orderByFn(results, orderBy);
-  }, [searchResults, watchedMembers, playingTime, numberOfPlayers, orderBy]);
+  }, [
+    searchResults,
+    filteredMembers,
+    playingTime,
+    numberOfPlayers,
+    orderBy,
+    hideExpansions,
+  ]);
 
   // Group the results based on the selected grouping option
   const groupedResults: GroupedGames = groupGames(
@@ -314,7 +329,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
                 name={
                   typeof game.name === "string"
                     ? game.name
-                    : game.name?.text || "Unknown Game"
+                    : (game.name as any)?.text || "Unknown Game"
                 }
                 thumbnail={game.thumbnail}
                 yearPublished={game.yearPublished?.toString()}
@@ -343,7 +358,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
                   const name =
                     typeof game.name === "string"
                       ? game.name
-                      : game.name?.text || "Unknown Game";
+                      : (game.name as any)?.text || "Unknown Game";
                   const thumbnail = game.thumbnail || "";
                   const yearPublished = game.yearPublished
                     ? String(game.yearPublished)

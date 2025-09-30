@@ -13,6 +13,7 @@ export const GET_USER_COLLECTION = gql`
         image
         yearPublished
         numPlays
+        subtype
         stats {
           minPlayers
           maxPlayers

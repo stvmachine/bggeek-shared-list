@@ -32,4 +32,5 @@ export type ICollectionItem = GraphQLCollectionItem & {
     >;
   };
   owners: Array<GameOwner>;
+  subtype: string;
 };

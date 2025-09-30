@@ -556,6 +556,7 @@ export type GetUserCollectionQuery = {
       image: string;
       yearPublished: number;
       numPlays: number;
+      subtype: string;
       stats?: {
         __typename?: "CollectionItemStats";
         minPlayers?: number | null;

@@ -139,21 +139,35 @@ const Index: NextPage<CollectionPageProps> = () => {
       playingTime: "",
       orderBy: "name_asc",
       groupBy: "none",
+      hideExpansions: false,
       members: members.reduce(
         (accum, member) => ({ ...accum, [member]: true }),
         {}
       ),
     }),
-    [JSON.stringify(members)] // Use stringified members to prevent unnecessary recalculations
+    [members] // Use members directly instead of stringified version
   );
 
   const methods = useForm({ defaultValues });
 
-  // Reset form when members change
-  const membersString = JSON.stringify(members);
+  // Reset form when members change, but only reset the members field
+  const [prevMembers, setPrevMembers] = useState(members);
+  
   useEffect(() => {
-    methods.reset(defaultValues);
-  }, [membersString, methods, defaultValues]);
+    if (prevMembers.length !== members.length || 
+        !prevMembers.every((member, index) => member === members[index])) {
+      // Only reset the members field, preserve other form values
+      const currentValues = methods.getValues();
+      methods.reset({
+        ...currentValues,
+        members: members.reduce(
+          (accum, member) => ({ ...accum, [member]: true }),
+          {}
+        ),
+      });
+      setPrevMembers([...members]);
+    }
+  }, [members, methods, prevMembers]);
 
   const sidebarWidth = "300px";
 

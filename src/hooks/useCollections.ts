@@ -64,6 +64,7 @@ const mergeCollectionsGraphQL = (
           image: bgg.image,
           yearpublished: bgg.yearPublished,
           numplays: bgg.numPlays,
+          subtype: bgg.subtype, // Explicitly preserve subtype field
           owners: owners.map(username => ({
             username,
             collid: `${username}_${gameId}`, // Generate a unique collid
