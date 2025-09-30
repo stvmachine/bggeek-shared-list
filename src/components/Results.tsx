@@ -119,13 +119,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
 
     // Apply sorting
     return orderByFn(results, orderBy);
-  }, [
-    searchResults,
-    filteredMembers,
-    playingTime,
-    numberOfPlayers,
-    orderBy,
-  ]);
+  }, [searchResults, filteredMembers, playingTime, numberOfPlayers, orderBy]);
 
   // Group the results based on the selected grouping option
   const groupedResults: GroupedGames = groupGames(

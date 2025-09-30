@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
-import { Toaster } from 'react-hot-toast';
-export const ClientToaster = () => <Toaster />
+import { Toaster } from "react-hot-toast";
+export const ClientToaster = () => <Toaster />;

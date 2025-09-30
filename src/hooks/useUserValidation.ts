@@ -7,7 +7,10 @@ interface UseUserValidationProps {
   skip?: boolean;
 }
 
-export function useUserValidation({ username, skip = false }: UseUserValidationProps) {
+export function useUserValidation({
+  username,
+  skip = false,
+}: UseUserValidationProps) {
   const { data, loading, error } = useQuery<GetUserQuery>(GET_USER, {
     variables: { username },
     skip: skip || !username,

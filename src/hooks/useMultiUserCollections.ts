@@ -6,29 +6,35 @@ interface UseMultiUserCollectionsProps {
   usernames: string[];
 }
 
-export function useMultiUserCollections({ usernames }: UseMultiUserCollectionsProps) {  // For now, let's handle up to 2 usernames individually
-  const user1Validation = useUserValidation({ 
-    username: usernames[0] || "", 
-    skip: !usernames[0] 
+export function useMultiUserCollections({
+  usernames,
+}: UseMultiUserCollectionsProps) {
+  // For now, let's handle up to 2 usernames individually
+  const user1Validation = useUserValidation({
+    username: usernames[0] || "",
+    skip: !usernames[0],
   });
-  const user1Collection = useUserCollection({ 
-    username: usernames[0] || "", 
-    skip: !usernames[0] 
+  const user1Collection = useUserCollection({
+    username: usernames[0] || "",
+    skip: !usernames[0],
   });
 
-  const user2Validation = useUserValidation({ 
-    username: usernames[1] || "", 
-    skip: !usernames[1] 
+  const user2Validation = useUserValidation({
+    username: usernames[1] || "",
+    skip: !usernames[1],
   });
-  const user2Collection = useUserCollection({ 
-    username: usernames[1] || "", 
-    skip: !usernames[1] 
+  const user2Collection = useUserCollection({
+    username: usernames[1] || "",
+    skip: !usernames[1],
   });
 
   // Aggregate loading states
-  const isLoading = user1Validation.loading || user1Collection.loading || 
-                   user2Validation.loading || user2Collection.loading;
-  
+  const isLoading =
+    user1Validation.loading ||
+    user1Collection.loading ||
+    user2Validation.loading ||
+    user2Collection.loading;
+
   // Aggregate errors
   const errors = [
     user1Validation.error,
@@ -47,7 +53,13 @@ export function useMultiUserCollections({ usernames }: UseMultiUserCollectionsPr
       valid.push(usernames[1]);
     }
     return valid;
-  }, [usernames, user1Validation.isValid, user1Collection.hasData, user2Validation.isValid, user2Collection.hasData]);
+  }, [
+    usernames,
+    user1Validation.isValid,
+    user1Collection.hasData,
+    user2Validation.isValid,
+    user2Collection.hasData,
+  ]);
 
   // Get invalid users
   const invalidUsers = useMemo(() => {
@@ -59,26 +71,32 @@ export function useMultiUserCollections({ usernames }: UseMultiUserCollectionsPr
       invalid.push(usernames[1]);
     }
     return invalid;
-  }, [usernames, user1Validation.isInvalid, user1Collection.error, user2Validation.isInvalid, user2Collection.error]);
+  }, [
+    usernames,
+    user1Validation.isInvalid,
+    user1Collection.error,
+    user2Validation.isInvalid,
+    user2Collection.error,
+  ]);
 
   // Merge all boardgames from valid collections
   const allBoardgames = useMemo(() => {
     const allGames = [];
-    
+
     // Add games from user1 with owner info
     if (user1Collection.hasData && usernames[0]) {
       const user1Games = user1Collection.boardgames.map(game => ({
         ...game,
-        owners: [{ username: usernames[0] }]
+        owners: [{ username: usernames[0] }],
       }));
       allGames.push(...user1Games);
     }
-    
+
     // Add games from user2 with owner info
     if (user2Collection.hasData && usernames[1]) {
       const user2Games = user2Collection.boardgames.map(game => ({
         ...game,
-        owners: [{ username: usernames[1] }]
+        owners: [{ username: usernames[1] }],
       }));
       allGames.push(...user2Games);
     }
@@ -114,17 +132,17 @@ export function useMultiUserCollections({ usernames }: UseMultiUserCollectionsPr
     // Individual states
     userValidations: [user1Validation, user2Validation],
     userCollections: [user1Collection, user2Collection],
-    
+
     // Aggregated states
     isLoading,
     errors,
-    
+
     // Processed data
     validUsers,
     invalidUsers,
     allBoardgames,
     allCollections,
-    
+
     // Counts
     totalUsers: usernames.length,
     validUserCount: validUsers.length,

@@ -7,12 +7,18 @@ interface UseUserCollectionProps {
   skip?: boolean;
 }
 
-export function useUserCollection({ username, skip = false }: UseUserCollectionProps) {
-  const { data, loading, error } = useQuery<GetUserCollectionQuery>(GET_USER_COLLECTION, {
-    variables: { username },
-    skip: skip || !username,
-    errorPolicy: "all",
-  });
+export function useUserCollection({
+  username,
+  skip = false,
+}: UseUserCollectionProps) {
+  const { data, loading, error } = useQuery<GetUserCollectionQuery>(
+    GET_USER_COLLECTION,
+    {
+      variables: { username },
+      skip: skip || !username,
+      errorPolicy: "all",
+    }
+  );
 
   return {
     collection: data?.userCollection || [],

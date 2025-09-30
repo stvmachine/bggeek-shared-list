@@ -220,7 +220,6 @@ test.describe("Collection Functionality", () => {
     }
   });
 
-
   test("should handle URL parameters correctly", async ({ page }) => {
     // Test with usernames in URL
     await page.goto("/collection?usernames=testuser1,testuser2");

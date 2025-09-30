@@ -19,12 +19,12 @@ function getMemberColor(username: string) {
     { bg: "red.500", color: "white" },
     { bg: "yellow.500", color: "black" },
   ];
-  
-  const hash = username.split('').reduce((a, b) => {
-    a = ((a << 5) - a) + b.charCodeAt(0);
+
+  const hash = username.split("").reduce((a, b) => {
+    a = (a << 5) - a + b.charCodeAt(0);
     return a & a;
   }, 0);
-  
+
   return colors[Math.abs(hash) % colors.length];
 }
 

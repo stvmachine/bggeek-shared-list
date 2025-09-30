@@ -65,18 +65,47 @@ const Index: NextPage<CollectionPageProps> = () => {
     }));
   }, [allCollections]);
 
-  // Add username
-  const addUsername = useCallback((username: string) => {
-    if (!username.trim()) return;
+  // Add username with validation
+  const addUsername = useCallback(
+    async (username: string) => {
+      if (!username.trim()) return;
 
-    const trimmedUsername = username.trim();
-    if (usernames.includes(trimmedUsername)) {
-      console.log(`Username ${trimmedUsername} is already in the list`);
-      return;
-    }
+      const trimmedUsername = username.trim();
+      if (usernames.includes(trimmedUsername)) {
+        console.log(`Username ${trimmedUsername} is already in the list`);
+        return;
+      }
 
-    setUsernames(prev => [...prev, trimmedUsername]);
-  }, [usernames]);
+      // Validate username before adding using the existing GraphQL client
+      try {
+        const { apolloClient } = await import("../lib/graphql/client");
+        const { GET_USER } = await import("../lib/graphql/queries");
+
+        const result = await apolloClient.query({
+          query: GET_USER,
+          variables: { username: trimmedUsername },
+          errorPolicy: "all",
+        });
+
+        // Check if there are GraphQL errors or if user doesn't exist
+        if (result.error) {
+          throw new Error(`User ${trimmedUsername} not found on BoardGameGeek`);
+        }
+
+        if (!result.data || !(result.data as any).user) {
+          throw new Error(`User ${trimmedUsername} not found on BoardGameGeek`);
+        }
+
+        // If validation passes, add the username
+        setUsernames(prev => [...prev, trimmedUsername]);
+      } catch (error) {
+        // Show error to user
+        console.error("Validation failed:", error);
+        throw error; // Re-throw so the toast can show the error
+      }
+    },
+    [usernames]
+  );
 
   // Remove username
   const removeUsername = useCallback((usernameToRemove: string) => {
@@ -208,7 +237,14 @@ const Index: NextPage<CollectionPageProps> = () => {
                 >
                   {/* Show validation errors */}
                   {errors.length > 0 && (
-                    <Box mb={4} p={3} bg="red.50" borderRadius="md" border="1px solid" borderColor="red.200">
+                    <Box
+                      mb={4}
+                      p={3}
+                      bg="red.50"
+                      borderRadius="md"
+                      border="1px solid"
+                      borderColor="red.200"
+                    >
                       <Text fontSize="sm" color="red.600" fontWeight="medium">
                         Validation Errors:
                       </Text>
@@ -222,8 +258,19 @@ const Index: NextPage<CollectionPageProps> = () => {
 
                   {/* Show invalid users */}
                   {invalidUsers.length > 0 && (
-                    <Box mb={4} p={3} bg="yellow.50" borderRadius="md" border="1px solid" borderColor="yellow.200">
-                      <Text fontSize="sm" color="yellow.600" fontWeight="medium">
+                    <Box
+                      mb={4}
+                      p={3}
+                      bg="yellow.50"
+                      borderRadius="md"
+                      border="1px solid"
+                      borderColor="yellow.200"
+                    >
+                      <Text
+                        fontSize="sm"
+                        color="yellow.600"
+                        fontWeight="medium"
+                      >
                         Invalid Users: {invalidUsers.join(", ")}
                       </Text>
                     </Box>
@@ -257,10 +304,9 @@ const Index: NextPage<CollectionPageProps> = () => {
                       minH="400px"
                     >
                       <Text fontSize="lg" color="gray.500">
-                        {isLoading ? 
-                          `Loading collections... (${validUserCount}/${totalUsers} users)` : 
-                          `No games found for ${totalUsers} user${totalUsers !== 1 ? 's' : ''}`
-                        }
+                        {isLoading
+                          ? `Loading collections... (${validUserCount}/${totalUsers} users)`
+                          : `No games found for ${totalUsers} user${totalUsers !== 1 ? "s" : ""}`}
                       </Text>
                     </Box>
                   )}
