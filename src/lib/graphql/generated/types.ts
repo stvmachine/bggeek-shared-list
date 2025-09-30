@@ -536,18 +536,6 @@ export type GetUserCollectionQuery = {
       image: string;
       yearPublished: number;
       numPlays: number;
-      status: {
-        __typename?: "Status";
-        own: string;
-        prevOwned: string;
-        forTrade: string;
-        want: string;
-        wantToPlay: string;
-        wantToBuy: string;
-        wishlist: string;
-        preordered: string;
-        lastModified: string;
-      };
     }>;
   } | null;
 };

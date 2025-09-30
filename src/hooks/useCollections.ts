@@ -64,10 +64,8 @@ const mergeCollectionsGraphQL = (
           image: bgg.image,
           yearpublished: bgg.yearPublished,
           numplays: bgg.numPlays,
-          status: bgg.status,
           owners: owners.map(username => ({
             username,
-            status: { own: 1 }, // Default status
             collid: `${username}_${gameId}`, // Generate a unique collid
           })),
         },

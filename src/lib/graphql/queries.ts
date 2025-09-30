@@ -13,17 +13,6 @@ export const GET_USER_COLLECTION = gql`
         image
         yearPublished
         numPlays
-        status {
-          own
-          prevOwned
-          forTrade
-          want
-          wantToPlay
-          wantToBuy
-          wishlist
-          preordered
-          lastModified
-        }
       }
     }
   }
