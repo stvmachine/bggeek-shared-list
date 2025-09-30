@@ -24,10 +24,10 @@ import {
   FiX,
 } from "react-icons/fi";
 
-import { SearchInput } from "./SearchInput";
+import { useUsernameColor } from "../contexts/UsernameColorContext";
 import useKeydown from "../hooks/useKeydown";
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
-import { useUsernameColor } from "../contexts/UsernameColorContext";
+import { SearchInput } from "./SearchInput";
 
 import SimpleUsernameInput from "./SimpleUsernameInput";
 
@@ -82,8 +82,14 @@ const ImprovedSearchSidebar = React.memo(
     onMobileDrawerToggle,
     isValidating = false,
   }: ImprovedSearchSidebarProps) => {
-    const { register, handleSubmit: formHandleSubmit, setValue, getValues, reset, watch } =
-      useFormContext();
+    const {
+      register,
+      handleSubmit: formHandleSubmit,
+      setValue,
+      getValues,
+      reset,
+      watch,
+    } = useFormContext();
     const { getUsernameColor } = useUsernameColor();
 
     const getMemberData = useCallback(
@@ -145,7 +151,6 @@ const ImprovedSearchSidebar = React.memo(
         removeAllMembers();
       }
     }, [removeAllMembers]);
-
 
     const handleClearFilters = useCallback(() => {
       reset({
@@ -292,9 +297,8 @@ const ImprovedSearchSidebar = React.memo(
             },
           }}
         >
-
-            {/* Collectors Section */}
-            <Box
+          {/* Collectors Section */}
+          <Box
             border="1px solid"
             borderColor="gray.200"
             borderRadius="xl"
@@ -526,7 +530,6 @@ const ImprovedSearchSidebar = React.memo(
             )}
           </Box>
 
-            
           {/* Action Buttons */}
           <VStack gap={2} align="stretch">
             <Button

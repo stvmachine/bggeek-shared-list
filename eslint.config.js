@@ -12,6 +12,11 @@ module.exports = [
       "build/**",
       "*.config.js",
       "jest.setup.js",
+      'vitest.setup.ts',
+      'vitest.config.ts',
+      'playwright.config.ts',
+      'tsconfig.json',
+      'tests/e2e/**'
     ],
   },
   js.configs.recommended,

@@ -11,9 +11,9 @@ interface UsernameColorContextType {
   getUsernameColors: (usernames: string[]) => Record<string, UsernameColor>;
 }
 
-const UsernameColorContext = createContext<UsernameColorContextType | undefined>(
-  undefined
-);
+const UsernameColorContext = createContext<
+  UsernameColorContextType | undefined
+>(undefined);
 
 // Consistent color generation function
 const generateUsernameColor = (username: string): UsernameColor => {
@@ -24,10 +24,10 @@ const generateUsernameColor = (username: string): UsernameColor => {
     hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
-  
+
   // Use absolute value and modulo to get a consistent hue
   const hue = Math.abs(hash) % 360;
-  
+
   return {
     bg: `hsl(${hue}, 70%, 50%)`,
     color: "white",
@@ -45,10 +45,13 @@ export const UsernameColorProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const getUsernameColors = useMemo(
     () => (usernames: string[]) => {
-      return usernames.reduce((acc, username) => {
-        acc[username] = generateUsernameColor(username);
-        return acc;
-      }, {} as Record<string, UsernameColor>);
+      return usernames.reduce(
+        (acc, username) => {
+          acc[username] = generateUsernameColor(username);
+          return acc;
+        },
+        {} as Record<string, UsernameColor>
+      );
     },
     []
   );
