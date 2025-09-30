@@ -27,6 +27,7 @@ import {
 import { SearchInput } from "./SearchInput";
 import useKeydown from "../hooks/useKeydown";
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
+import { useUsernameColor } from "../contexts/UsernameColorContext";
 
 import SimpleUsernameInput from "./SimpleUsernameInput";
 
@@ -83,17 +84,15 @@ const ImprovedSearchSidebar = React.memo(
   }: ImprovedSearchSidebarProps) => {
     const { register, handleSubmit: formHandleSubmit, setValue, getValues, reset, watch } =
       useFormContext();
+    const { getUsernameColor } = useUsernameColor();
 
     const getMemberData = useCallback(
       (username: string) => ({
         username,
-        color: {
-          bg: `hsl(${username.length * 60}, 70%, 50%)`,
-          color: "white",
-        },
+        color: getUsernameColor(username),
         initial: username.charAt(0).toUpperCase(),
       }),
-      []
+      [getUsernameColor]
     );
 
     // Disclosure hooks for collapsible sections

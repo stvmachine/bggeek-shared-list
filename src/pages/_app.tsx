@@ -3,6 +3,7 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { GraphQLProvider } from "../components/GraphQLProvider";
 import { ClientToaster } from "../components/ClientToaster";
+import { UsernameColorProvider } from "../contexts/UsernameColorContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -18,7 +19,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ChakraProvider value={defaultSystem}>
         <ClientToaster />
         <GraphQLProvider>
-          <Component {...pageProps} />
+          <UsernameColorProvider>
+            <Component {...pageProps} />
+          </UsernameColorProvider>
         </GraphQLProvider>
       </ChakraProvider>
     </>

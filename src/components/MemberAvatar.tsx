@@ -1,4 +1,5 @@
 import { Box, HStack, Text } from "@chakra-ui/react";
+import { useUsernameColor } from "../contexts/UsernameColorContext";
 
 interface MemberAvatarProps {
   username: string;
@@ -7,39 +8,15 @@ interface MemberAvatarProps {
   spacing?: string;
 }
 
-// Simple color generation based on username
-function getMemberColor(username: string) {
-  const colors = [
-    { bg: "blue.500", color: "white" },
-    { bg: "green.500", color: "white" },
-    { bg: "purple.500", color: "white" },
-    { bg: "orange.500", color: "white" },
-    { bg: "pink.500", color: "white" },
-    { bg: "teal.500", color: "white" },
-    { bg: "red.500", color: "white" },
-    { bg: "yellow.500", color: "black" },
-  ];
-
-  const hash = username.split("").reduce((a, b) => {
-    a = (a << 5) - a + b.charCodeAt(0);
-    return a & a;
-  }, 0);
-
-  return colors[Math.abs(hash) % colors.length];
-}
-
-function getMemberInitial(username: string) {
-  return username.charAt(0).toUpperCase();
-}
-
 export function MemberAvatar({
   username,
   showUsername = true,
   size = "md",
   spacing = "2",
 }: MemberAvatarProps) {
-  const memberColor = getMemberColor(username);
-  const initial = getMemberInitial(username);
+  const { getUsernameColor } = useUsernameColor();
+  const memberColor = getUsernameColor(username);
+  const initial = username.charAt(0).toUpperCase();
 
   const sizeMap = {
     xs: { box: "18px", fontSize: "9px" },
