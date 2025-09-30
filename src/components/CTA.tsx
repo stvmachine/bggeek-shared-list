@@ -1,43 +1,17 @@
-import { Box, Container, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Image,
+  Text,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { FaGamepad, FaSearch, FaUserFriends } from "react-icons/fa";
-
-import { generatePermalink } from "../utils/permalink";
-import SimpleUsernameInput from "./SimpleUsernameInput";
+import { FaGamepad, FaPlay, FaSearch, FaUserFriends } from "react-icons/fa";
 
 export default function CTA() {
   const router = useRouter();
-  const [usernames, setUsernames] = useState<string[]>([]);
-
-  const handleAddUsername = async (username: string) => {
-    if (!username.trim()) return;
-    
-    const trimmedUsername = username.trim();
-    if (usernames.includes(trimmedUsername)) {
-      console.log(`Username ${trimmedUsername} is already in the list`);
-      return;
-    }
-
-    const newUsernames = [...usernames, trimmedUsername];
-    setUsernames(newUsernames);
-    
-    // Navigate to collection page immediately
-    const permalink = generatePermalink(newUsernames);
-    if (typeof window !== "undefined") {
-      window.location.href = permalink;
-    } else {
-      router.push(permalink);
-    }
-  };
-
-  const handleRemoveUsername = (usernameToRemove: string) => {
-    setUsernames(prev => prev.filter(u => u !== usernameToRemove));
-  };
-
-  const handleRemoveAll = () => {
-    setUsernames([]);
-  };
 
   // Colors from the screenshot
   const bgColor = "#fdf2f8"; // Light pink background
@@ -97,19 +71,54 @@ export default function CTA() {
               favorite collection.
             </Text>
 
-            {/* Search Form - Moved below text on mobile, next to image on desktop */}
+            {/* Animated CTA Button */}
             <Box
-              w="100%"
-              maxW={{ base: "100%", lg: "90%" }}
-              mt={{ base: 6, lg: 0 }}
+              position="relative"
+              display="inline-block"
+              mb={{ base: 6, md: 8 }}
+              _hover={{
+                "& .shimmer": {
+                  left: "100%",
+                },
+              }}
+              transition="all 0.3s ease"
             >
-              <SimpleUsernameInput
-                onAddUsername={handleAddUsername}
-                usernames={usernames}
-                onRemoveUsername={handleRemoveUsername}
-                onRemoveAll={handleRemoveAll}
-                isLoading={false}
+              <Box
+                position="absolute"
+                top={0}
+                left="-100%"
+                width="100%"
+                height="100%"
+                background="linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)"
+                transition="left 0.5s ease"
+                className="shimmer"
+                borderRadius="xl"
+                zIndex={1}
               />
+              <Button
+                onClick={() => router.push("/collection")}
+                size="lg"
+                bgGradient="linear(to-r, purple.500, blue.500)"
+                color="white"
+                fontWeight="bold"
+                fontSize={{ base: "lg", md: "xl" }}
+                px={{ base: 8, md: 10 }}
+                py={{ base: 6, md: 8 }}
+                borderRadius="xl"
+                position="relative"
+                overflow="hidden"
+                _hover={{
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
+                }}
+                _active={{
+                  transform: "translateY(0px)",
+                }}
+                transition="all 0.3s ease"
+                zIndex={2}
+              >
+                <FaPlay style={{ marginRight: "8px" }} />
+                Start Your Collection
+              </Button>
             </Box>
           </Box>
 
