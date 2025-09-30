@@ -1,13 +1,13 @@
+import { ICollectionItem } from "../../types";
 import {
   groupGames,
   groupGamesByBestPlayers,
   groupGamesByPlayers,
   groupGamesByRating,
 } from "../grouping";
-import { CollectionItem } from "../../lib/graphql/generated/types";
 
 // Mock game data for testing
-const mockGames: CollectionItem[] = [
+const mockGames: ICollectionItem[] = [
   {
     objectId: "1",
     name: { text: "Game 1", sortIndex: "1" },
@@ -28,7 +28,7 @@ const mockGames: CollectionItem[] = [
     subtype: "boardgame" as any,
     thumbnail: "",
     owners: [{ username: "testuser", collid: "1" }],
-  },
+  } as ICollectionItem,
   {
     objectId: "2",
     name: { text: "Game 2", sortIndex: "2" },
@@ -49,7 +49,7 @@ const mockGames: CollectionItem[] = [
     subtype: "boardgame" as any,
     thumbnail: "",
     owners: [{ username: "testuser", collid: "2" }],
-  },
+  } as ICollectionItem,
   {
     objectId: "3",
     name: { text: "Game 3", sortIndex: "3" },
@@ -70,8 +70,8 @@ const mockGames: CollectionItem[] = [
     subtype: "boardgame" as any,
     thumbnail: "",
     owners: [{ username: "testuser", collid: "3" }],
-  },
-] as CollectionItem[];
+  } as ICollectionItem,
+] as ICollectionItem[];
 
 describe("Grouping Utilities", () => {
   describe("groupGamesByPlayers", () => {
@@ -131,7 +131,7 @@ describe("Grouping Utilities", () => {
     });
 
     it("should handle single player games correctly", () => {
-      const singlePlayerGame: CollectionItem = {
+      const singlePlayerGame: ICollectionItem = {
         ...mockGames[0],
         stats: {
           ...mockGames[0].stats,

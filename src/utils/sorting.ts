@@ -1,4 +1,4 @@
-import { CollectionItem } from "../types";
+import { ICollectionItem } from "../types";
 
 export type SortOption =
   | "name_asc"
@@ -9,9 +9,9 @@ export type SortOption =
   | "year_desc";
 
 export const sortGames = (
-  games: CollectionItem[],
+  games: ICollectionItem[],
   sortBy: SortOption
-): CollectionItem[] => {
+): ICollectionItem[] => {
   const sortedGames = [...games];
 
   switch (sortBy) {

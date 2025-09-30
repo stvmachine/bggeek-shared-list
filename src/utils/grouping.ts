@@ -1,12 +1,12 @@
-import { CollectionItem } from "../types";
+import { ICollectionItem } from "../types";
 
 export type GroupingOption = "none" | "players" | "rating" | "bestPlayers";
 
 export interface GroupedGames {
-  [key: string]: CollectionItem[];
+  [key: string]: ICollectionItem[];
 }
 
-export const groupGamesByPlayers = (games: CollectionItem[]): GroupedGames => {
+export const groupGamesByPlayers = (games: ICollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
 
   games.forEach(game => {
@@ -40,7 +40,7 @@ export const groupGamesByPlayers = (games: CollectionItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByYear = (games: CollectionItem[]): GroupedGames => {
+export const groupGamesByYear = (games: ICollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {};
 
   games.forEach(game => {
@@ -68,7 +68,7 @@ export const groupGamesByYear = (games: CollectionItem[]): GroupedGames => {
   return sortedGroups;
 };
 
-export const groupGamesByRating = (games: CollectionItem[]): GroupedGames => {
+export const groupGamesByRating = (games: ICollectionItem[]): GroupedGames => {
   const groups: GroupedGames = {
     "9.0+ (Excellent)": [],
     "8.0-8.9 (Very Good)": [],
@@ -107,7 +107,7 @@ export const groupGamesByRating = (games: CollectionItem[]): GroupedGames => {
 };
 
 export const groupGamesByBestPlayers = (
-  games: CollectionItem[]
+  games: ICollectionItem[]
 ): GroupedGames => {
   const groups: GroupedGames = {};
 
@@ -157,7 +157,7 @@ export const groupGamesByBestPlayers = (
 };
 
 export const groupGames = (
-  games: CollectionItem[],
+  games: ICollectionItem[],
   groupBy: GroupingOption
 ): GroupedGames => {
   switch (groupBy) {

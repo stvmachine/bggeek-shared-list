@@ -1,26 +1,26 @@
-import { CollectionItem } from "../types";
+import { ICollectionItem } from "../types";
 
 export const filterByNumPlayers = (
-  boardgames: CollectionItem[],
+  boardgames: ICollectionItem[],
   numberOfPlayers: number | string
 ) => {
   if (!numberOfPlayers || numberOfPlayers === "") return boardgames;
 
   return boardgames.filter(
-    (bg: CollectionItem) =>
+    (bg: ICollectionItem) =>
       Number(bg.stats.maxPlayers) >= Number(numberOfPlayers) &&
       Number(bg.stats.minPlayers) <= Number(numberOfPlayers)
   );
 };
 
 export const filterByPlayingTime = (
-  boardgames: CollectionItem[],
+  boardgames: ICollectionItem[],
   playingTime: number | string
 ) => {
   if (!playingTime || playingTime === "") return boardgames;
 
   const time = Number(playingTime);
-  return boardgames.filter((bg: CollectionItem) => {
+  return boardgames.filter((bg: ICollectionItem) => {
     if (time === 1 && bg.stats.maxPlayTime <= 30) return true;
     if (time === 2 && bg.stats.maxPlayTime > 30 && bg.stats.maxPlayTime <= 60)
       return true;
@@ -54,7 +54,7 @@ const checkAsc = (a: number | string, b: number | string, orderBy: string) => {
   return a > b ? 1 : -1;
 };
 
-export const orderByFn = (boardgames: CollectionItem[], orderBy: string) => {
+export const orderByFn = (boardgames: ICollectionItem[], orderBy: string) => {
   if (!boardgames) return [];
 
   const games = [...boardgames];

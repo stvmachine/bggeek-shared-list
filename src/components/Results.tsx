@@ -17,13 +17,13 @@ import { useFormContext } from "react-hook-form";
 import { FiUsers } from "react-icons/fi";
 import { useMembers } from "../contexts/MemberContext";
 import { useFuzzySearch } from "../hooks/useFuzzySearch";
+import { ICollectionItem } from "../types";
 import { GroupedGames, groupGames, GroupingOption } from "../utils/grouping";
 import {
   filterByNumPlayers,
   filterByPlayingTime,
   orderByFn,
 } from "../utils/search";
-import { CollectionItem } from "../types";
 import CollapsibleGroup from "./CollapsibleGroup";
 import GameCard from "./GameCard";
 import { MemberAvatar } from "./MemberAvatar";
@@ -62,7 +62,7 @@ const EmptyState = () => (
 );
 
 type ResultsProps = {
-  boardgames?: CollectionItem[];
+  boardgames?: ICollectionItem[];
 };
 
 const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
@@ -83,7 +83,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
   );
 
   // Use the simplified fuzzy search hook with debouncing
-  const searchResults = useFuzzySearch<CollectionItem>(boardgames, keyword, {
+  const searchResults = useFuzzySearch<ICollectionItem>(boardgames, keyword, {
     keys: ["name.text", "originalname"],
     threshold: 0.3,
     debounceTime: 300, // 300ms debounce time

@@ -10,7 +10,7 @@ export type GameOwner = {
 };
 
 // Extended type that includes owners field for easier data manipulation
-export type CollectionItem = GraphQLCollectionItem & {
+export type ICollectionItem = GraphQLCollectionItem & {
   stats: NonNullable<GraphQLCollectionItem["stats"]> & {
     minPlayers: NonNullable<
       NonNullable<GraphQLCollectionItem["stats"]>["minPlayers"]
