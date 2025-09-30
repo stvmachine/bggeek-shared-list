@@ -1,47 +1,30 @@
 import { Button, HStack, Input, Text, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import toast from "react-hot-toast";
+
 interface SimpleUsernameInputProps {
-  onAddUsername: (username: string) => void;
-  usernames: string[];
-  onRemoveUsername: (username: string) => void;
-  onRemoveAll: () => void;
-  isLoading?: boolean;
-  validUsers?: string[];
-  invalidUsers?: string[];
-  totalUsers?: number;
-  validUserCount?: number;
+  handleSubmit: (username: string) => void;
+  isLoading: boolean;
 }
 
 export default function SimpleUsernameInput({
-  onAddUsername,
-  usernames,
-  isLoading = false,
+  handleSubmit,
+  isLoading,
 }: SimpleUsernameInputProps) {
   const [inputValue, setInputValue] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!inputValue.trim()) {
-      return;
+  const handleFormSubmit = () => {
+    const trimmedUsername = inputValue.trim();
+    if (trimmedUsername) {
+      handleSubmit(trimmedUsername);
+      setInputValue(""); // Clear input after submission
     }
+  };
 
-    if (usernames.includes(inputValue.trim())) {
-      toast.error("Username already added");
-      return;
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleFormSubmit();
     }
-
-    await toast.promise(async () => await onAddUsername(inputValue.trim()), {
-      loading: "Validating username...",
-      success: <b>Username added successfully!</b>,
-      error: err => (
-        <b>{err?.message || "Username not found on BoardGameGeek"}</b>
-      ),
-    });
-
-    setInputValue("");
   };
 
   return (
@@ -56,15 +39,17 @@ export default function SimpleUsernameInput({
             placeholder="Enter BGG username"
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
             disabled={isLoading}
             size="sm"
           />
           <Button
-            onClick={handleSubmit}
+            onClick={handleFormSubmit}
             colorScheme="blue"
             size="sm"
             loading={isLoading}
             loadingText="Adding..."
+            disabled={!inputValue.trim()}
           >
             <FiPlus />
           </Button>

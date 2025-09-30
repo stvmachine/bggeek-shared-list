@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Box, Container, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import ImprovedSearchSidebar from "../components/ImprovedSearchSidebar";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import Results from "../components/Results";
 import { useMultiUserCollections } from "../hooks/useMultiUserCollections";
-import { generatePermalink, parseUsernamesFromUrl } from "../utils/permalink";
+import { apolloClient } from "../lib/graphql/client";
 import { GetUserCollectionQuery } from "../lib/graphql/generated/types";
+import { GET_USER } from "../lib/graphql/queries";
+import { generatePermalink, parseUsernamesFromUrl } from "../utils/permalink";
 
 type CollectionPageProps = {
   initialData?: GetUserCollectionQuery["userCollection"][];
@@ -65,9 +68,9 @@ const Index: NextPage<CollectionPageProps> = () => {
     }));
   }, [allCollections]);
 
-  // Add username with validation
+  // Add username with validation and toast notifications
   const addUsername = useCallback(
-    async (username: string) => {
+    (username: string) => {
       if (!username.trim()) return;
 
       const trimmedUsername = username.trim();
@@ -76,33 +79,34 @@ const Index: NextPage<CollectionPageProps> = () => {
         return;
       }
 
-      // Validate username before adding using the existing GraphQL client
-      try {
-        const { apolloClient } = await import("../lib/graphql/client");
-        const { GET_USER } = await import("../lib/graphql/queries");
+      return toast.promise(
+        async () => {
+          const result = await apolloClient.query({
+            query: GET_USER,
+            variables: { username: trimmedUsername },
+            errorPolicy: "all",
+          });
 
-        const result = await apolloClient.query({
-          query: GET_USER,
-          variables: { username: trimmedUsername },
-          errorPolicy: "all",
-        });
+          // Check if there are GraphQL errors or if user doesn't exist
+          if (result.error) {
+            throw new Error(`User ${trimmedUsername} not found on BoardGameGeek`);
+          }
 
-        // Check if there are GraphQL errors or if user doesn't exist
-        if (result.error) {
-          throw new Error(`User ${trimmedUsername} not found on BoardGameGeek`);
+          if (!result.data || !(result.data as any).user) {
+            throw new Error(`User ${trimmedUsername} not found on BoardGameGeek`);
+          }
+
+          // If validation passes, add the username
+          setUsernames(prev => [...prev, trimmedUsername]);
+        },
+        {
+          loading: "Validating username...",
+          success: <b>Username added successfully!</b>,
+          error: err => (
+            <b>{err?.message || "Username not found on BoardGameGeek"}</b>
+          ),
         }
-
-        if (!result.data || !(result.data as any).user) {
-          throw new Error(`User ${trimmedUsername} not found on BoardGameGeek`);
-        }
-
-        // If validation passes, add the username
-        setUsernames(prev => [...prev, trimmedUsername]);
-      } catch (error) {
-        // Show error to user
-        console.error("Validation failed:", error);
-        throw error; // Re-throw so the toast can show the error
-      }
+      );
     },
     [usernames]
   );
@@ -186,11 +190,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                 >
                   <ImprovedSearchSidebar
                     members={usernames}
-                    onSearch={usernames => {
-                      if (usernames.length > 0) {
-                        addUsername(usernames[0]);
-                      }
-                    }}
+                    handleSubmit={addUsername}
                     onValidatedUsernames={() => {}}
                     onValidationError={() => {}}
                     removeMember={removeUsername}
@@ -209,11 +209,7 @@ const Index: NextPage<CollectionPageProps> = () => {
                 <Box display={{ base: "block", md: "none" }}>
                   <ImprovedSearchSidebar
                     members={usernames}
-                    onSearch={usernames => {
-                      if (usernames.length > 0) {
-                        addUsername(usernames[0]);
-                      }
-                    }}
+                    handleSubmit={addUsername}
                     onValidatedUsernames={() => {}}
                     onValidationError={() => {}}
                     removeMember={removeUsername}

@@ -33,7 +33,7 @@ import SimpleUsernameInput from "./SimpleUsernameInput";
 type ImprovedSearchSidebarProps = {
   members: string[];
   collections: { totalitems: number; pubdate: string }[];
-  onSearch?: (_usernames: string[]) => void;
+  handleSubmit?: (username: string) => void;
   onValidatedUsernames?: (_usernames: string[]) => void;
   onValidationError?: (error: {
     type: string;
@@ -70,7 +70,7 @@ const hideVirtualKeyboard = (): void => {
 const ImprovedSearchSidebar = React.memo(
   ({
     members,
-    onSearch,
+    handleSubmit,
     onValidatedUsernames: _onValidatedUsernames,
     onValidationError: _onValidationError,
     removeMember,
@@ -79,13 +79,9 @@ const ImprovedSearchSidebar = React.memo(
     isOpenDrawer,
     isMobileDrawerOpen,
     onMobileDrawerToggle,
-    validUsers = [],
-    invalidUsers = [],
-    totalUsers = 0,
-    validUserCount = 0,
     isValidating = false,
   }: ImprovedSearchSidebarProps) => {
-    const { register, handleSubmit, setValue, getValues, reset, watch } =
+    const { register, handleSubmit: formHandleSubmit, setValue, getValues, reset, watch } =
       useFormContext();
 
     const getMemberData = useCallback(
@@ -151,14 +147,6 @@ const ImprovedSearchSidebar = React.memo(
       }
     }, [removeAllMembers]);
 
-    const handleSearch = useCallback(
-      (usernames: string[]) => {
-        if (onSearch) {
-          onSearch(usernames);
-        }
-      },
-      [onSearch]
-    );
 
     const handleClearFilters = useCallback(() => {
       reset({
@@ -278,7 +266,7 @@ const ImprovedSearchSidebar = React.memo(
     // Sidebar content component
     const SidebarContent = () => (
       <form
-        onSubmit={handleSubmit(onSubmit, onError)}
+        onSubmit={formHandleSubmit(onSubmit, onError)}
         style={{ height: "100%" }}
       >
         <VStack
@@ -305,6 +293,106 @@ const ImprovedSearchSidebar = React.memo(
             },
           }}
         >
+
+            {/* Collectors Section */}
+            <Box
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="xl"
+            bg="white"
+            boxShadow="sm"
+            _hover={{ boxShadow: "md" }}
+            transition="all 0.2s"
+          >
+            <Button
+              onClick={onCollectorsToggle}
+              variant="ghost"
+              width="100%"
+              justifyContent="space-between"
+              p={5}
+              height="auto"
+              _hover={{ bg: "gray.50" }}
+            >
+              <Flex align="center" gap={2}>
+                <Icon as={FiUsers} color="blue.500" boxSize={5} />
+                <Text fontSize="lg" fontWeight="bold" color="gray.700">
+                  Group Collectors
+                </Text>
+                <Badge colorScheme="blue" variant="subtle" fontSize="sm">
+                  {selectedCount}/{members.length}
+                </Badge>
+              </Flex>
+              <Icon
+                as={isCollectorsOpen ? FiChevronUp : FiChevronDown}
+                color="gray.400"
+              />
+            </Button>
+
+            {isCollectorsOpen && (
+              <Box px={5} pb={5}>
+                <VStack gap={4} align="stretch">
+                  {/* Quick Actions */}
+                  {members.length > 0 && (
+                    <HStack gap={2} flexWrap="wrap">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        colorScheme="blue"
+                        onClick={
+                          allSelected ? handleDeselectAll : handleSelectAll
+                        }
+                        borderRadius="xl"
+                        fontSize="xs"
+                        flex="1"
+                        minWidth="100px"
+                      >
+                        <Icon as={allSelected ? FiX : FiPlus} mr={1} />
+                        {allSelected ? "Deselect All" : "Select All"}
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        colorScheme="red"
+                        onClick={handleRemoveAllMembers}
+                        borderRadius="xl"
+                        fontSize="xs"
+                        flex="1"
+                        minWidth="100px"
+                      >
+                        <Icon as={FiX} mr={1} />
+                        Remove All
+                      </Button>
+                    </HStack>
+                  )}
+
+                  {/* Simple Username Input */}
+                  <SimpleUsernameInput
+                    handleSubmit={handleSubmit || (() => {})}
+                    isLoading={isValidating}
+                  />
+
+                  {/* Members List */}
+                  <VStack
+                    gap={2}
+                    align="stretch"
+                    maxHeight="300px"
+                    overflowY="auto"
+                  >
+                    {members.map((member, index) => (
+                      <MemberItem
+                        key={`member-${member}-${index}`}
+                        member={member}
+                        index={index}
+                        isOpenDrawer={isOpenDrawer}
+                      />
+                    ))}
+                  </VStack>
+                </VStack>
+              </Box>
+            )}
+          </Box>
+
           {/* Search Section */}
           <Box
             border="1px solid"
@@ -439,112 +527,7 @@ const ImprovedSearchSidebar = React.memo(
             )}
           </Box>
 
-          {/* Collectors Section */}
-          <Box
-            border="1px solid"
-            borderColor="gray.200"
-            borderRadius="xl"
-            bg="white"
-            boxShadow="sm"
-            _hover={{ boxShadow: "md" }}
-            transition="all 0.2s"
-          >
-            <Button
-              onClick={onCollectorsToggle}
-              variant="ghost"
-              width="100%"
-              justifyContent="space-between"
-              p={5}
-              height="auto"
-              _hover={{ bg: "gray.50" }}
-            >
-              <Flex align="center" gap={2}>
-                <Icon as={FiUsers} color="blue.500" boxSize={5} />
-                <Text fontSize="lg" fontWeight="bold" color="gray.700">
-                  Group Collectors
-                </Text>
-                <Badge colorScheme="blue" variant="subtle" fontSize="sm">
-                  {selectedCount}/{members.length}
-                </Badge>
-              </Flex>
-              <Icon
-                as={isCollectorsOpen ? FiChevronUp : FiChevronDown}
-                color="gray.400"
-              />
-            </Button>
-
-            {isCollectorsOpen && (
-              <Box px={5} pb={5}>
-                <VStack gap={4} align="stretch">
-                  {/* Quick Actions */}
-                  {members.length > 0 && (
-                    <HStack gap={2} flexWrap="wrap">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        colorScheme="blue"
-                        onClick={
-                          allSelected ? handleDeselectAll : handleSelectAll
-                        }
-                        borderRadius="xl"
-                        fontSize="xs"
-                        flex="1"
-                        minWidth="100px"
-                      >
-                        <Icon as={allSelected ? FiX : FiPlus} mr={1} />
-                        {allSelected ? "Deselect All" : "Select All"}
-                      </Button>
-
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        colorScheme="red"
-                        onClick={handleRemoveAllMembers}
-                        borderRadius="xl"
-                        fontSize="xs"
-                        flex="1"
-                        minWidth="100px"
-                      >
-                        <Icon as={FiX} mr={1} />
-                        Remove All
-                      </Button>
-                    </HStack>
-                  )}
-
-                  {/* Simple Username Input */}
-                  <SimpleUsernameInput
-                    onAddUsername={username => handleSearch([username])}
-                    usernames={members}
-                    onRemoveUsername={removeMember || (() => {})}
-                    onRemoveAll={handleRemoveAllMembers}
-                    isLoading={isValidating}
-                    validUsers={validUsers || []}
-                    invalidUsers={invalidUsers || []}
-                    totalUsers={totalUsers || 0}
-                    validUserCount={validUserCount || 0}
-                  />
-
-                  {/* Members List */}
-                  <VStack
-                    gap={2}
-                    align="stretch"
-                    maxHeight="300px"
-                    overflowY="auto"
-                  >
-                    {members.map((member, index) => (
-                      <MemberItem
-                        key={`member-${member}-${index}`}
-                        member={member}
-                        index={index}
-                        isOpenDrawer={isOpenDrawer}
-                      />
-                    ))}
-                  </VStack>
-                </VStack>
-              </Box>
-            )}
-          </Box>
-
+            
           {/* Action Buttons */}
           <VStack gap={2} align="stretch">
             <Button
