@@ -35,6 +35,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.4.2",
+    "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
     "rxjs": "^7.8.1",
     "vite-tsconfig-paths": "^5.1.4"

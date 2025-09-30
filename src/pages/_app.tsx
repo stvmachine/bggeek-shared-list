@@ -2,7 +2,7 @@ import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { GraphQLProvider } from "../components/GraphQLProvider";
-import { AppToaster } from "../components/ui/toaster";
+import { ClientToaster } from "../components/ClientToaster";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <ChakraProvider value={defaultSystem}>
-        <AppToaster />
+        <ClientToaster />
         <GraphQLProvider>
           <Component {...pageProps} />
         </GraphQLProvider>

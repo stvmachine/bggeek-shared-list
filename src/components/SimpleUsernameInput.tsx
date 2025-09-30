@@ -57,25 +57,24 @@ export default function SimpleUsernameInput({
       return;
     }
 
+    // Show loading toast
+    toaster.create({
+      title: "Validating username...",
+      description: `Checking ${inputValue.trim()} and fetching collection`,
+      type: "loading",
+    });
+    
     await onAddUsername(inputValue.trim());
     setInputValue("");
+    
+    // Show success toast
+    toaster.create({
+      title: "Username added successfully!",
+      description: `${inputValue.trim()} has been added to the collection`,
+      type: "success",
+    });
   };
 
-  const handleAddSingle = async (username: string) => {
-    if (!username.trim()) return;
-
-    if (usernames.includes(username.trim())) {
-      toaster.create({
-        title: "Username already added",
-        description: `${username.trim()} is already in the list`,
-        type: "warning",
-        duration: 3000,
-      });
-      return;
-    }
-
-    await onAddUsername(username.trim());
-  };
 
   return (
     <VStack spacing={4} align="stretch">
@@ -116,7 +115,14 @@ export default function SimpleUsernameInput({
                 size="xs"
                 variant="ghost"
                 colorScheme="red"
-                onClick={onRemoveAll}
+                onClick={() => {
+                  onRemoveAll();
+                  toaster.create({
+                    title: "All usernames removed",
+                    description: "All usernames have been removed from the collection",
+                    type: "info",
+                  });
+                }}
                 disabled={isLoading}
               >
                 Remove All
@@ -180,7 +186,14 @@ export default function SimpleUsernameInput({
                     size="xs"
                     variant="ghost"
                     colorScheme="red"
-                    onClick={() => onRemoveUsername(username)}
+                    onClick={() => {
+                      onRemoveUsername(username);
+                      toaster.create({
+                        title: "Username removed",
+                        description: `${username} has been removed from the collection`,
+                        type: "info",
+                      });
+                    }}
                     disabled={isLoading}
                     aria-label={`Remove ${username}`}
                   >
