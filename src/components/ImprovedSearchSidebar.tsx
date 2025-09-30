@@ -28,7 +28,7 @@ import { SearchInput } from "./SearchInput";
 import useKeydown from "../hooks/useKeydown";
 import { numberOfPlayersOptions, playingTimeOptions } from "../utils/constants";
 
-import UsernameManager from "./UsernameManager";
+import SimpleUsernameInput from "./SimpleUsernameInput";
 
 type ImprovedSearchSidebarProps = {
   members: string[];
@@ -50,6 +50,11 @@ type ImprovedSearchSidebarProps = {
   // Mobile drawer control
   isMobileDrawerOpen?: boolean;
   onMobileDrawerToggle?: () => void;
+  // New props for user validation status
+  validUsers?: string[];
+  invalidUsers?: string[];
+  totalUsers?: number;
+  validUserCount?: number;
 };
 
 const hideVirtualKeyboard = (): void => {
@@ -66,23 +71,22 @@ const ImprovedSearchSidebar = React.memo(
   ({
     members,
     onSearch,
-    onValidatedUsernames,
-    onValidationError,
+    onValidatedUsernames: _onValidatedUsernames,
+    onValidationError: _onValidationError,
     removeMember,
     removeAllMembers,
     collections,
     isOpenDrawer,
     isMobileDrawerOpen,
     onMobileDrawerToggle,
+    validUsers = [],
+    invalidUsers = [],
+    totalUsers = 0,
+    validUserCount = 0,
+    isValidating = false,
   }: ImprovedSearchSidebarProps) => {
-    const {
-      register,
-      handleSubmit,
-      setValue,
-      getValues,
-      reset,
-      watch,
-    } = useFormContext();
+    const { register, handleSubmit, setValue, getValues, reset, watch } =
+      useFormContext();
 
     const getMemberData = useCallback(
       (username: string) => ({
@@ -444,7 +448,9 @@ const ImprovedSearchSidebar = React.memo(
                       <input
                         type="checkbox"
                         checked={watch("hideExpansions") || false}
-                        onChange={(e) => setValue("hideExpansions", e.target.checked)}
+                        onChange={e =>
+                          setValue("hideExpansions", e.target.checked)
+                        }
                         style={{
                           width: "16px",
                           height: "16px",
@@ -533,16 +539,17 @@ const ImprovedSearchSidebar = React.memo(
                     </HStack>
                   )}
 
-                  {/* Username Manager */}
-                  <UsernameManager
-                    onUsernamesChange={handleSearch}
-                    onValidatedUsernames={onValidatedUsernames}
-                    onValidationError={onValidationError}
-                    initialUsernames={members}
-                    noForm={true}
-                    showRemoveAll={true}
+                  {/* Simple Username Input */}
+                  <SimpleUsernameInput
+                    onAddUsername={username => handleSearch([username])}
+                    usernames={members}
+                    onRemoveUsername={removeMember || (() => {})}
                     onRemoveAll={handleRemoveAllMembers}
-                    hidePills={true}
+                    isLoading={isValidating}
+                    validUsers={validUsers || []}
+                    invalidUsers={invalidUsers || []}
+                    totalUsers={totalUsers || 0}
+                    validUserCount={validUserCount || 0}
                   />
 
                   {/* Members List */}

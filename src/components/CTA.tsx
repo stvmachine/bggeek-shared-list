@@ -4,38 +4,39 @@ import { useState } from "react";
 import { FaGamepad, FaSearch, FaUserFriends } from "react-icons/fa";
 
 import { generatePermalink } from "../utils/permalink";
-import UsernameForm from "./UsernameForm";
+import SimpleUsernameInput from "./SimpleUsernameInput";
 
 export default function CTA() {
   const router = useRouter();
-  const [isValidating, setIsValidating] = useState(false);
+  const [usernames, setUsernames] = useState<string[]>([]);
 
-  const handleSearch = async (usernames: string[]) => {
-    // This is called when usernames are submitted for validation
-    // Don't proceed yet - wait for validation
-    console.log("UsernameForm submitted usernames for validation:", usernames);
-  };
-
-  const handleValidatedUsernames = async (usernames: string[]) => {
-    if (usernames.length === 0) {
+  const handleAddUsername = async (username: string) => {
+    if (!username.trim()) return;
+    
+    const trimmedUsername = username.trim();
+    if (usernames.includes(trimmedUsername)) {
+      console.log(`Username ${trimmedUsername} is already in the list`);
       return;
     }
 
-    // Usernames are now validated, so we can proceed
-    setIsValidating(true);
-
-    try {
-      const permalink = generatePermalink(usernames);
-
-      // Use window.location for more reliable navigation
-      if (typeof window !== "undefined") {
-        window.location.href = permalink;
-      } else {
-        router.push(permalink);
-      }
-    } finally {
-      setIsValidating(false);
+    const newUsernames = [...usernames, trimmedUsername];
+    setUsernames(newUsernames);
+    
+    // Navigate to collection page immediately
+    const permalink = generatePermalink(newUsernames);
+    if (typeof window !== "undefined") {
+      window.location.href = permalink;
+    } else {
+      router.push(permalink);
     }
+  };
+
+  const handleRemoveUsername = (usernameToRemove: string) => {
+    setUsernames(prev => prev.filter(u => u !== usernameToRemove));
+  };
+
+  const handleRemoveAll = () => {
+    setUsernames([]);
   };
 
   // Colors from the screenshot
@@ -102,10 +103,12 @@ export default function CTA() {
               maxW={{ base: "100%", lg: "90%" }}
               mt={{ base: 6, lg: 0 }}
             >
-              <UsernameForm
-                onSearch={handleSearch}
-                onValidatedUsernames={handleValidatedUsernames}
-                isValidating={isValidating}
+              <SimpleUsernameInput
+                onAddUsername={handleAddUsername}
+                usernames={usernames}
+                onRemoveUsername={handleRemoveUsername}
+                onRemoveAll={handleRemoveAll}
+                isLoading={false}
               />
             </Box>
           </Box>

@@ -15,7 +15,6 @@ import {
 import React, { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { FiUsers } from "react-icons/fi";
-import { useMembers } from "../contexts/MemberContext";
 import { useFuzzySearch } from "../hooks/useFuzzySearch";
 import { ICollectionItem } from "../types";
 import { GroupedGames, groupGames, GroupingOption } from "../utils/grouping";
@@ -67,7 +66,6 @@ type ResultsProps = {
 
 const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
   const { watch } = useFormContext();
-  const { getMemberData } = useMembers();
 
   // Form values
   const keyword = watch("keyword", "");
@@ -233,37 +231,32 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
                 Displaying games owned by:
               </Text>
               <Wrap gap={2}>
-                {actualOwners.map(member => {
-                  const memberData = getMemberData(member);
-                  if (!memberData) return null;
-
-                  return (
-                    <LinkBox key={member}>
-                      <LinkOverlay
-                        href={`https://boardgamegeek.com/user/${member}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                {actualOwners.map(member => (
+                  <LinkBox key={member}>
+                    <LinkOverlay
+                      href={`https://boardgamegeek.com/user/${member}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Box
+                        border="1px solid"
+                        borderColor="gray.200"
+                        borderRadius="lg"
+                        p={3}
+                        _hover={{
+                          borderColor: "blue.300",
+                          bg: "blue.50",
+                          transform: "translateY(-1px)",
+                          boxShadow: "md",
+                        }}
+                        transition="all 0.2s"
+                        cursor="pointer"
                       >
-                        <Box
-                          border="1px solid"
-                          borderColor="gray.200"
-                          borderRadius="lg"
-                          p={3}
-                          _hover={{
-                            borderColor: "blue.300",
-                            bg: "blue.50",
-                            transform: "translateY(-1px)",
-                            boxShadow: "md",
-                          }}
-                          transition="all 0.2s"
-                          cursor="pointer"
-                        >
-                          <MemberAvatar username={member} size="md" />
-                        </Box>
-                      </LinkOverlay>
-                    </LinkBox>
-                  );
-                })}
+                        <MemberAvatar username={member} size="md" />
+                      </Box>
+                    </LinkOverlay>
+                  </LinkBox>
+                ))}
               </Wrap>
             </Box>
           </VStack>

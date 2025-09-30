@@ -1,27 +1,14 @@
-import React from "react";
-import {
-  Box,
-  Container,
-  Text,
-  useDisclosure,
-  useMediaQuery,
-} from "@chakra-ui/react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Box, Container, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { FiShare2 } from "react-icons/fi";
-import { useCollections } from "../hooks/useCollections";
 import ImprovedSearchSidebar from "../components/ImprovedSearchSidebar";
 import Footer from "../components/Layout/Footer";
 import Navbar from "../components/Layout/Navbar";
 import Results from "../components/Results";
-import { MemberProvider } from "../contexts/MemberContext";
-import {
-  copyToClipboard,
-  generatePermalink,
-  parseUsernamesFromUrl,
-} from "../utils/permalink";
+import { useMultiUserCollections } from "../hooks/useMultiUserCollections";
+import { generatePermalink, parseUsernamesFromUrl } from "../utils/permalink";
 import { GetUserCollectionQuery } from "../lib/graphql/generated/types";
 
 type CollectionPageProps = {
@@ -37,101 +24,79 @@ export async function getStaticProps() {
 const Index: NextPage<CollectionPageProps> = () => {
   const router = useRouter();
   const { usernames: urlUsernames, username } = router.query;
-  const { open, onOpen, onClose } = useDisclosure({ defaultOpen: false });
-  const [isMobile] = useMediaQuery(["(max-width: 48em)"]);
-  const isHomepage = router.pathname === "/";
-  const showFAB = isMobile && !isHomepage;
 
-  const [members, setMembers] = useState<string[]>([]);
-  const [pendingUsernames, setPendingUsernames] = useState<string[]>([]);
-  const [isValidating, setIsValidating] = useState(false);
+  // Simple state management
+  const [usernames, setUsernames] = useState<string[]>([]);
 
-  // Initialize with usernames from query params
-  useEffect(() => {
+  // Parse initial usernames from URL
+  const initialUsernames = useMemo(() => {
     if (urlUsernames) {
-      // Parse usernames from URL using utility function
-      const usernameList = parseUsernamesFromUrl(urlUsernames);
-      setMembers(usernameList);
+      return parseUsernamesFromUrl(urlUsernames);
     } else if (username && typeof username === "string") {
-      // Handle single username for backward compatibility
-      setMembers([username]);
+      return [username];
     }
+    return [];
   }, [urlUsernames, username]);
 
-  // Update URL when members change (for permalinks)
+  // Initialize usernames from URL
   useEffect(() => {
-    if (members.length > 0) {
-      const permalink = generatePermalink(members);
-      // Update URL without triggering a page reload
+    if (initialUsernames.length > 0) {
+      setUsernames(initialUsernames);
+    }
+  }, [initialUsernames]);
+
+  // Use the multi-user collections hook
+  const {
+    isLoading,
+    errors,
+    validUsers,
+    invalidUsers,
+    allBoardgames,
+    allCollections,
+    totalUsers,
+    validUserCount,
+  } = useMultiUserCollections({ usernames });
+
+  // Transform collections to match expected format
+  const transformedCollections = useMemo(() => {
+    return allCollections.map(collection => ({
+      totalitems: (collection as any)?.totalItems || 0,
+      pubdate: (collection as any)?.pubDate || new Date().toISOString(),
+    }));
+  }, [allCollections]);
+
+  // Add username
+  const addUsername = useCallback((username: string) => {
+    if (!username.trim()) return;
+
+    const trimmedUsername = username.trim();
+    if (usernames.includes(trimmedUsername)) {
+      console.log(`Username ${trimmedUsername} is already in the list`);
+      return;
+    }
+
+    setUsernames(prev => [...prev, trimmedUsername]);
+  }, [usernames]);
+
+  // Remove username
+  const removeUsername = useCallback((usernameToRemove: string) => {
+    setUsernames(prev => prev.filter(u => u !== usernameToRemove));
+  }, []);
+
+  // Remove all usernames
+  const removeAllUsernames = useCallback(() => {
+    setUsernames([]);
+  }, []);
+
+  // Update URL when usernames change
+  useEffect(() => {
+    if (usernames.length > 0) {
+      const permalink = generatePermalink(usernames);
       window.history.replaceState({}, "", permalink);
     } else {
-      // If no members, clear query parameters but stay on collection page
       window.history.replaceState({}, "", "/collection");
     }
-  }, [members]);
-
-  const handleSearch = useCallback((usernames: string[]) => {
-    // This is called when usernames are submitted for validation
-    // Set them as pending and start validation state
-    setPendingUsernames(usernames);
-    setIsValidating(true);
-    console.log(
-      "UsernameManager submitted usernames for validation:",
-      usernames
-    );
-  }, []);
-
-  const handleValidatedUsernames = useCallback(
-    (validatedUsernames: string[]) => {
-      // This is called when usernames are successfully validated
-      const validNewMembers = validatedUsernames.filter(
-        member =>
-          member.trim() &&
-          !members.find(m => m.toLowerCase() === member.toLowerCase())
-      );
-
-      if (validNewMembers.length > 0) {
-        setMembers(prev => {
-          // Additional deduplication check to prevent race conditions
-          const existingMembers = new Set(prev.map(m => m.toLowerCase()));
-          const trulyNewMembers = validNewMembers.filter(
-            member => !existingMembers.has(member.toLowerCase())
-          );
-          return [...prev, ...trulyNewMembers];
-        });
-      }
-
-      // Clear pending state and stop validation
-      setPendingUsernames([]);
-      setIsValidating(false);
-    },
-    [members]
-  );
-
-  const handleValidationError = useCallback(
-    (error: { type: string; usernames: string[]; message: string }) => {
-      // This is called when validation fails
-      console.log("Validation error:", error);
-      // Clear pending state and stop validation
-      setPendingUsernames([]);
-      setIsValidating(false);
-    },
-    []
-  );
-
-  const removeMember = useCallback(
-    (memberToRemove: string) => {
-      const newMembers = members.filter(member => member !== memberToRemove);
-      setMembers(newMembers);
-    },
-    [members]
-  );
-
-  const removeAllMembers = useCallback(() => {
-    setMembers([]);
-  }, []);
-
-  const { data, isLoading } = useCollections(members);
+  }, [usernames]);
 
   const defaultValues = useMemo(
     () => ({
@@ -141,236 +106,185 @@ const Index: NextPage<CollectionPageProps> = () => {
       orderBy: "name_asc",
       groupBy: "none",
       hideExpansions: false,
-      members: members.reduce(
-        (accum, member) => ({ ...accum, [member]: true }),
+      members: usernames.reduce(
+        (accum, username) => ({ ...accum, [username]: true }),
         {}
       ),
     }),
-    [members] // Use members directly instead of stringified version
+    [usernames]
   );
 
   const methods = useForm({ defaultValues });
 
-  // Reset form when members change, but only reset the members field
-  const [prevMembers, setPrevMembers] = useState(members);
-  
+  // Reset form when usernames change
   useEffect(() => {
-    if (prevMembers.length !== members.length || 
-        !prevMembers.every((member, index) => member === members[index])) {
-      // Only reset the members field, preserve other form values
-      const currentValues = methods.getValues();
-      methods.reset({
-        ...currentValues,
-        members: members.reduce(
-          (accum, member) => ({ ...accum, [member]: true }),
-          {}
-        ),
-      });
-      setPrevMembers([...members]);
-    }
-  }, [members, methods, prevMembers]);
+    methods.setValue(
+      "members",
+      usernames.reduce(
+        (accum, username) => ({ ...accum, [username]: true }),
+        {}
+      )
+    );
+  }, [usernames, methods]);
 
   const sidebarWidth = "300px";
 
   return (
-    <MemberProvider usernames={members}>
-      <FormProvider {...methods}>
-        <Box minH="100vh" display="flex" flexDirection="column">
-          <Navbar onMobileMenuOpen={onOpen} />
-          <Container
-            maxW="container.xl"
-            flex="1"
-            py={8}
-            px={{ base: 0, md: 4 }}
-          >
-            <Box position="relative">
-              {!isLoading ? (
-                <>
-                  {/* Desktop Sidebar */}
-                  <Box
-                    display={{ base: "none", md: "flex" }}
-                    position="fixed"
-                    width={sidebarWidth}
-                    flexShrink={0}
-                    pr={4}
-                    height="calc(100vh - 180px)"
-                    flexDirection="column"
-                    css={{
-                      "&": {
-                        msOverflowStyle: "none",
-                        scrollbarWidth: "none",
-                        "&::-webkit-scrollbar": {
-                          display: "none",
-                        },
+    <FormProvider {...methods}>
+      <Box minH="100vh" display="flex" flexDirection="column">
+        <Navbar />
+        <Container maxW="container.xl" flex="1" py={8} px={{ base: 0, md: 4 }}>
+          <Box position="relative">
+            {!isLoading ? (
+              <>
+                {/* Desktop Sidebar */}
+                <Box
+                  display={{ base: "none", md: "flex" }}
+                  position="fixed"
+                  width={sidebarWidth}
+                  flexShrink={0}
+                  pr={4}
+                  height="calc(100vh - 180px)"
+                  flexDirection="column"
+                  css={{
+                    "&": {
+                      msOverflowStyle: "none",
+                      scrollbarWidth: "none",
+                      "&::-webkit-scrollbar": {
+                        display: "none",
                       },
+                    },
+                  }}
+                >
+                  <ImprovedSearchSidebar
+                    members={usernames}
+                    onSearch={usernames => {
+                      if (usernames.length > 0) {
+                        addUsername(usernames[0]);
+                      }
                     }}
-                  >
-                    <ImprovedSearchSidebar
-                      members={members}
-                      onSearch={handleSearch}
-                      onValidatedUsernames={handleValidatedUsernames}
-                      onValidationError={handleValidationError}
-                      removeMember={removeMember}
-                      removeAllMembers={removeAllMembers}
-                      collections={data?.collections || []}
-                      isValidating={isValidating}
-                      pendingUsernames={pendingUsernames}
-                    />
-                  </Box>
+                    onValidatedUsernames={() => {}}
+                    onValidationError={() => {}}
+                    removeMember={removeUsername}
+                    removeAllMembers={removeAllUsernames}
+                    collections={transformedCollections}
+                    isValidating={isLoading}
+                    pendingUsernames={[]}
+                    validUsers={validUsers}
+                    invalidUsers={invalidUsers}
+                    totalUsers={totalUsers}
+                    validUserCount={validUserCount}
+                  />
+                </Box>
 
-                  {/* Mobile Sidebar */}
-                  <Box display={{ base: "block", md: "none" }}>
-                    <ImprovedSearchSidebar
-                      members={members}
-                      onSearch={handleSearch}
-                      onValidatedUsernames={handleValidatedUsernames}
-                      onValidationError={handleValidationError}
-                      removeMember={removeMember}
-                      removeAllMembers={removeAllMembers}
-                      collections={data?.collections || []}
-                      isValidating={isValidating}
-                      pendingUsernames={pendingUsernames}
-                      isMobileDrawerOpen={open}
-                      onMobileDrawerToggle={onClose}
-                    />
-                  </Box>
+                {/* Mobile Sidebar */}
+                <Box display={{ base: "block", md: "none" }}>
+                  <ImprovedSearchSidebar
+                    members={usernames}
+                    onSearch={usernames => {
+                      if (usernames.length > 0) {
+                        addUsername(usernames[0]);
+                      }
+                    }}
+                    onValidatedUsernames={() => {}}
+                    onValidationError={() => {}}
+                    removeMember={removeUsername}
+                    removeAllMembers={removeAllUsernames}
+                    collections={transformedCollections}
+                    isValidating={isLoading}
+                    pendingUsernames={[]}
+                    validUsers={validUsers}
+                    invalidUsers={invalidUsers}
+                    totalUsers={totalUsers}
+                    validUserCount={validUserCount}
+                  />
+                </Box>
 
-                  {/* Main Content */}
-                  <Box
-                    ml={{ base: 0, md: sidebarWidth }}
-                    pl={{ base: 4, md: 8 }}
-                    pr={{ base: 4, md: 0 }}
-                    width={{ base: "100%", md: `calc(100% - ${sidebarWidth})` }}
-                  >
-                    {data && members.length > 0 ? (
-                      <Results boardgames={data.boardgames} />
-                    ) : members.length === 0 ? (
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        minH="400px"
-                        textAlign="center"
-                      >
-                        <Box>
-                          <Text fontSize="xl" color="gray.600" mb={4}>
-                            No collectors selected
-                          </Text>
-                          <Text fontSize="md" color="gray.500">
-                            Add some BoardGameGeek usernames to see their
-                            collections
-                          </Text>
-                        </Box>
-                      </Box>
-                    ) : (
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        minH="400px"
-                      >
-                        <Text fontSize="lg" color="gray.500">
-                          Loading collections...
+                {/* Main Content */}
+                <Box
+                  ml={{ base: 0, md: sidebarWidth }}
+                  pl={{ base: 4, md: 8 }}
+                  pr={{ base: 4, md: 0 }}
+                  width={{ base: "100%", md: `calc(100% - ${sidebarWidth})` }}
+                >
+                  {/* Show validation errors */}
+                  {errors.length > 0 && (
+                    <Box mb={4} p={3} bg="red.50" borderRadius="md" border="1px solid" borderColor="red.200">
+                      <Text fontSize="sm" color="red.600" fontWeight="medium">
+                        Validation Errors:
+                      </Text>
+                      {errors.map((error, index) => (
+                        <Text key={index} fontSize="xs" color="red.500" mt={1}>
+                          {error?.message || "Unknown error"}
+                        </Text>
+                      ))}
+                    </Box>
+                  )}
+
+                  {/* Show invalid users */}
+                  {invalidUsers.length > 0 && (
+                    <Box mb={4} p={3} bg="yellow.50" borderRadius="md" border="1px solid" borderColor="yellow.200">
+                      <Text fontSize="sm" color="yellow.600" fontWeight="medium">
+                        Invalid Users: {invalidUsers.join(", ")}
+                      </Text>
+                    </Box>
+                  )}
+
+                  {allBoardgames && allBoardgames.length > 0 ? (
+                    <Results boardgames={allBoardgames} />
+                  ) : usernames.length === 0 ? (
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      minH="400px"
+                      textAlign="center"
+                    >
+                      <Box>
+                        <Text fontSize="xl" color="gray.600" mb={4}>
+                          No collectors selected
+                        </Text>
+                        <Text fontSize="md" color="gray.500">
+                          Add some BoardGameGeek usernames to see their
+                          collections
                         </Text>
                       </Box>
-                    )}
-                  </Box>
-                </>
-              ) : (
-                <Box
-                  flex="1"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  minH="400px"
-                >
-                  <Text fontSize="lg" color="gray.500">
-                    Loading collections...
-                  </Text>
+                    </Box>
+                  ) : (
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      minH="400px"
+                    >
+                      <Text fontSize="lg" color="gray.500">
+                        {isLoading ? 
+                          `Loading collections... (${validUserCount}/${totalUsers} users)` : 
+                          `No games found for ${totalUsers} user${totalUsers !== 1 ? 's' : ''}`
+                        }
+                      </Text>
+                    </Box>
+                  )}
                 </Box>
-              )}
-            </Box>
-          </Container>
-          <Footer />
-
-          {/* Mobile Share Button */}
-          {showFAB && (
-            <Box
-              position="fixed"
-              bottom="6"
-              right="6"
-              zIndex={1400}
-              display={{ base: "block", md: "none" }}
-            >
+              </>
+            ) : (
               <Box
-                as="button"
-                onClick={async () => {
-                  const url = window.location.href;
-
-                  try {
-                    // Check if native share API is available and user is on mobile
-                    if (isMobile && navigator.share) {
-                      await navigator.share({
-                        title: "My Board Game Collection",
-                        text: "Check out my board game collection!",
-                        url: url,
-                      });
-                    } else {
-                      // Fallback to clipboard for desktop or browsers without share API
-                      const success = await copyToClipboard(url);
-                      if (success) {
-                        console.log("Link copied to clipboard!");
-                        alert("Link copied to clipboard!");
-                      } else {
-                        throw new Error("Clipboard copy failed");
-                      }
-                    }
-                  } catch (err) {
-                    console.error("Failed to share:", err);
-
-                    // If share fails, try clipboard as fallback
-                    try {
-                      const success = await copyToClipboard(url);
-                      if (success) {
-                        alert("Link copied to clipboard!");
-                      } else {
-                        throw new Error("Clipboard fallback failed");
-                      }
-                    } catch (clipboardErr) {
-                      console.error("Clipboard also failed:", clipboardErr);
-                      alert(
-                        "Failed to share. Please copy the URL manually: " + url
-                      );
-                    }
-                  }
-                }}
-                aria-label="Share collection"
-                bg="blue.500"
-                color="white"
-                width="56px"
-                height="56px"
-                borderRadius="full"
+                flex="1"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                boxShadow="0 4px 12px rgba(0, 0, 0, 0.15)"
-                _hover={{
-                  bg: "blue.600",
-                  transform: "scale(1.05)",
-                  transition: "all 0.2s",
-                }}
-                _active={{
-                  bg: "blue.700",
-                  transform: "scale(0.95)",
-                }}
+                minH="400px"
               >
-                <FiShare2 size="24px" />
+                <Text fontSize="lg" color="gray.500">
+                  Loading collections...
+                </Text>
               </Box>
-            </Box>
-          )}
-        </Box>
-      </FormProvider>
-    </MemberProvider>
+            )}
+          </Box>
+        </Container>
+        <Footer />
+      </Box>
+    </FormProvider>
   );
 };
 
