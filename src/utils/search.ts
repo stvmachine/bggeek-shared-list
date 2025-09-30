@@ -68,6 +68,10 @@ export const orderByFn = (boardgames: ICollectionItem[], orderBy: string) => {
       checkAsc(a.yearPublished || 0, b.yearPublished || 0, orderBy)
     );
   } else {
-    return games.sort((a, b) => checkAsc(a.name || "", b.name || "", orderBy));
+    return games.sort((a, b) => {
+      const nameA = typeof a.name === 'string' ? a.name : a.name?.text || "";
+      const nameB = typeof b.name === 'string' ? b.name : b.name?.text || "";
+      return checkAsc(nameA, nameB, orderBy);
+    });
   }
 };

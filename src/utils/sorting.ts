@@ -16,10 +16,18 @@ export const sortGames = (
 
   switch (sortBy) {
     case "name_asc":
-      return sortedGames.sort((a, b) => a.name.localeCompare(b.name));
+      return sortedGames.sort((a, b) => {
+        const nameA = typeof a.name === 'string' ? a.name : a.name?.text || "";
+        const nameB = typeof b.name === 'string' ? b.name : b.name?.text || "";
+        return nameA.localeCompare(nameB);
+      });
 
     case "name_desc":
-      return sortedGames.sort((a, b) => b.name.localeCompare(a.name));
+      return sortedGames.sort((a, b) => {
+        const nameA = typeof a.name === 'string' ? a.name : a.name?.text || "";
+        const nameB = typeof b.name === 'string' ? b.name : b.name?.text || "";
+        return nameB.localeCompare(nameA);
+      });
 
     case "rating_asc":
       return sortedGames.sort((a, b) => {

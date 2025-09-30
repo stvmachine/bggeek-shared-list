@@ -84,7 +84,8 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
 
   // Use the simplified fuzzy search hook with debouncing
   const searchResults = useFuzzySearch<ICollectionItem>(boardgames, keyword, {
-    keys: ["name.text", "originalname"],
+    // keys: ["name.text", "originalname"], TODO: Good idea to keep originalName
+    keys: ["name.text"],
     threshold: 0.3,
     debounceTime: 300, // 300ms debounce time
     minSearchLength: 2, // Minimum characters to start searching
@@ -311,7 +312,7 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
               <GameCard
                 key={game.objectId}
                 id={game.objectId}
-                name={game.name}
+                name={typeof game.name === 'string' ? game.name : game.name?.text || "Unknown Game"}
                 thumbnail={game.thumbnail}
                 yearPublished={game.yearPublished?.toString()}
                 minPlayers={game.stats?.minPlayers}
@@ -334,46 +335,41 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
               count={games.length}
             >
               <Grid gap={4} mt={4}>
-                {games.map((game: any) => {
-                  // Safely extract values with proper type checking
-                  const id =
-                    typeof game.objectId === "number"
-                      ? game.objectId.toString()
-                      : String(game.objectId || "");
-                  const name =
-                    game.name?.text || game.originalname || "Unknown Game";
+                {games.map((game: ICollectionItem) => {
+                  const id = String(game.objectId);
+                   const name = typeof game.name === 'string' ? game.name : game.name?.text || "Unknown Game";
                   const thumbnail = game.thumbnail || "";
-                  const yearPublished = game.yearpublished
-                    ? String(game.yearpublished)
+                  const yearPublished = game.yearPublished
+                    ? String(game.yearPublished)
                     : "";
 
                   // Safely extract numeric values with fallbacks
                   const minPlayers =
-                    typeof game.stats?.minplayers === "number"
-                      ? game.stats.minplayers
-                      : typeof game.stats?.minplayers?.value === "number"
-                        ? game.stats.minplayers.value
+                    typeof game.stats?.minPlayers === "number"
+                      ? game.stats.minPlayers
+                      : typeof game.stats?.minPlayers === "number"
+                        ? game.stats.minPlayers
                         : 0;
 
                   const maxPlayers =
-                    typeof game.stats?.maxplayers === "number"
-                      ? game.stats.maxplayers
-                      : typeof game.stats?.maxplayers?.value === "number"
-                        ? game.stats.maxplayers.value
+                    typeof game.stats?.maxPlayers === "number"
+                      ? game.stats.maxPlayers
+                      : typeof game.stats?.maxPlayers === "number"
+                        ? game.stats.maxPlayers
                         : 0;
 
                   const playingTime =
-                    typeof game.stats?.playingtime === "number"
-                      ? game.stats.playingtime
-                      : typeof game.stats?.playingtime?.value === "number"
-                        ? game.stats.playingtime.value
+                    typeof game.stats?.playingTime === "number"
+                      ? game.stats.playingTime
+                      : typeof game.stats?.playingTime === "number"
+                        ? game.stats.playingTime
                         : 0;
 
                   const averageRating =
-                    typeof game.stats?.rating?.average === "number"
-                      ? game.stats.rating.average
-                      : typeof game.stats?.rating?.average?.value === "number"
-                        ? game.stats.rating.average.value
+                    typeof game.stats?.average === "number"
+                      ? game.stats.average
+                      : typeof game.stats?.average === "number"
+                        ? game.stats.average
                         : 0;
 
                   return (

@@ -61,7 +61,7 @@ const HotGames = () => {
                       boxSize={["100px", "120px", "140px"]}
                       objectFit="cover"
                       src={game.thumbnail}
-                      alt={`${game.name} thumbnail`}
+                      alt={`${game.name?.text || game.name || "Game"} thumbnail`}
                     />
                   </Box>
                 )}
