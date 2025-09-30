@@ -90,7 +90,14 @@ const Index: NextPage<CollectionPageProps> = () => {
       );
 
       if (validNewMembers.length > 0) {
-        setMembers(prev => [...prev, ...validNewMembers]);
+        setMembers(prev => {
+          // Additional deduplication check to prevent race conditions
+          const existingMembers = new Set(prev.map(m => m.toLowerCase()));
+          const trulyNewMembers = validNewMembers.filter(
+            member => !existingMembers.has(member.toLowerCase())
+          );
+          return [...prev, ...trulyNewMembers];
+        });
       }
 
       // Clear pending state and stop validation

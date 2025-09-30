@@ -75,8 +75,15 @@ const ImprovedSearchSidebar = React.memo(
     isMobileDrawerOpen,
     onMobileDrawerToggle,
   }: ImprovedSearchSidebarProps) => {
-    const { register, handleSubmit, setValue, getValues, reset, watch } =
-      useFormContext();
+    const {
+      register,
+      handleSubmit,
+      setValue,
+      getValues,
+      reset,
+      watch,
+      trigger,
+    } = useFormContext();
 
     const getMemberData = useCallback(
       (username: string) => ({
@@ -125,13 +132,15 @@ const ImprovedSearchSidebar = React.memo(
       members.forEach(member => {
         setValue(`members[${member}]`, true);
       });
-    }, [members, setValue]);
+      trigger("members"); // Force form validation and re-render
+    }, [members, setValue, trigger]);
 
     const handleDeselectAll = useCallback(() => {
       members.forEach(member => {
         setValue(`members[${member}]`, false);
       });
-    }, [members, setValue]);
+      trigger("members"); // Force form validation and re-render
+    }, [members, setValue, trigger]);
 
     // Removed unused handleRemoveMember function
 
@@ -157,6 +166,7 @@ const ImprovedSearchSidebar = React.memo(
         playingTime: "",
         groupBy: "none",
         orderBy: "name_asc",
+        members: {},
       });
     }, [reset]);
 

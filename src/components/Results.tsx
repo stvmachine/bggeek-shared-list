@@ -311,7 +311,11 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
               <GameCard
                 key={game.objectId}
                 id={game.objectId}
-                name={typeof game.name === 'string' ? game.name : game.name?.text || "Unknown Game"}
+                name={
+                  typeof game.name === "string"
+                    ? game.name
+                    : game.name?.text || "Unknown Game"
+                }
                 thumbnail={game.thumbnail}
                 yearPublished={game.yearPublished?.toString()}
                 minPlayers={game.stats?.minPlayers}
@@ -336,7 +340,10 @@ const Results = React.memo(({ boardgames = [] }: ResultsProps) => {
               <Grid gap={4} mt={4}>
                 {games.map((game: ICollectionItem) => {
                   const id = String(game.objectId);
-                   const name = typeof game.name === 'string' ? game.name : game.name?.text || "Unknown Game";
+                  const name =
+                    typeof game.name === "string"
+                      ? game.name
+                      : game.name?.text || "Unknown Game";
                   const thumbnail = game.thumbnail || "";
                   const yearPublished = game.yearPublished
                     ? String(game.yearPublished)
