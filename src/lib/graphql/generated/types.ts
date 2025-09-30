@@ -58,6 +58,11 @@ export type BoardgameRank = {
   type: Scalars["String"]["output"];
 };
 
+export enum CacheControlScope {
+  Private = "PRIVATE",
+  Public = "PUBLIC",
+}
+
 export type Category = {
   __typename?: "Category";
   id: Scalars["String"]["output"];
@@ -195,9 +200,29 @@ export type GuildMember = {
 export type Link = {
   __typename?: "Link";
   id: Scalars["String"]["output"];
+  isExpansionLink: Scalars["Boolean"]["output"];
+  linkType: LinkType;
+  targetId: Scalars["String"]["output"];
+  targetName: Scalars["String"]["output"];
   type: Scalars["String"]["output"];
   value: Scalars["String"]["output"];
 };
+
+export enum LinkType {
+  BoardgameAccessory = "BOARDGAME_ACCESSORY",
+  BoardgameArtist = "BOARDGAME_ARTIST",
+  BoardgameBase = "BOARDGAME_BASE",
+  BoardgameCategory = "BOARDGAME_CATEGORY",
+  BoardgameDesigner = "BOARDGAME_DESIGNER",
+  BoardgameExpansion = "BOARDGAME_EXPANSION",
+  BoardgameFamily = "BOARDGAME_FAMILY",
+  BoardgameMechanic = "BOARDGAME_MECHANIC",
+  BoardgamePublisher = "BOARDGAME_PUBLISHER",
+  Other = "OTHER",
+  RpgItem = "RPG_ITEM",
+  RpgPeriodical = "RPG_PERIODICAL",
+  Videogame = "VIDEOGAME",
+}
 
 export type Mechanic = {
   __typename?: "Mechanic";
@@ -407,15 +432,19 @@ export type Thing = {
   artists: Array<Artist>;
   average?: Maybe<Scalars["Float"]["output"]>;
   averageWeight?: Maybe<Scalars["Float"]["output"]>;
+  baseGame?: Maybe<Thing>;
   bayesAverage?: Maybe<Scalars["Float"]["output"]>;
   categories: Array<Category>;
   comments: Array<Comment>;
   description?: Maybe<Scalars["String"]["output"]>;
   designers: Array<Designer>;
+  expansionFor: Array<Thing>;
   expansions: Array<Expansion>;
   families: Array<Family>;
   id: Scalars["ID"]["output"];
   image?: Maybe<Scalars["String"]["output"]>;
+  isExpansion: Scalars["Boolean"]["output"];
+  links: Array<Link>;
   maxPlayTime?: Maybe<Scalars["Int"]["output"]>;
   maxPlayers?: Maybe<Scalars["Int"]["output"]>;
   mechanics: Array<Mechanic>;
@@ -544,23 +573,6 @@ export type GetUserQuery = {
       city: string;
       isoCountry: string;
     } | null;
-    guilds: Array<{ __typename?: "Guild"; id: string; name: string }>;
-    microbadges: Array<{
-      __typename?: "Microbadge";
-      id: string;
-      name: string;
-      imageSrc: string;
-    }>;
-    top: Array<{
-      __typename?: "TopItem";
-      boardgame: {
-        __typename?: "BoardgameRank";
-        rank: number;
-        id: string;
-        type: string;
-        name: string;
-      };
-    }>;
   } | null;
 };
 

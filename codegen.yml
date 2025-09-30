@@ -1,5 +1,5 @@
 overwrite: true
-schema: "https://bgg-graphql-proxy-9baf44927986.herokuapp.com/graphql"
+schema: "https://bgg-graphql-proxy.vercel.app/graphql"
 documents: "src/**/*.ts"
 generates:
   src/lib/graphql/generated/types.ts:
