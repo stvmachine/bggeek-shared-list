@@ -35,7 +35,9 @@ vi.mock("../../hooks/useCollections", () => ({
 
 // Mock the ImprovedSearchSidebar component
 vi.mock("../../components/ImprovedSearchSidebar", () => ({
-  default: () => <div data-testid="improved-search-sidebar">ImprovedSearchSidebar</div>
+  default: () => (
+    <div data-testid="improved-search-sidebar">ImprovedSearchSidebar</div>
+  ),
 }));
 
 // Mock the permalink utilities
@@ -55,13 +57,13 @@ global.fetch = vi.fn(() =>
 
 // Mock all the components to simplify testing
 vi.mock("../../components/Layout/Navbar", () => ({
-  default: () => <div data-testid="navbar">Navbar</div>
+  default: () => <div data-testid="navbar">Navbar</div>,
 }));
 vi.mock("../../components/Layout/Footer", () => ({
-  default: () => <div data-testid="footer">Footer</div>
+  default: () => <div data-testid="footer">Footer</div>,
 }));
 vi.mock("../../components/Results", () => ({
-  default: () => <div data-testid="results">Results</div>
+  default: () => <div data-testid="results">Results</div>,
 }));
 // Removed mocks for deleted components: SearchSidebar and MobileDrawer
 

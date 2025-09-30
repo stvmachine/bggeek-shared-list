@@ -1,30 +1,30 @@
-import '@testing-library/jest-dom'
-import { vi } from 'vitest'
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
 // Polyfill for structuredClone (not available in test environment)
 if (!global.structuredClone) {
   global.structuredClone = obj => {
     try {
-      const stringified = JSON.stringify(obj)
+      const stringified = JSON.stringify(obj);
       if (stringified === undefined) {
-        return obj // Return original if JSON.stringify returns undefined
+        return obj; // Return original if JSON.stringify returns undefined
       }
-      return JSON.parse(stringified)
+      return JSON.parse(stringified);
     } catch (error) {
       // If JSON operations fail, return the original object
-      return obj
+      return obj;
     }
-  }
+  };
 }
 
 // Mock Next.js router
-vi.mock('next/router', () => ({
+vi.mock("next/router", () => ({
   useRouter() {
     return {
-      route: '/',
-      pathname: '/',
+      route: "/",
+      pathname: "/",
       query: {},
-      asPath: '/',
+      asPath: "/",
       push: vi.fn(),
       pop: vi.fn(),
       reload: vi.fn(),
@@ -37,12 +37,12 @@ vi.mock('next/router', () => ({
         emit: vi.fn(),
       },
       isFallback: false,
-    }
+    };
   },
-}))
+}));
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation(query => ({
     matches: false,
@@ -54,25 +54,25 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
-})
+});
 
 // Mock window.getComputedStyle
-Object.defineProperty(window, 'getComputedStyle', {
+Object.defineProperty(window, "getComputedStyle", {
   value: () => ({
-    getPropertyValue: () => '',
+    getPropertyValue: () => "",
   }),
-})
+});
 
 // Mock ResizeObserver
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}))
+}));
 
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}))
+}));
