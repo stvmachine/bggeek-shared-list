@@ -104,29 +104,6 @@ export default function SimpleUsernameInput({
         </HStack>
       </div>
 
-      {/* Quick add buttons for testing */}
-      <HStack spacing={2} wrap="wrap">
-        <Text fontSize="sm" color="gray.600">
-          Quick add:
-        </Text>
-        <Button
-          size="xs"
-          variant="outline"
-          onClick={() => handleAddSingle("stevmachine")}
-          disabled={isLoading || usernames.includes("stevmachine")}
-        >
-          stevmachine
-        </Button>
-        <Button
-          size="xs"
-          variant="outline"
-          onClick={() => handleAddSingle("donutgamer")}
-          disabled={isLoading || usernames.includes("donutgamer")}
-        >
-          donutgamer
-        </Button>
-      </HStack>
-
       {/* Current usernames */}
       {usernames.length > 0 && (
         <VStack spacing={2} align="stretch">
